@@ -1,6 +1,5 @@
 <template>
   <q-page class="q-pa-lg">
-    <div v-if="seleccionClases">
       <div class="row q-col-gutter-lg">
         <p class="titulo-responsivo text-center q-my-xl" style="width: 100%; color: #851319">
           {{ t('individuales.reservaTuClase') }}
@@ -131,9 +130,48 @@
           <div v-else class="text-grey q-mt-md">No hay horarios disponibles para esta fecha.</div>
         </div>
       </div>
-    </div>
+
   </div>
 
   </q-page>
 
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { useReservasClases } from 'src/composables/useReservasClases';
+import '../css/pages/ClasesIndividuales.css';
+import '../css/pages/EstilosGenerales.css';
+
+
+const { t } = useI18n();
+
+// Usar el composable para toda la lógica
+const {
+  // Estado reactivo
+  //seleccionClases,
+  fechaSeleccionada,
+  //horasOcupadas,
+  misReservas,
+  carrito,
+  tipoClase,
+
+  // Computed properties
+  opcionesTipoClase,
+  fechaMinima,
+  fechaMaxima,
+  fechasConEventos,
+  horariosDisponiblesFiltrados,
+
+  // Métodos
+  opcionesFechas,
+  getTipoClaseTexto,
+  getPrecioClase,
+  formatFecha,
+  estaEnCarrito,
+  agregarAlCarrito,
+  quitarDelCarrito,
+  puedeCancelar,
+  cancelarReserva,
+} = useReservasClases();
+</script>

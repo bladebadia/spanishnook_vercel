@@ -68,7 +68,7 @@
           @click="toggleLeftDrawer"
           style="font-size: 1rem"
         />
-
+      <div class="q-ma-none q-pa-none">
         <img
           round
           src="/img/Logotexto_500.png"
@@ -76,8 +76,10 @@
           class="logo-responsivo"        
          
         />
+      </div>
+      <div>
         <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
-        <q-space v-if="$q.screen.gt.sm"/>
+      </div>  
         <!-- Navegación con botones -->
         <div class=" nav-container  " v-if="$q.screen.gt.sm">
           <q-btn 
@@ -96,6 +98,9 @@
             class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
             :label="$t('clases')"
+            dropdown-icon="expand_more"
+            menu-anchor="bottom middle"
+            menu-self="top middle"
           >
             <q-list>
               <q-item clickable @click="$router.push('/ClasesIndividuales')">
@@ -137,7 +142,7 @@
             {{ $t('contacto') }}
           </q-btn>
         </div>
-        <q-space v-if="$q.screen.gt.sm"/>
+        
       </q-toolbar>
     </q-header>
     <q-drawer v-model="leftDrawerOpen" bordered>
@@ -512,6 +517,7 @@ function toggleLeftDrawer() {
 .spanishnook-titl {
   font-weight: bold !important;
   margin-left: 8px;
+  margin-right: auto;
   
   /* Móviles pequeños */
   font-size: 1.2rem !important;
@@ -575,22 +581,14 @@ function toggleLeftDrawer() {
 }
  
 /* Contenedor de navegación centrado */
-.nav-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 46px; /* Espaciado entre botones */
-  margin-right: 6%;
-    
-  @media (min-width: 1024px) {
-    gap: 20px;
-    margin-right: 1%;
-  }
-  
-  @media (min-width: 1440px) {
-    gap: 24px;
-    margin-right: 6%;
-  }
+.nav-container {  
+ display: flex !important;
+  align-items: center !important;
+  margin-left: 2%;
+  width: 100% !important;
+  gap:3rem !important;
+  padding: 0 3rem !important;
+ 
 }  
   
 
@@ -598,6 +596,18 @@ function toggleLeftDrawer() {
 .q-btn-dropdown.nav-btn.router-link-active .q-btn__content {
   text-decoration: underline !important;
   text-underline-offset: 4px !important;
+}
+.q-btn-dropdown {
+  .q-btn__content {
+    flex-direction: row !important;
+    justify-content: space-between;
+    min-width: 100px;
+  }
+
+  .q-icon {
+    font-size: 1.2em;
+    margin-left: 4px;
+  }
 }
 
 

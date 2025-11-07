@@ -1,320 +1,7 @@
 
 
-                            /*   TEXTOS TEXTOS TEXTOS TEXTOS  */
-
-
-/* Titulos principales responsivo */
-  .titulo-responsivo {
-    font-size: 3rem;
-    font-weight: bold;
-    margin: 0 20px;
-  }
-
-/* Subtítulos responsivo */
-  .subtitulo-responsivo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin: 0 20px;
-  }
-  .subtitulo2-responsivo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 20px;
-  }
-
-/* Texto principal responsivo */
-    .texto-responsivo {
-        font-size: 1.4rem;
-        margin: 0 50px;
-    }
-
-/* Texto principal responsivo */
-    .texto2-responsivo {
-        font-size: 1.2rem;
-        margin: 0 50px;
-    }
-
-    /*Titulo tarjetas*/
-    .titulo-tarjeta {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    /*Texto tarjetas*/
-    .texto-tarjeta {
-        font-size: 1.3rem;
-    }
-
-    
-    @media (max-width: 900px) {
-        .titulo-responsivo {
-            font-size: 1.3rem;
-        }
-
-        .subtitulo-responsivo {
-            font-size: 1.1rem;
-        }
-
-        .subtitulo2-responsivo {
-            font-size: 1.1rem;
-        }
-
-        .texto-responsivo {
-            font-size: 1rem;
-            margin: 0 30px;
-        }
-
-        .texto2-responsivo {
-            font-size: 1rem;
-            margin: 0 30px;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .titulo-responsivo {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }    
-
-
-        .subtitulo-responsivo {
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        .subtitulo2-responsivo {
-            font-size: 1rem;
-            font-weight: bold;
-        }
-        .texto-responsivo {
-            font-size: 0.8rem;
-            margin: 0 30px;
-        }
-        .texto2-responsivo {
-            font-size: 0.8rem;
-            margin: 0 30px;
-        }
-
-    }
-
-                                /*  BOTONES    BOTONES   BOTONES  */
-
-/* Botón ovalado responsivo */
-    .oval-btn {
-        border-radius: 64px !important;
-        padding-left: 32px;
-        padding-right: 32px;
-        font-weight: bold;
-        font-size: 1.5rem;
-        margin-top: 30px;
-    }
-
-    .cuadrado-btn {
-        padding-left: 32px;
-        padding-right: 32px;
-        font-weight: bold;
-        font-size: 1.4rem;
-        margin-top: 30px;
-    }
-
-    /* Clase para botones centrados en la parte inferior de las tarjetas */
-    .btn-tarjeta-fixed {
-        position: absolute;
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: auto;
-        margin: 0;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-
-    @media (max-width: 900px) {
-        
-        .oval-btn {
-            border-radius: 64px !important;
-            padding-left: 25px;
-            padding-right: 25px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 30px;
-        }
-        .cuadrado-btn {
-            padding-left: 25px;
-            padding-right: 25px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 30px;
-    }        
-}
-    @media (max-width: 600px) {
-        .oval-btn {
-            border-radius: 64px !important;
-            padding-left: 20px;
-            padding-right: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-        .cuadrado-btn {
-            padding-left: 20px;
-            padding-right: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-        .btn-tarjeta-fixed {
-        bottom: 12px;
-        width: auto;
-    }
-    }
-
-                            /*  IMAGEN ANIMADA  IMAGEN ANIMADA  IMAGEN ANIMADA  */
-
-
-/* Contenedor de la imagen animada */
-    .image-container-centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  opacity: 0;
-  transform: translateX(100px);
-  transition: all 1.2s ease-out;
-}
-
-.image-container-centered.image-appear {
-  opacity: 1;
-  transform: translateX(0);
-}
-/* Imagen Frida responsiva */
-.frida-image {
-  max-width: 200px;
-  height: auto;
-  border-radius: 12px;
-  display: block;
-  margin: 0 auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Media queries para móviles */
-@media (max-width: 768px) {
-  .frida-image {
-    max-width: 280px;
-    margin: 0 auto;
-    display: block;
-  }
-  
-  .image-container-centered {
-    padding: 16px;
-    margin-bottom: 24px;
-    transform: translateX(80px); /* Más recorrido en móviles también */
-  }
-}
-
-@media (min-width: 769px) {
-  .frida-image {
-    max-width: 350px;
-  }
-  
-  .image-container-centered {
-    transform: translateX(120px); /* Aún más recorrido en desktop */
-  }
-}
-
-
-/* Animación personalizada fade-scale */
-    .card-img-animada {
-        transition:
-        transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-        box-shadow 0.4s;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border-radius: 12px;
-    }
-
-    .card-img-animada:hover {
-        transform: scale(1.08) rotate(-2deg);
-        box-shadow: 0 8px 32px rgba(44, 204, 64, 0.18);
-        z-index: 2;
-    }
-    
-
-                                    /*  TARJETAS  TARJETAS  TARJETAS  */
-
-
-
-/* Ajustar las acciones de la tarjeta para posición fija */
-.tarjeta-onPromo1 .q-card-actions {
-    position: absolute;
-    bottom: 16px;
-    left: 50px;
-    right: 50px;
-    margin-top: 0;
-    padding-top: 0;
-    justify-content: center;
-}
-
-/* Asegurar que el contenido no se superponga con el botón */
-.tarjeta-onPromo1 .q-card-section:last-of-type {
-    padding-bottom: 0;
-    margin-bottom: 8px;
-}
-
-    .full-height .q-card-actions {
-        margin-top: auto;
-        padding-top: 16px;
-    }
-
-    /* Asegurar distribución uniforme de tarjetas */
-    .col-md-4 {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
-    }
-
-/* Añadir reglas específicas para desktop (1024px+) */
-@media (min-width: 1024px) {
-    .tarjeta-onPromo1 {
-        width: 100%;
-        height: 550px;
-        position: relative;
-        padding-bottom: 60px;
-    }
-    
-    .col-md-4 {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
-    }
-}
-
-/* Responsivo para tarjetas */
-@media (max-width: 1023px) and (min-width: 600px) {
-    .tarjeta-onPromo1 {
-        min-height: 480px;
-        padding-bottom: 60px;
-    }
-}
-
-@media (max-width: 599px) {
-    .tarjeta-onPromo1 {
-        min-height: 450px;
-        margin-bottom: 1rem;
-        padding-bottom: 60px;
-    }
-    
-    
-    
-    .tarjeta-onPromo1 .q-card-actions {
-        bottom: 12px;
-        left: 12px;
-        right: 12px;
-    }
-    
-    .col-md-4 {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
-    }
-}
-
+                                  /*  TARJETAS */
+   
 .tarjeta-quien{
     width: 55%;    
 }
@@ -323,7 +10,6 @@
        width: 90%;
     }
 }
-
 /* Para hacer el avatar responsive */
 .tarjeta-quien .q-avatar {
   font-size: 100px !important;
@@ -335,12 +21,19 @@
   }
 }
 
+
 /* Estilos para la lista con checks */
     .lista-check {
         list-style: none;
         padding-left: 0;
         font-size: 1.3rem;
     }
+    .lista-check > li {
+    padding-left: 2em; /* Sangría para el texto */
+    text-indent: -1.5em; /* Retrocede el check */
+    margin-bottom: 0.5em; /* Espacio entre elementos */
+    line-height: 1.4; /* Altura de línea para mejor legibilidad */
+  }
     .lista-check > li::before {
         content: '\2713'; /* Unicode para ✓ */
         color: #2ecc40 !important;
@@ -349,13 +42,6 @@
         font-family: inherit;
     }
 
-
-
-
-/* Fondo degradado rojo oscuro */
-    .degradado-fondo {
-        background: #851319;
-    }
 
     .faqs-section {
         border-radius: 18px;
@@ -379,125 +65,69 @@
         font-size: 2.5rem !important;
     }
 
-         /* ANIMACIONES  ANIMACIONES  ANIMACIONES */
-
-
-
-    .fade-enter-active,
-    .fade-leave-active {
-        transition: opacity 0.5s;
-    }
-    .fade-enter-from,
-    .fade-leave-to {
-        opacity: 0;
-    }
-
-/* Animación de slide fade */
-.slide-fade-left-enter-active {
-  transition: all 1.8s ease-out;
-}
-
-.slide-fade-left-enter-from {
-  transform: translateX(-80px);
-  opacity: 0;
-}
-
-.slide-fade-left-enter-to {
-  transform: translateX(0);
-  opacity: 1;
-}
-   
-
-
-
-
-/* Responsivo para tarjetas */
-@media (max-width: 1023px) and (min-width: 600px) {
-  .col-sm-6 {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-
-/* Centrar la tercera tarjeta en tablets */
-  .col-sm-6:nth-child(3) {
-    flex: 0 0 50%;
-    max-width: 50%;
-    margin: 0 auto;
-  }
-}
-
-@media (max-width: 599px) {
-  .full-height {
-    min-height: 450px;
-    margin-bottom: 1rem;
-  }
-  
-  .col-12 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
 
   /* En móvil, cambiar el orden: imagen arriba, texto abajo */
 .row.justify-center.items-center {
     flex-direction: column-reverse;
 }
-}
-
-
-
-
-
 
 
 /* Móviles (max-width: 600px) */
     
-    @media (max-width: 600px) {
-        .titulo-responsivo {
-            font-size: 1.6rem;
-            font-weight: bold;
-        }    
+@media (max-width: 600px) {
 
-
-        .subtitulo-responsivo {
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
-        .texto-responsivo {
-            font-size: 1rem;
-            margin: 0 30px;
-        }
-
-        .oval-btn {
-            border-radius: 64px !important;
-            padding-left: 20px;
-            padding-right: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-        .cuadrado-btn {
-            padding-left: 20px;
-            padding-right: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 30px;
-    }
-
-        .texto-tarjeta {
-            font-size: 1rem;
-        }
-        .titulo-tarjeta {
-            font-size: 1.3rem;
-        }
-        .tarjeta {
-            width: 100%;
-        }
-
-        .lista-check {
-            font-size: 0.9rem;
-        }
+  .lista-check {
+    font-size: 0.9rem;
+  }
+  .lista-check > li {
+        padding-left: 1.5em;
+        text-indent: -1.2em;
+  }
 
 }
+
+.promocards-container {
+  display: grid;
+  width: 100%;
+  padding: 2rem;
+  gap: 2rem;
+  margin: 0 auto;
+  justify-content: center;
+  max-width: 1800px;
+}
+
+/* Móvil (<768px): 1 tarjeta */
+@media (max-width: 767px) {
+  .promocards-container {
+    grid-template-columns: minmax(280px, 1fr);
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+/* Tablet (768px - 1023px): 2 tarjetas */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .promocards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Desktop (>1024px): 3 tarjetas */
+@media (min-width: 1024px) {
+  .promocards-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1800px) {
+  .promocards-container {
+    width: 90%;
+  }
+}
+
 
 /* Sección de Opiniones */
 .opiniones-section {

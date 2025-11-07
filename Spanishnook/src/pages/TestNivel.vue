@@ -8,27 +8,27 @@
           <q-icon name="quiz" size="4rem" color="primary" />
         </q-card-section>
         <q-card-section class="text-center">
-          <h2 class="text-h3 text-primary text-weight-bold q-mb-md">{{ t('testTestDeNivel') }}</h2>
-          <p class="text-h6 text-grey-7 q-mb-lg">{{ t('testEvaluaTuNivel') }}</p>
+          <h2 class="text-h3 text-primary text-weight-bold q-mb-md">{{ t('test.deNivel') }}</h2>
+          <p class="text-h6 text-grey-7 q-mb-lg">{{ t('test.evaluaTuNivel') }}</p>
 
           <div class="text-left q-mb-lg">
-            <h3 class="text-h5 text-weight-bold q-mb-md">{{ t('testInstrucciones') }}</h3>
+            <h3 class="text-h5 text-weight-bold q-mb-md">{{ t('test.instrucciones') }}</h3>
             <ul class="text-body1 text-grey-8">
-              <li class="q-mb-sm">{{ t('testElTestConsta') }}</li>
+              <li class="q-mb-sm">{{ t('test.elTestConsta') }}</li>
               <li class="q-mb-sm">
-                {{ t('testCadaPreguntaTiene') }}
+                {{ t('test.cadaPreguntaTiene') }}
               </li>
               <li class="q-mb-sm">
-                {{ t('testAlCompletar') }}
+                {{ t('test.alCompletar') }}
               </li>
-              <li class="q-mb-sm">{{ t('testElTestToma') }}</li>
+              <li class="q-mb-sm">{{ t('test.elTestToma') }}</li>
             </ul>
           </div>
 
           <q-btn
             size="lg"
             color="primary"
-            :label="t('testComenzarTest')"
+            :label="t('test.comenzarTest')"
             icon="play_arrow"
             class="q-px-xl"
             @click="currentQuestion = 1"
@@ -48,7 +48,7 @@
                 <div class="row items-center q-mb-sm">
                   <div class="col">
                     <span class="text-body2 text-grey-6">
-                      {{ t('testPregunta') }} {{ currentQuestion }} {{ t('testDe') }}
+                      {{ t('test.pregunta') }} {{ currentQuestion }} {{ t('test.de') }}
                       {{ testQuestions.length }}
                     </span>
                   </div>
@@ -90,7 +90,7 @@
               <div class="row justify-between">
                 <q-btn
                   v-if="currentQuestion > 1"
-                  :label="t('testAnterior')"
+                  :label="t('test.anterior')"
                   icon="chevron_left"
                   color="grey-6"
                   flat
@@ -100,18 +100,16 @@
                 <!-- Boton siguiente o finalizar -->
                 <q-btn
                   v-if="currentQuestion < testQuestions.length"
-                  :label="t('testSiguiente')"
+                  :label="t('test.siguiente')"
                   icon-right="chevron_right"
                   color="primary"
-                  :disable="selectedAnswers[currentQuestion - 1] === undefined"
                   @click="nextQuestion"
                 />
                 <q-btn
                   v-if="currentQuestion === testQuestions.length"
-                  :label="t('testFinalizarTest')"
+                  :label="t('test.finalizarTest')"
                   icon-right="check"
                   color="positive"
-                  :disable="selectedAnswers[currentQuestion - 1] === undefined"
                   @click="finishTest"
                 />
               </div>
@@ -122,73 +120,82 @@
     </div>
 
     <!-- Results Page -->
-      <div class="row  items-center full-width" v-if="showResults">
-        <div  class="column full-width items-center">
-          <q-card flat bordered class="results-card">
-            <q-card-section class="text-center">
-              <q-icon name="emoji_events" size="4rem" color="positive" class="q-mb-md" />
-              <p class="text-h4 text-primary text-weight-bold q-mb-md">{{t('testTestCompletado')}}</p>
+    <div class="row items-center full-width" v-if="showResults">
+      <div class="column full-width items-center">
+        <q-card flat bordered class="results-card">
+          <q-card-section class="text-center">
+            <q-icon name="emoji_events" size="4rem" color="positive" class="q-mb-md" />
+            <p class="text-h4 text-primary text-weight-bold q-mb-md">
+              {{ t('test.testCompletado') }}
+            </p>
 
-              <div class="row justify-center items-center q-mb-lg">
-                <div class="col-12 col-sm-6 text-center">
-                  <q-circular-progress
-                    :value="(testScore / testQuestions.length) * 100"
-                    size="120px"
-                    :thickness="0.1"
-                    color="primary"
-                    track-color="grey-3"
-                    class="q-ma-md"
-                  >
-                    <div class="text-h4 text-weight-bold">
-                      {{ testScore }}/{{ testQuestions.length }}
-                    </div>
-                  </q-circular-progress>
-                  <div class="text-body1 text-grey-7">
-                    {{ Math.round((testScore / testQuestions.length) * 100) }}{{t('testCorrecto')}}
+            <div class="row justify-center items-center q-mb-lg">
+              <div class="col-12 col-sm-6 text-center">
+                <q-circular-progress
+                  :value="percentage"
+                  size="120px"
+                  :thickness="0.1"
+                  color="primary"
+                  track-color="grey-3"
+                  class="q-ma-md"
+                >
+                  <div class="text-h4 text-weight-bold">
+                   {{ testScore }}/{{ selectedAnswers.filter(a => a !== undefined).length }}
                   </div>
-                </div>
-
-                <div class="col-12 col-sm-6 text-center">
-                  <div class="text-h4 text-weight-bold text-primary q-mb-sm">{{t('testTuNivel')}}</div>
-                  <q-chip
-                    :label="testLevel"
-                    color="black"
-                    text-color="white"
-                    size="xl"
-                    class="q-pa-md"
-                  />
-                  <div class="text-body2 text-grey-7 q-mt-sm">
-                    <span v-if="testLevel.includes('A1')">
-                      {{ t('testAccesoConocesLo') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('A2')">
-                      {{ t('testPlataformaPuedes') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('B1')">
-                      {{ t('testUmbralTienes') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('B2')">
-                      {{ t('testAvanzadoPuedes') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('C1')">
-                      {{ t('testDominioTeExpresas') }}
-                    </span>
-                  </div>
+                </q-circular-progress>
+                <div class="text-body1 text-grey-7">
+                   {{ Math.round(percentage) }}{{ t('test.correcto') }}
                 </div>
               </div>
 
-              <div class="q-gutter-md">
-                <q-btn :label="t('testRepetirTest')" icon="refresh" color="secondary" @click="restartTest" />
+              <div class="col-12 col-sm-6 text-center">
+                <div class="text-h4 text-weight-bold text-primary q-mb-sm">
+                  {{ t('test.tuNivel') }}
+                </div>
+                <q-chip
+                  :label="testLevel"
+                  color="black"
+                  text-color="white"
+                  size="xl"
+                  class="q-pa-md"
+                />
+                <div class="text-body2 text-grey-7 q-mt-sm">
+                  <span v-if="testLevel.includes('A1')">
+                    {{ t('test.accesoConocesLo') }}
+                  </span>
+                  <span v-else-if="testLevel.includes('A2')">
+                    {{ t('test.plataformaPuedes') }}
+                  </span>
+                  <span v-else-if="testLevel.includes('B1')">
+                    {{ t('test.umbralTienes') }}
+                  </span>
+                  <span v-else-if="testLevel.includes('B2')">
+                    {{ t('test.avanzadoPuedes') }}
+                  </span>
+                  <span v-else-if="testLevel.includes('C1')">
+                    {{ t('test.dominioTeExpresas') }}
+                  </span>
+                </div>
               </div>
-            </q-card-section>
-          </q-card>
-        </div>
+            </div>
+
+            <div class="q-gutter-md">
+              <q-btn
+                :label="t('test.repetirTest')"
+                icon="refresh"
+                color="secondary"
+                @click="restartTest"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 //import { useQuasar } from 'quasar';
@@ -201,10 +208,12 @@ const testCompleted = ref(false);
 const testScore = ref(0);
 const testLevel = ref('');
 const showResults = ref(false);
+const percentage = ref(0);
+
 //const step = ref(1);
-const testQuestions = [
+const testQuestions = computed(() => [
   {
-    question: "1 ¿Cómo se escribe '2976' en español?",
+    question: '1 ¿Cómo se escribe 2976 en español?',
     options: [
       'mil dos novecentos setenta y seis',
       'dos mil novecientos sesenta y seis',
@@ -220,7 +229,7 @@ const testQuestions = [
     level: 'A1',
   },
   {
-    question: '3 El profesor tiene muchos ___,',
+    question: '3 El profesor tiene muchos ___.',
     options: ['lápiz', 'lápices', 'lápizs'],
     correct: 1,
     level: 'A1',
@@ -359,31 +368,94 @@ const testQuestions = [
     correct: 0,
     level: 'C1',
   },
-];
+]);
 
-// Metodos
+// Definir el tipo para los niveles
+type Level = 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
+
+type LevelScore = {
+  correct: number;
+  total: number;
+};
+
+type LevelScores = {
+  [key in Level]: LevelScore;
+};
+
+type NivelDescription = {
+  [key in Level]: string;
+};
+// Añadir estas funciones de evaluación
+const evaluateTestByLevel = (): string => {
+  const levelScores: LevelScores = {
+    A1: { correct: 0, total: 0 },
+    A2: { correct: 0, total: 0 },
+    B1: { correct: 0, total: 0 },
+    B2: { correct: 0, total: 0 },
+    C1: { correct: 0, total: 0 },
+  };
+
+  let maxLevelReached: Level = 'A1';
+  let maxLevelScore: LevelScore = { correct: 0, total: 0 };
+  
+  // Contar respuestas por nivel
+  testQuestions.value.forEach((question, index) => {
+    const level = question.level as Level;
+    if (selectedAnswers.value[index] !== undefined) {
+      levelScores[level].total++;
+      if (selectedAnswers.value[index] === question.correct) {
+        levelScores[level].correct++;
+      }
+    }
+  });
+
+// Determinar el nivel máximo alcanzado y su puntuación
+  const levels: Level[] = ['C1', 'B2', 'B1', 'A2', 'A1'];
+  for (const level of levels) {
+    if (levelScores[level].total > 0 && 
+        (levelScores[level].correct / levelScores[level].total) >= 0.6) {
+      maxLevelReached = level;
+      maxLevelScore = levelScores[level];
+      break;
+    }
+  }
+
+  // Actualizar el porcentaje basado en el nivel máximo alcanzado
+  percentage.value = maxLevelScore.total > 0 
+    ? (maxLevelScore.correct / maxLevelScore.total) * 100 
+    : 0;
+
+  // Devolver el nivel con su descripción
+  const nivelDescriptions: NivelDescription = {
+    'C1': 'Dominio',
+    'B2': 'Avanzado',
+    'B1': 'Intermedio',
+    'A2': 'Plataforma',
+    'A1': 'Acceso'
+  };
+
+  return `${maxLevelReached} - ${nivelDescriptions[maxLevelReached]}`;
+};
+
+// Modificar la función finishTest
 const finishTest = () => {
   let score = 0;
+  let answeredQuestions = 0;
+
   selectedAnswers.value.forEach((answer, index) => {
-    if (testQuestions[index] && answer === testQuestions[index].correct) {
-      score++;
+    if (answer !== undefined) {
+      answeredQuestions++;
+      if (testQuestions.value[index] && answer === testQuestions.value[index].correct) {
+        score++;
+      }
     }
-    console.log(`Score: ${score}`);
   });
 
   testScore.value = score;
-  const percentage = (score / testQuestions.length) * 100;
 
-  if (percentage >= 100) {
-    testLevel.value = 'C1 - Dominio';
-    if (percentage >= 90) {
-      testLevel.value = 'B2 - Avanzado';
-    } else if (percentage >= 70) {
-      testLevel.value = 'B1 - Intermedio';
-    } else if (percentage >= 50) {
-      testLevel.value = 'A2 - Plataforma';
-    } else testLevel.value = 'A1 - Acceso';
-  }
+  percentage.value = answeredQuestions > 0 ? (score / answeredQuestions) * 100 : 0;
+  // Calcular nivel basado en preguntas respondidas
+  testLevel.value = evaluateTestByLevel();
 
   testCompleted.value = true;
   showResults.value = true;
@@ -403,13 +475,12 @@ function selectAnswer(answerIndex: number) {
 }
 
 function nextQuestion() {
-  if (currentQuestion.value < testQuestions.length) {
+  if (currentQuestion.value < testQuestions.value.length) {
     currentQuestion.value++;
   } else {
     finishTest();
   }
 }
-
 const previousQuestion = () => {
   if (currentQuestion.value > 1) {
     currentQuestion.value--;
@@ -440,7 +511,6 @@ const previousQuestion = () => {
   margin: 0 auto;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
-
 
 /* Estilos para los botones de respuesta */
 .q-btn {

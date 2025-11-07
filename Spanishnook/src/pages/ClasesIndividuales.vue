@@ -1,18 +1,20 @@
 <template>
   <q-page >
-    <div v-if="!seleccionClases">
-      <div style="margin-bottom: 60px;">
-        <q-img style="width: 100%; max-height: 600px;" 
-          fit="cover" position="center" src="/img/estudiante_1024.jpg">        
+      <!-- Imagen cabecera -->
+      <div style="width: 100%; margin-bottom: 3%;">
+        <q-img
+          style="width: 100%; height: auto;"
+        fit="cover" position="center"
+          src="/img/estudiante_1024.jpg">        
         </q-img>
       </div>
-
-      <div class="column items-center text-justify " style="margin-bottom: 60px;" >
+      <!-- Titulo texto y boton -->
+      <div class="column items-center text-justify "  >
         <p class=" titulo-responsivo" style="color: #851319">
           {{ t('individuales.nuestrasClases') }}
         </p>
 
-        <p class="q-mt-md texto-responsivo" >
+        <p class="q-ma-md texto-responsivo" >
           {{ t('individuales.textoNuestrasClases') }}
         </p>
         <q-btn
@@ -20,7 +22,7 @@
           items-center
           color="primary"
           unelevated
-          @click="activarSeleccionClases"
+          to="/Reservas"
       >
         {{ t('individuales.botonSeleccionaClase') }}
         </q-btn>
@@ -44,7 +46,7 @@
             </p>
             <q-btn
               color="black"
-              @click="activarSeleccionClases"
+              to="/TestNivel"
               class="oval-btn q-mx-lg"
               unelevated
               >{{ t('indexHacerTest') }}</q-btn
@@ -53,529 +55,313 @@
         </div>
       </div>
    
-      <q-separator class="q-my-xl" />
 
-      <div class="col-12 row  justify-center ">
+      <div class=" promocards-container ">
         <!-- Componente 1:  -->
         <PromoCard
-          :image-src="'img/45sintitulo.png'"
+          :image-src="'img/45sintitulo.webp'"
           :title="t('individuales.tituloClasesA1')"
           :description="t('individuales.textoClasesA1')"
           :button-text="t('individuales.botonClasesA1')"
-          @button-click="activarSeleccionClases"
+           button-link="/Reservas"
           />
         <!-- Componente 2:  -->
         <PromoCard
-          :image-src="'img/44sintitulo.png'"
+          :image-src="'img/44sintitulo.webp'"
           :title="t('individuales.tituloClasesB1')"
           :description="t('individuales.textoClasesB1')"
           :button-text="t('individuales.botonClasesB1')"
-          @button-click="activarSeleccionClases"
+           button-link="/Reservas"
           />
         <!-- Componente 3:  -->
         <PromoCard
-          :image-src="'img/48sintitulo.png'"
+          :image-src="'img/48sintitulo.webp'"
           :title="t('individuales.tituloClasesConversacion')"
           :description="t('individuales.textoClasesConversacion')"
           :button-text="t('individuales.botonClasesConversacion')"
-          @button-click="activarSeleccionClases"
-          />            
+           button-link="/Reservas"
+          />                  
       </div>
-    </div>
-    <!-- Contenido principal en dos columnas -->
-    <div v-if="seleccionClases">
-      <div class="row q-col-gutter-lg">
-        <p class="titulo-responsivo text-center q-my-xl" style="width: 100%; color: #851319">
-          {{ t('individuales.reservaTuClase') }}
-        </p>
-        <!-- Columna izquierda: Carrito + Reservas -->
-        <div class="col-12 col-md-5">
-          <!-- Carrito -->
-          <div v-if="carrito.length > 0" class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2">
-            <h5>🛒{{ t('individuales.carritoDeReservas') }}</h5>
-            <q-list>
-            <q-item v-for="(reserva, index) in carrito" :key="index">
-              <q-item-section>
-                <q-item-label>
-                  {{ formatFecha(reserva.fecha) }} {{ t('individuales.aLas') }} {{ reserva.hora }}
-                </q-item-label>
-                <q-item-label caption>
-                  {{ reserva.tipo === 'normal' ? t('individuales.claseNormal') : t('individuales.claseConversacion') }} -
-                  {{ reserva.tipo === 'normal' ? '32€' : '20€' }}
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
+
+      <!-- Sección de Opiniones Verificadas - CARRUSEL -->
+      <div  class="q-my-xl opiniones-section bg-grey-1">
+        <div  class="q-py-xl q-px-md">
+          <div class="text-center q-mb-xl">
+            <p class="subtitulo-responsivo q-my-xl" style="color: #851319">
+              {{ t('indexOpinionesVerificadas') }}
+            </p>
+            <p class="texto-responsivo" >
+              {{ t('indexConoceExperiencias') }}
+            </p>
+          </div>
+
+          <!-- Carrusel de Opiniones -->
+          <div class="carousel-container">
+            <q-carousel
+              v-model="currentSlide"
+              transition-prev="slide-right"
+              transition-next="slide-left"
+              swipeable
+              animated
+              control-color="primary"
+              :autoplay="5000"
+              arrows
+              height="400px"
+              class="opinions-carousel"
+            >
+              <!-- Slides del carrusel - mostrar 1 -->
+              <q-carousel-slide 
+                v-for="(opinion, index) in todasLasOpiniones" 
+                :key="index"
+                :name="index"
+                class="q-pa-none"
+              >
+                <div class="row justify-center full-height items-center">
+                  <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                    <OpinioneVerificadas 
+                      :opinion="opinion"
+                      avatar-size="80px"
+                      class="single-opinion-card"
+                    />
+                  </div>
+                </div>
+              </q-carousel-slide>
+
+              <!-- Controles personalizados -->
+              <template v-slot:control>
+                <q-carousel-control
+                  position="bottom-right"
+                  :offset="[18, 18]"
+                  class="text-white rounded-borders"
+                  style="background: rgba(0, 0, 0, 0.3); padding: 4px 8px;"
+                >
+                  <q-icon name="star" size="sm" class="q-mr-xs" />
+                    {{ currentSlide + 1 }} / {{ todasLasOpiniones.length }}
+                  </q-carousel-control>
+              </template>
+
+              <!-- Flechas personalizadas -->
+              <template v-slot:navigation-icon="{ active, btnProps, onClick }">
                 <q-btn
-                  color="negative"
-                  icon="remove"
-                  @click="quitarDelCarrito(index)"
-                  size="sm"
+                  v-if="btnProps.icon === 'chevron_left'"
+                  :class="{ 'text-primary': active }"
+                  color="white"
+                  text-color="primary"
+                  :icon="btnProps.icon"
+                  size="lg"
                   round
+                  dense
+                  :disable="btnProps.disable"
+                  @click="onClick"
+                  class="carousel-arrow carousel-arrow-left"
                 />
-              </q-item-section>
-            </q-item>
-            <div class="q-mt-md text-center">
-              <q-btn color="primary" :label="t('individuales.botonIrAlCarrito')" to="/CarritoCompra" />
+                <q-btn
+                  v-else-if="btnProps.icon === 'chevron_right'"
+                  :class="{ 'text-primary': active }"
+                  color="white"
+                  text-color="primary"
+                  :icon="btnProps.icon"
+                  size="lg"
+                  round
+                  dense
+                  :disable="btnProps.disable"
+                  @click="onClick"
+                  class="carousel-arrow carousel-arrow-right"
+                />
+              </template>
+            </q-carousel>
+
+            <!-- Indicadores de slide personalizados -->
+            <div class="carousel-indicators q-mt-md">
+              <q-btn
+                v-for="(opinion, index) in todasLasOpiniones"
+                :key="index"
+                :class="{ 'active': currentSlide === index }"
+                @click="currentSlide = index"
+                round
+                dense
+                size="sm"
+                :color="currentSlide === index ? 'primary' : 'grey-5'"
+                class="q-mx-xs"
+              >
+                <q-tooltip :delay="500" class="bg-primary">
+                  {{ opinion.name }} - {{ opinion.country }}
+                </q-tooltip>
+              </q-btn>
             </div>
-            </q-list>
-          </div>
 
-          <!-- Mis reservas -->
-          <div class="q-mt-lg">
-            <h5>{{ t('individuales.misReservasConfirmadas') }}</h5>
-            <q-list bordered v-if="misReservas.length > 0">
-              <q-item v-for="reserva in misReservas" :key="reserva.id" class="q-mb-sm">
-                <q-item-section>
-                  <q-item-label>
-                    {{ formatFecha(reserva.fecha) }} {{ t('individuales.aLas') }} {{ reserva.hora.slice(0, 5) }}
-                  </q-item-label>
-                  <q-item-label caption>
-                    {{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€
-                  </q-item-label>
-                  <q-item-label caption v-if="!puedeCancelar(reserva)" class="text-negative">
-                    {{t('individuales.noSePuede')}}
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn
-                    color="negative"
-                    icon="delete"
-                    @click="cancelarReserva(reserva)"
-                    size="sm"
-                    :disable="!puedeCancelar(reserva)"
-                    :title="
-                      !puedeCancelar(reserva)
-                        ? t('individuales.noSePuedeCancelar')
-                        : t('individuales.cancelarReserva') " />
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <p v-else class="text-grey q-mt-sm">{{t('individuales.noTienesReservas')}}</p>
-          </div>
-        </div>
-
-      <!-- Columna derecha: Selector + Calendario + Horarios -->
-      <div class="col-12 col-md-6">
-        <div class="q-mb-md">
-          <q-card class="q-pa-md shadow-1 rounded-borders">
-            <q-card-section class="q-pa-sm">
-              <div class="text-h6 text-center q-mb-md">{{t('individuales.tipoDeClase')}}</div>
-                <q-option-group
-                  v-model="tipoClase"
-                  :options="opcionesTipoClase"
-                  color="primary"
-                  inline
-                  class="justify-center"
-                  />
-              <div class="text-center q-mt-sm">
-                <q-badge color="primary" class="q-px-sm q-py-xs text-subtitle1">
-                  {{t('individuales.precio')}} {{ tipoClase === 'normal' ? '32€' : '20€' }}
-                </q-badge>
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-
-        <!-- Calendario -->
-        <div class="q-mb-xl">
-          <q-date
-            v-model="fechaSeleccionada"
-            :options="opcionesFechas"
-            :min="fechaMinima"
-            :max="fechaMaxima"
-            landscape
-            class="custom-calendar shadow-1 rounded-borders"
-            today-btn
-            mask="YYYY-MM-DD"
-            color="primary"
-            text-color="white"
-            :events="fechasConEventos"
-            event-color="orange"
-            first-day-of-week="1"
-          />
-        </div>
-
-        <!-- Horarios disponibles -->
-        <div v-if="fechaSeleccionada" class="q-mt-lg">
-          <h5>{{t('individuales.horariosDisponiblesPara')}} {{ formatFecha(fechaSeleccionada) }}</h5>
-
-          <div v-if="horariosDisponiblesFiltrados.length > 0" class="row q-gutter-sm q-mt-md">
+            <!-- Botón para ver más opiniones -->
+            <div class="text-center q-mt-xl">
             <q-btn
-              v-for="hora in horariosDisponiblesFiltrados"
-              :key="hora"
-              :color="estaEnCarrito(hora) ? 'orange' : 'primary'"
-              :label="hora"
-              @click="agregarAlCarrito(hora)"
               outline
-              class="time-btn"
-            />
+              color="primary"
+              size="lg"
+              to="/Opiniones"
+              class="oval-btn"
+            >
+              {{ t('indexVerMasOpiniones') }}
+            </q-btn>
+            </div>
           </div>
-
-          <div v-else class="text-grey q-mt-md">No hay horarios disponibles para esta fecha.</div>
         </div>
       </div>
-    </div>
-    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import { useAuth } from 'src/stores/auth';
-import { supabase } from 'src/supabaseClient';
-import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import '../css/pages/ClasesIndividuales.css';
+import { ref } from 'vue';
+//import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
 import PromoCard from '../components/PromoCard.vue';
-const $q = useQuasar();
-const {  t , locale} = useI18n();
-
-interface ReservaCarrito {
-  id?: string;
-  fecha: string;
-  hora: string;
-  tipo: 'normal' | 'conversacion'; // Añadir tipo
-}
-
-interface ReservaConfirmada {
-  id: string;
-  user_id: string;
-  fecha: string;
-  hora: string;
-  estado: string;
-  created_at?: string;
-  tipo?: 'normal' | 'conversacion';
-  precio?: number;
-}
-
-const { user } = useAuth();
-const seleccionClases = ref<string | null>(null);
-const fechaSeleccionada = ref('');
-const horasOcupadas = ref<string[]>([]);
-const misReservas = ref<ReservaConfirmada[]>([]);
-const carrito = ref<ReservaCarrito[]>([]);
-const tipoClase = ref<'normal' | 'conversacion'>('normal');
-
-
-const activarSeleccionClases = () => {
-  seleccionClases.value = 'activa';
-};
-
-
-// Cambiar de array estático a computed reactivo
-const opcionesTipoClase = computed(() => [
+import OpinioneVerificadas from '../components/OpinioneVerificadas.vue';
+const {  t } = useI18n();
+const currentSlide = ref(0);
+const todasLasOpiniones = ref([
   {
-    label: `${t('individuales.claseNormal')} 32€`,
-    value: 'normal',
+    name: 'María González',
+    country: 'España',
+    avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
+    rating: 5,
+    comment: 'Las clases con SpanishNook han sido increíbles. En solo 3 meses he mejorado mi conversación significativamente. Los profesores son muy pacientes y profesionales.',
+    verified: true,
+    date: '2024-09-15',
+    course: 'Clases Individuales'
   },
   {
-    label: `${t('individuales.claseConversacion')} 20€`,
-    value: 'conversacion',
+    name: 'John Smith',
+    country: 'Estados Unidos',
+    avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
+    rating: 5,
+    comment: 'I love the flexibility of the classes and how personalized they are. The teachers adapt to my learning pace and help me with pronunciation. Highly recommended!',
+    verified: true,
+    date: '2024-08-20',
+    course: 'Conversación Avanzada'
   },
+  {
+    name: 'Emma Laurent',
+    country: 'Francia',
+    avatar: 'https://cdn.quasar.dev/img/avatar5.jpg',
+    rating: 5,
+    comment: 'Excellent experience! The live classes are very dynamic and I finally feel confident speaking Spanish. The method is very effective.',
+    verified: true,
+    date: '2024-09-01',
+    course: 'Español Empresarial'
+  },
+  {
+    name: '李明',
+    country: 'China',
+    avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
+    rating: 4,
+    comment: '课程非常棒！老师很专业，教学方法很有效。我的西班牙语水平提高了很多。强烈推荐SpanishNook！',
+    verified: true,
+    date: '2024-08-10',
+    course: 'Principiantes A1'
+  },
+  {
+    name: 'Sophie Müller',
+    country: 'Alemania',
+    avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+    rating: 5,
+    comment: 'Sehr gute Spanischkurse! Die Lehrer sind kompetent und geduldig. Ich kann SpanishNook nur weiterempfehlen.',
+    verified: true,
+    date: '2024-07-25',
+    course: 'Intermedio B1'
+  },
+  {
+    name: 'Roberto Silva',
+    country: 'Brasil',
+    avatar: 'https://cdn.quasar.dev/img/avatar.png',
+    rating: 4,
+    comment: 'Ótima plataforma para aprender espanhol. Os professores são muito qualificados e as aulas são dinâmicas.',
+    verified: true,
+    date: '2024-06-30',
+    course: 'Clases Grupales'
+  }
 ]);
-
-// Fechas mínima y máxima (3 meses vista)
-const fechaMinima = new Date().toISOString().split('T')[0];
-const fechaMaxima = computed(() => {
-  const date = new Date();
-  date.setMonth(date.getMonth() + 3);
-  return date.toISOString().split('T')[0];
-});
-
-// Horarios disponibles
-const todosLosHorarios = [
-  '09:00',
-  '10:00',
-  '11:00',
-  '12:00',
-  '13:00',
-  '15:00',
-  '16:00',
-  '17:00',
-  '18:00',
-  '19:00',
-];
-
-// Fechas que tienen eventos (para el calendario)
-const fechasConEventos = computed(() => {
-  const fechas = new Set();
-  misReservas.value.forEach((reserva) => fechas.add(reserva.fecha));
-  carrito.value.forEach((reserva) => fechas.add(reserva.fecha));
-  return Array.from(fechas) as string[];
-});
-
-// Horarios disponibles filtrados
-const horariosDisponiblesFiltrados = computed(() => {
-  return todosLosHorarios.filter(
-    (hora) => !horasOcupadas.value.includes(hora) && !estaEnCarrito(hora),
-  );
-});
-
-// Opciones para fechas disponibles
-const opcionesFechas = (date: string) => {
-  const selectedDate = new Date(date);
-  const today = new Date();
-  const maxDate = new Date();
-
-  maxDate.setMonth(today.getMonth() + 3);
-  today.setHours(0, 0, 0, 0);
-  maxDate.setHours(0, 0, 0, 0);
-
-  if (selectedDate < today) return false;
-  if (selectedDate > maxDate) return false;
-
-  const day = selectedDate.getDay();
-  return day !== 0 && day !== 6; // Excluir fines de semana
-};
-
-// Función para obtener el texto del tipo de clase
-const getTipoClaseTexto = (reserva: ReservaConfirmada): string => {
- return reserva.tipo === 'normal' 
-    ? t('individuales.claseNormal') 
-    : t('individuales.claseConversacion');
-};
-
-// Función para obtener el precio
-const getPrecioClase = (reserva: ReservaConfirmada): number => {
-  return reserva.tipo === 'normal' ? 32 : 20;
-};
-
-// Función formatFecha mejorada con i18n
-const formatFecha = (fecha: string) => {
-  const d = new Date(fecha);
-  console.log('Formato de fecha para:', locale.value);
-  // Usar el locale actual de i18n
-  const currentLocale = locale.value === 'es-ES' ? 'es-ES' : 
-                       locale.value === 'en-US' ? 'en-US' :
-                       locale.value === 'fr-FR' ? 'fr-FR' : 'es-ES'; // Por defecto español
-
-  console.log('Formato de fecha para:', locale.value, '->', currentLocale);
-  return d.toLocaleDateString(currentLocale, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
-
-// Cargar TODAS las horas ocupadas (solo confirmadas)
-const cargarHorariosOcupados = async (fecha: string) => {
-  if (!fecha) {
-    horasOcupadas.value = [];
-    return;
-  }
-
-  try {
-    const { data: reservasConfirmadas, error } = await supabase
-      .from('reservas')
-      .select('hora')
-      .eq('fecha', fecha)
-      .eq('estado', 'confirmada');
-
-    if (error) {
-      console.error('Error cargando horarios ocupados:', error);
-      return;
-    }
-
-    horasOcupadas.value = reservasConfirmadas.map((r) => r.hora.slice(0, 5)); // HH:mm
-  } catch (error) {
-    console.error('Error cargando horarios ocupados:', error);
-    horasOcupadas.value = [];
-  }
-};
-
-// Verificar si una hora está en el carrito
-const estaEnCarrito = (hora: string) => {
-  return carrito.value.some(
-    (reserva) => reserva.fecha === fechaSeleccionada.value && reserva.hora === hora,
-  );
-};
-
-// Agregar al carrito
-const agregarAlCarrito = (hora: string) => {
-  if (!user.value?.id || !fechaSeleccionada.value) return;
-
-  if (horasOcupadas.value.includes(hora)) {
-    alert('Este horario ya no está disponible. Por favor, elige otro.');
-    return;
-  }
-
-  if (estaEnCarrito(hora)) {
-    alert('Este horario ya está en tu carrito.');
-    return;
-  }
-
-  carrito.value.push({
-    fecha: fechaSeleccionada.value,
-    hora: hora,
-    tipo: tipoClase.value, // Guardar el tipo seleccionado
-  });
-
-  guardarCarrito();
-};
-
-// Quitar del carrito
-const quitarDelCarrito = async (index: number) => {
-  if (index < 0 || index >= carrito.value.length) return;
-
-  const reserva: ReservaCarrito | undefined = carrito.value[index];
-  if (!reserva) return;
-
-  carrito.value.splice(index, 1);
-  guardarCarrito();
-
-  // Actualizar disponibilidad si es la fecha seleccionada
-  if (fechaSeleccionada.value === reserva.fecha) {
-    await cargarHorariosOcupados(fechaSeleccionada.value);
-  }
-};
-
-// ✅ Guardar carrito
-const guardarCarrito = () => {
-  localStorage.setItem('carritoReservas', JSON.stringify(carrito.value));
-};
-
-// ✅ Cargar carrito
-const cargarCarrito = () => {
-  const carritoGuardado = localStorage.getItem('carritoReservas');
-  if (carritoGuardado) {
-    carrito.value = JSON.parse(carritoGuardado);
-  }
-};
-
-// Cargar mis reservas confirmadas
-const cargarMisReservas = async () => {
-  if (!user.value?.id) {
-    console.log('❌ No hay usuario logueado');
-    misReservas.value = [];
-    return;
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from('reservas')
-      .select('*')
-      .eq('user_id', user.value.id)
-      .eq('estado', 'confirmada')
-      .gte('fecha', new Date().toISOString().split('T')[0])
-      .order('fecha', { ascending: true })
-      .order('hora', { ascending: true });
-
-    if (error) {
-      console.error('❌ Error cargando reservas:', error);
-      return;
-    }
-
-    console.log('✅ Reservas cargadas desde BD:', data);
-    misReservas.value = data || [];
-  } catch (error) {
-    console.error('💥 Error cargando reservas:', error);
-    misReservas.value = [];
-  }
-};
-
-// Función para verificar si se puede cancelar una reserva
-const puedeCancelar = (reserva: ReservaConfirmada): boolean => {
-  const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
-  const ahora = new Date();
-  const diferenciaHoras = (fechaReserva.getTime() - ahora.getTime()) / (1000 * 60 * 60);
-  return diferenciaHoras >= 72;
-};
-
-// Cancelar reserva con confirmación + Stripe refund
-const cancelarReserva = (reserva: ReservaConfirmada) => {
-  // Validar 72 horas en el frontend primero
-  const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
-  const ahora = new Date();
-  const diferenciaHoras = (fechaReserva.getTime() - ahora.getTime()) / (1000 * 60 * 60);
-
-  console.log('⏰ Validación frontend - Diferencia en horas:', diferenciaHoras);
-
-  if (diferenciaHoras < 72) {
-    const horasRestantes = Math.max(0, Math.floor(diferenciaHoras));
-    $q.notify({
-      type: 'negative',
-      message: `No puedes cancelar con menos de 72 horas de antelación`,
-      caption: `Tiempo restante: ${horasRestantes} horas`,
-      timeout: 6000,
-      actions: [{ icon: 'close', color: 'white' }],
-    });
-    return; // Detener la ejecución aquí
-  }
-
-  $q.dialog({
-    title: 'Cancelar reserva',
-    message: `¿Estás seguro de que quieres cancelar la reserva del ${formatFecha(reserva.fecha)} a las ${reserva.hora.slice(0, 5)}? Se procesará un reembolso.`,
-    cancel: true,
-    persistent: true,
-  }).onOk(() => {
-    void (async () => {
-      try {
-        console.log('🔄 Enviando solicitud de cancelación para reserva:', reserva.id);
-
-        const { data, error } = await supabase.functions.invoke('cancel-reserva', {
-          body: { reservaId: reserva.id },
-        });
-
-        console.log('📨 Respuesta recibida:', { data, error });
-
-        if (error) {
-          throw new Error(error.message || 'Error desconocido en la función');
-        }
-
-        if (data?.error) {
-          throw new Error(data.error);
-        }
-
-        // Actualizar la lista local
-        misReservas.value = misReservas.value.filter((r) => r.id !== reserva.id);
-
-        // Recargar disponibilidad
-        if (fechaSeleccionada.value) {
-          await cargarHorariosOcupados(fechaSeleccionada.value);
-        }
-
-        $q.notify({
-          type: 'positive',
-          message: data?.message || 'Reserva cancelada y reembolso realizado con éxito',
-          timeout: 5000,
-        });
-      } catch (err: unknown) {
-        console.error('💥 Error cancelando reserva:', err);
-        let errorMessage = 'Error al cancelar la reserva';
-
-        if (err instanceof Error) {
-          errorMessage = err.message;
-        } else if (typeof err === 'string') {
-          errorMessage = err;
-        }
-
-        $q.notify({
-          type: 'negative',
-          message: errorMessage,
-          timeout: 6000,
-        });
-      }
-    })();
-  });
-};
-
-// Watchers y lifecycle
-onMounted(async () => {
-  cargarCarrito();
-  await cargarMisReservas();
-});
-
-watch(
-  () => fechaSeleccionada.value,
-  (nuevaFecha: string) => {
-    if (nuevaFecha) {
-      void cargarHorariosOcupados(nuevaFecha);
-    }
-  },
-);
-
 
 </script>
 
+<style scoped>
+
+
+/* Imagen cabecera */
+
+.img-cabecera {
+  width: 100%;
+  margin-bottom: 5%;
+  height: auto;
+}
+
+.promocards-container {
+  display: grid;
+  width: 100%;
+  padding: 2rem;
+  gap: 2rem;
+  margin: 0 auto;
+  justify-content: center;
+  /* Añadir estas propiedades */
+  box-sizing: border-box;
+  max-width: 1800px; /* Mover aquí para que aplique a todos los tamaños */
+}
+
+/* Móvil (<600px) */
+@media (max-width: 599px) {
+  .promocards-container {
+    grid-template-columns: minmax(280px, 95%);
+    padding: 1rem;
+    gap: 1rem;
+    width: 100%;
+  }
+}
+
+/* Tablet */
+@media (min-width: 600px) and (max-width: 1023px) {
+  .promocards-container {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .promocards-container {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    padding: 2rem;
+    gap: 2rem;
+  }
+}
+
+/* Ajuste para pantallas muy grandes */
+@media (min-width: 1800px) {
+  .promocards-container {
+    width: 90%;
+  }
+}
+
+/* Asegurar que las tarjetas tengan altura mínima */
+:deep(.tarjeta-onPromo1) {
+  min-height: 550px; /* Altura mínima para evitar superposición */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 80px; /* Espacio para el botón */
+}
+
+/* Asegurar que la imagen tenga altura consistente */
+:deep(.q-img) {
+  height: 250px;
+  object-fit: cover;
+}
+
+/* Ajustar el contenedor del botón */
+:deep(.boton-container) {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+</style>

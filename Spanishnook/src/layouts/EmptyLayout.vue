@@ -54,36 +54,47 @@
 
       <q-toolbar>
         <q-btn
-          v-if="$q.screen.lt.md"
-          flat
+          v-if="$q.screen.lt.md" 
+          flat         
           round
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
           style="font-size: 1rem"
         />
-
-        <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
+      <div class="q-ma-none q-pa-none">
+        <img
+          round
+          src="/img/Logotexto_500.png"
+          alt="Logo Spanish nook"
+          class="logo-responsivo"        
+         
+        />
+      </div>
+      <div>
         <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
-        <q-space v-if="$q.screen.gt.sm" />
+      </div>  
         <!-- Navegación con botones -->
-        <div class="nav-container" v-if="$q.screen.gt.sm">
-          <q-btn
-            flat
-            :to="'/'"
-            exact
+        <div class=" nav-container  " v-if="$q.screen.gt.sm">
+          <q-btn 
+            flat 
+            :to="'/'" 
+            exact 
             class="nave-btn"
-            :class="{ 'nave-btn-active': activeButton === 'inicio' }"
+            :class="{ 'nave-btn-active': activeButton === 'inicio' }"            
           >
             {{ $t('inicio') }}
           </q-btn>
-
-          <q-btn-dropdown
-            flat
-            auto-close
-            class="nave-btn"
+    
+          <q-btn-dropdown 
+            flat 
+            auto-close 
+            class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
             :label="$t('clases')"
+            dropdown-icon="expand_more"
+            menu-anchor="bottom middle"
+            menu-self="top middle"
           >
             <q-list>
               <q-item clickable @click="$router.push('/ClasesIndividuales')">
@@ -94,38 +105,38 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-
-          <q-btn
-            flat
-            :to="'/TestNivel'"
-            exact
-            class="nave-btn"
+    
+          <q-btn 
+            flat 
+            :to="'/TestNivel'" 
+            exact 
+            class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
           >
             {{ $t('testNivel') }}
           </q-btn>
-
-          <q-btn
-            flat
-            :to="'/sobreSpanish'"
-            exact
-            class="nave-btn"
+          
+          <q-btn 
+            flat 
+            :to="'/sobreSpanish'" 
+            exact 
+            class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
           >
             {{ $t('sobre') }}
           </q-btn>
-
-          <q-btn
-            flat
-            :to="'/Contacto'"
-            exact
-            class="nave-btn"
+          
+          <q-btn 
+            flat 
+            :to="'/Contacto'" 
+            exact 
+            class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'contacto' }"
           >
             {{ $t('contacto') }}
           </q-btn>
         </div>
-        <q-space v-if="$q.screen.gt.sm" />
+        
       </q-toolbar>
     </q-header>
     <q-drawer v-model="leftDrawerOpen" bordered>
@@ -258,8 +269,8 @@ watch(
     if (newPath === '/') activeButton.value = 'inicio';
     else if (newPath === '/ClasesIndividuales' || newPath === '/ClasesGrupales')
       activeButton.value = 'clases';
-    else if (newPath === '/TestNivel') activeButton.value = 'test';
-    else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
+    else if (newPath === '/TestNivel') activeButton.value = 'testNivel';
+    else if (newPath === '/sobreSpanish') activeButton.value = 'sobreSpanish';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
     else activeButton.value = '';
   },
@@ -333,28 +344,28 @@ function toggleLeftDrawer() {
   font-size: 0.8rem !important;
   font-weight: 300 !important;
   text-decoration: underline;
-  margin-right: 5%;
-
+  margin-right: 5%;  
+  
   @media (min-width: 1024px) {
     font-size: 1rem !important;
   }
 }
 
 /* Botón del carrito responsivo */
-.carro-btn {
-  padding: 2px;
-  .q-icon {
-    font-size: 2rem !important;
-  }
+.carro-btn { 
+    padding: 2px;    
+    .q-icon {
+      font-size: 2rem !important;
+    }
 
   /* Padding responsivo del botón */
   @media (min-width: 300px) {
-    padding: 2px;
+    padding: 2px;    
     .q-icon {
       font-size: 1.5rem !important;
     }
-  }
-
+  }  
+  
   @media (min-width: 1920px) {
     .q-icon {
       font-size: 2rem !important;
@@ -370,7 +381,7 @@ function toggleLeftDrawer() {
   height: 14px;
   top: -3px;
   right: -3px;
-
+  
   @media (min-width: 300px) {
     font-size: 9px;
     padding: 2px 4px;
@@ -379,7 +390,7 @@ function toggleLeftDrawer() {
     top: -4px;
     right: -4px;
   }
-
+  
   @media (min-width: 1024px) {
     font-size: 10px;
     padding: 2px 5px;
@@ -396,20 +407,20 @@ function toggleLeftDrawer() {
   margin: 0;
   padding: 0;
   display: inline-block;
-
+  
   /* Móviles pequeños (xs) */
-  width: 50px;
-
+  width: 50px;  
+  
   /* Móviles grandes y tablets (sm) */
   @media (min-width: 600px) and (max-width: 1023px) {
     width: 55px;
   }
-
+  
   /* Escritorio (md y superior) */
   @media (min-width: 1024px) {
     width: 60px;
   }
-
+  
   /* Escritorio grande (xl) */
   @media (min-width: 1920px) {
     width: 60px;
@@ -419,20 +430,25 @@ function toggleLeftDrawer() {
 .spanishnook-titl {
   font-weight: bold !important;
   margin-left: 8px;
-
+  margin-right: auto;
+  
   /* Móviles pequeños */
   font-size: 1.2rem !important;
-
+  
   /* Móviles grandes y tablets */
   @media (min-width: 600px) and (max-width: 1023px) {
     font-size: 1.3rem !important;
   }
-
+  
   /* Escritorio pequeño */
   @media (min-width: 1024px) and (max-width: 1439px) {
     font-size: 1rem !important;
   }
+  
+  
+  
 }
+
 
 /* Botón de navegación con mayor especificidad */
 .nave-btn {
@@ -440,29 +456,27 @@ function toggleLeftDrawer() {
   color: white !important;
   padding: 8px 16px !important;
   transition: all 0.8s ease;
-
+  
+  
   &:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
     transform: scale(1.1);
   }
 
-  @media (min-width: 600px) and (max-width: 1023px) {
-    font-size: 0.8rem !important;
+   @media (min-width: 600px) and (max-width: 1220px) {
+    font-size: 0.7rem !important;
   }
-
-  @media (min-width: 1024px) {
-    font-size: 1rem !important;
-  }
-
+  
+  
   @media (min-width: 1440px) {
     font-size: 1rem !important;
   }
 }
-
+  
 .q-btn.nave-btn.nave-btn-active {
   font-weight: 800 !important;
   position: relative;
-
+  
   &::after {
     content: '';
     position: absolute;
@@ -475,31 +489,40 @@ function toggleLeftDrawer() {
     border-radius: 1px;
   }
 }
-
+ 
 /* Contenedor de navegación centrado */
-.nav-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 46px; /* Espaciado entre botones */
-  margin-right: 6%;
-
-  @media (min-width: 1024px) {
-    gap: 20px;
-    margin-right: 1%;
+.nav-container {  
+ display: flex !important;
+  align-items: center !important;
+  margin-left: 8% !important;
+  width: 100% !important;
+  gap:3rem !important;
+  padding: 0 3rem !important;
+  @media (max-width: 1224px) {
+    padding: 0 1rem !important;
+    margin-left: 4% !important;
   }
-
-  @media (min-width: 1440px) {
-    gap: 24px;
-    margin-right: 6%;
-  }
-}
+}  
+  
 
 /* También para el dropdown de Clases */
 .q-btn-dropdown.nav-btn.router-link-active .q-btn__content {
   text-decoration: underline !important;
   text-underline-offset: 4px !important;
 }
+.q-btn-dropdown {
+  .q-btn__content {
+    flex-direction: row !important;
+    justify-content: space-between;
+    min-width: 100px;
+  }
+
+  .q-icon {
+    font-size: 1.2em;
+    margin-left: 4px;
+  }
+}
+
 
 .img-responsiv {
   width: 100%;
@@ -513,7 +536,7 @@ function toggleLeftDrawer() {
   font-weight: bold;
   text-decoration: none !important;
   display: inline-block;
-
+  
   &:hover {
     transform: translateX(8px);
   }
@@ -543,7 +566,7 @@ function toggleLeftDrawer() {
 .flag-unselected {
   opacity: 0.7;
   border: 2px solid transparent;
-
+  
   &:hover {
     opacity: 1;
     background-color: rgba(255, 255, 255, 0.1);
@@ -557,11 +580,11 @@ function toggleLeftDrawer() {
 /* Contenedor de banderas responsivo */
 .flags-container {
   gap: 4px;
-
+  
   @media (min-width: 600px) {
     gap: 8px;
   }
-
+  
   @media (min-width: 1024px) {
     gap: 12px;
   }
@@ -570,22 +593,22 @@ function toggleLeftDrawer() {
 /* Botones de banderas responsivos */
 .flag-btn {
   margin: 0 2px;
-
+  
   @media (max-width: 599px) {
     margin: 0 4px;
     padding: 2px;
   }
-
+  
   @media (min-width: 600px) and (max-width: 1023px) {
     margin: 0 8px;
     padding: 4px;
   }
-
+  
   @media (min-width: 1024px) {
     margin: 0 12px;
     padding: 6px;
   }
-
+  
   @media (min-width: 1920px) {
     margin: 0 16px;
     padding: 8px;
@@ -596,11 +619,11 @@ function toggleLeftDrawer() {
   @media (max-width: 599px) {
     margin-left: 8px;
   }
-
+  
   @media (min-width: 600px) {
     margin-left: 16px;
   }
-
+  
   @media (min-width: 1024px) {
     margin-left: 24px;
   }
@@ -610,11 +633,11 @@ function toggleLeftDrawer() {
   @media (max-width: 599px) {
     margin-right: 8px;
   }
-
+  
   @media (min-width: 600px) {
     margin-right: 16px;
   }
-
+  
   @media (min-width: 1024px) {
     margin-right: 24px;
   }
@@ -623,16 +646,17 @@ function toggleLeftDrawer() {
 .footer-titulo {
   font-weight: bold !important;
   font-size: 1rem !important;
-
+  
+  
   @media (max-width: 599px) {
     font-size: 1rem !important;
     margin-top: 20px;
   }
-
+  
   @media (min-width: 600px) and (max-width: 1023px) {
     font-size: 1rem !important;
   }
-
+  
   @media (min-width: 1024px) {
     font-size: 1rem !important;
   }
@@ -641,10 +665,10 @@ function toggleLeftDrawer() {
 /* Contenedor de links del footer */
 .footer-links-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px 32px;
-  width: 100%;
-  max-width: 300px;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 32px;
+    width: 100%;
+    max-width: 300px;
 
   /* Móviles: dos columnas */
   @media (max-width: 599px) {
@@ -653,12 +677,15 @@ function toggleLeftDrawer() {
     gap: 2px 32px;
     width: 100%;
     max-width: 300px;
-
+    
     .footer-link {
+      
       font-size: 0.9rem !important;
       padding: 4px 8px;
     }
   }
+
+  
 }
 
 .foot-link {
@@ -671,17 +698,19 @@ function toggleLeftDrawer() {
   font-size: 0.8rem !important;
   padding: 0px 0px;
   margin: 0px 0;
-
+  
   &:hover {
     transform: translateX(8px);
   }
-
+  
   /* Responsivo */
   @media (max-width: 599px) {
     font-size: 0.8rem !important;
     &:hover {
       transform: scale(1.05); /* En móvil, solo escalar en lugar de mover */
+
     }
   }
 }
+
 </style>

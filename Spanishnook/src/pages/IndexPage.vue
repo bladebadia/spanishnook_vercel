@@ -1,19 +1,19 @@
 <template>
   <q-page>
-    <div style="margin-bottom: 60px;">
+    <!-- Banner principal OK-->
+    <div >
       <q-img style="width: 100%; max-height: 600px;" 
         fit="cover" position="center" src="/img/banner_1920.jpg"
-         >
-        
+         >        
       </q-img>
     </div>
-
-    <div class="column items-center text-justify " style="margin-bottom: 60px;" >
+    <!-- Sección introductoria OK-->
+    <div class="items-center text-center q-my-xl " >
       <p class=" titulo-responsivo" style="color: #851319">
        {{ t('indexeUnLugarDonde') }}
       </p>
 
-      <p class="q-mt-md texto-responsivo" >
+      <p class=" texto-responsivo text-justify" style="margin-left:13%;margin-right: 13%;" >
         {{ t('indexAprenderEspañolPuede') }}
       </p>
       <q-btn
@@ -26,18 +26,17 @@
         {{ t('indexCreaTuEspacio') }}
       </q-btn>
     </div>
-
-    <!--Tarjeta descubre nuestras clases y lista  -->
+    <!--Tarjeta descubre nuestras clases y lista OK-->
     <div
       v-intersect="onPromoIntersect"
       class="row justify-center q-my-xl">
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard" class="row align-center" >
-          <div class="col-12 col-md-6 items-center flex flex-center column q-pa-xs-none q-pa-lg ">           
-            <q-card class="" style="width: 80%;" >
+        <div class="col-12 col-md-6 items-center flex flex-center column ">           
+            <q-card class="" style="width: 90%;" >
               <img src="img/Home/tarjeta1_descubre_nuestras_clases.png"
                 fit="cover"
-                style="width: 80%; height: auto; display: block; margin: 0 auto;"/>
+                style="width: 80%; height: auto;max-height: 300px; display: block; margin: 0 auto;"/>
               <q-card-section class="subtitulo-responsivo text-center"
                 >{{ t('indexDescubreNuestrasClases') }}</q-card-section
               >
@@ -55,25 +54,25 @@
                 </q-btn>
               </q-card-actions>
             </q-card>
-          </div>
-          <div class="col-12 col-md-6 text-center q-pa-md">
-            <p class="subtitulo-responsivo q-mb-md">{{t('indexQueEncontraras')}}</p>
+        </div>
+        <div class="col-12 col-md-6  q-pa-md">
+            <p class="subtitulo-responsivo">{{t('indexQueEncontraras')}}</p>
             <ul class=" lista-check">
-              <li class="q-py-sm">{{t('indexclasesEnVivo')}}</li>
-              <li class="q-py-sm">{{t('indexdiferentesModalidades')}}</li>
-              <li class="q-py-sm">{{t('indexseguimientoContinuo')}}</li>
-              <li class="q-py-sm">{{t('indexClasesAdaptadas')}}</li>
-              <li class="q-py-sm">{{t('indexMaterialesExclusivos')}}</li>
-              <li class="q-py-sm">{{t('indexAmbienteRelajado')}}</li>
+              <li class="q-py-sm q-py-md-md">{{t('indexclasesEnVivo')}}</li>
+              <li class="q-py-sm q-py-md-md">{{t('indexdiferentesModalidades')}}</li>
+              <li class="q-py-sm q-py-md-md">{{t('indexseguimientoContinuo')}}</li>
+              <li class="q-py-sm q-py-md-md">{{t('indexClasesAdaptadas')}}</li>
+              <li class="q-py-sm q-py-md-md">{{t('indexMaterialesExclusivos')}}</li>
+              <li class="q-py-sm q-py-md-md">{{t('indexAmbienteRelajado')}}</li>
             </ul>
-          </div>
+        </div>
         </div>
       </transition>
     </div>
-    <!-- Tarjetas de promoción de clases -->
+    <!-- Tarjetas de promoción de clases OK -->
     <div
       v-intersect="onPromoIntersect1"
-      class="q-mt-xl q-mb-xl row justify-center bg-grey-2"      
+      class="q-my-xs row justify-center bg-grey-2"      
     >
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div
@@ -81,7 +80,7 @@
           class="row"
           enter-active-class="animated fadeInUpBig slower "
         >
-          <div class="col-12 items-center flex flex-center column q-pa-lg q-mb-md q-mb-md-xl">
+          <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
             <p
               class="titulo-responsivo text-center q-mb-md"
               text-color="#851319"
@@ -95,7 +94,7 @@
           </div>
           <q-separator class="q-my-xl" />
 
-          <div class="col-12 row  justify-center ">
+          <div class="col-12 promocards-container  ">
             <!-- Componente 1: Clases Privadas -->
             <PromoCard
               :image-src="'img/Home/tarjeta2_clases_privadas.svg'"
@@ -124,12 +123,12 @@
         </div>
       </transition>
     </div>
-    <!-- Banner promocional test nivel que aparece al hacer scroll -->
-    <div
-      v-intersect="onPromoIntersect2"
-      class="q-mt-xl q-mb-xl row degradado-fondo"
-      style="min-height: 400px; width: 100%"
-    >
+      <!-- Banner promocional test nivel que aparece al hacer scroll OK-->
+      <div
+        v-intersect="onPromoIntersect2"
+        class="q-mt-xl q-mb-xl row degradado-fondo"
+        style="min-height: 400px; width: 100%"
+        >
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div
           v-if="showPromoCard2"
@@ -154,9 +153,9 @@
           </div>
         </div>
       </transition>
-    </div>
-    <!-- Tarjeta sobre quién hay detrás de Spanishnook -->
-    <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
+      </div>
+      <!-- Tarjeta sobre quién hay detrás de Spanishnook OK-->
+      <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div
           v-if="showPromoCard4"
@@ -185,7 +184,7 @@
             <q-card-actions class="flex flex-center">
               <q-btn
                 color="primary"
-                to="/ClasesIndividuales"
+                to="/SobreSpanish"
                 size="lg"
                 unelevated
                 class="cuadrado-btn"
@@ -195,17 +194,16 @@
           </q-card>
         </div>
       </transition>
-    </div>
-
-    <!-- Sección de Opiniones Verificadas - CARRUSEL -->
-    <div v-intersect="onOpinionesIntersect" class="q-my-xl opiniones-section bg-grey-1">
+      </div>
+      <!-- Sección de Opiniones Verificadas - CARRUSEL -->
+      <div v-intersect="onOpinionesIntersect" class="q-my-xl opiniones-section bg-grey-1">
       <transition enter-active-class="animated fadeInUpBig slower">
         <div v-if="showOpiniones" class="q-py-xl q-px-md">
           <div class="text-center q-mb-xl">
-            <h2 class="text-h3 q-mb-md" style="color: #851319">
+            <p class="subtitulo-responsivo q-my-xl" style="color: #851319">
               {{ t('indexOpinionesVerificadas') }}
-            </h2>
-            <p class="text-body1" style="max-width: 800px; margin: 0 auto; font-size: 1.3rem;">
+            </p>
+            <p class="texto-responsivo" >
               {{ t('indexConoceExperiencias') }}
             </p>
           </div>
@@ -320,94 +318,89 @@
           </div>
         </div>
       </transition>
-    </div>
+      </div>
 
-    <!-- Sección de FAQs -->
-    <div class="q-my-xl faqs-section">
-      <p class="subtitulo-responsivo text-center " style="margin-bottom: 40px;">{{t('indexPreguntasFrecuentes')}}</p>
-      <q-expansion-item class=" q-mb-xl" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo">{{t('indexComoFuncionanClases')}}</p>
-        </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+      <!-- Sección de FAQs -->
+      <div class="q-my-xl faqs-section">
+        <p class="subtitulo-responsivo text-center " style="margin-bottom: 40px;">{{t('indexPreguntasFrecuentes')}}</p>
+        <q-expansion-item class=" q-mb-md" expand-separator>
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
+            </q-item-section>
+            <p class="subtitulo2-responsivo">{{t('indexComoFuncionanClases')}}</p>
+          </template>
+          <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
           {{t('indexTodasClasesEnVivo')}}
-        </div>
-      </q-expansion-item>
+          </div>
+        </q-expansion-item>
 
-      <q-expansion-item class=" q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo">{{t('indexQueNecesitoParaEmpezar')}}</p>
-        </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
-         {{t('indexSoloNecesito')}}
-        </div>
-      </q-expansion-item>
+        <q-expansion-item class=" q-mb-md" expand-separator>
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
+            </q-item-section>
+            <p class="subtitulo2-responsivo">{{t('indexQueNecesitoParaEmpezar')}}</p>
+          </template>
+          <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+          {{t('indexSoloNecesito')}}
+          </div>
+        </q-expansion-item>
 
-      <q-expansion-item class=" q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo">{{t('indexPuedoCambiarDeModalidad')}}</p>
-        </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
-          {{t('indexClaroQueremos')}}
-        </div>
-      </q-expansion-item>
+        <q-expansion-item class=" q-mb-md" expand-separator>
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
+            </q-item-section>
+            <p class="subtitulo2-responsivo">{{t('indexPuedoCambiarDeModalidad')}}</p>
+          </template>
+          <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+            {{t('indexClaroQueremos')}}
+          </div>
+        </q-expansion-item>
 
-      <q-expansion-item class=" q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo">{{t('indexQueNivelDeEspañol')}}</p>
-        </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md" >
-          {{t('indexNoNecesitoNingun')}}
-        </div>
-      </q-expansion-item>
+        <q-expansion-item class=" q-mb-md" expand-separator>
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
+            </q-item-section>
+            <p class="subtitulo2-responsivo">{{t('indexQueNivelDeEspañol')}}</p>
+          </template>
+          <div class="texto2-responsivo text-justify q-px-xl q-mx-md" >
+            {{t('indexNoNecesitoNingun')}}
+          </div>
+        </q-expansion-item>
 
-      <q-expansion-item class=" q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white"  />
-          </q-item-section>
-          <p class="subtitulo2-responsivo">{{t('indexQuePasaSiNoPuedoAsistir')}}</p>
-        </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md" style="font-size: 1.2rem">
-          {{t('indexDependeraDeLaModalidad')}}
-        </div>
-      </q-expansion-item>
-    </div>
+        <q-expansion-item class=" q-mb-md" expand-separator>
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-avatar icon="help" color="primary" text-color="white"  />
+            </q-item-section>
+            <p class="subtitulo2-responsivo">{{t('indexQuePasaSiNoPuedoAsistir')}}</p>
+          </template>
+          <div class="texto2-responsivo text-justify q-px-xl q-mx-md" style="font-size: 1.2rem">
+            {{t('indexDependeraDeLaModalidad')}}
+          </div>
+        </q-expansion-item>
+      </div>
 
-    <!-- Sección de Contacto -->
-    <div class="q-my-xl contacto-section flex flex-center column items-center">
-      <h2 class="text-h3 text-center q-mb-md" style="color: #851319">¿Aún tienes dudas?</h2>
-      <p class="text-body text-center q-mb-lg" style="max-width: 1200px; font-size: 1.4rem">
-        Estamos al otro lado: ponte en contacto con nosotros a través de alguno de nuestros canales
-        disponibles y te responderemos lo antes posible.
+      <!-- Sección de Contacto -->
+      <div class="q-my-xl contacto-section flex flex-center column items-center">
+        <p class="titulo-responsivo" style="color: #851319">{{t('indexAunTienesDudas')}}</p>
+        <p class="texto-responsivo" >
+        {{t('indexEstamosAlOtroLado')}}
       </p>
       <q-btn
         color="primary"
         size="lg"
         unelevated
         to="/Contacto"
-        class="oval-btn q-mb-md"
-        style="font-size: 1.4rem"
+        class="oval-btn "
       >
-        Contáctanos
+        {{t('indexContactanos')}}
       </q-btn>
-    </div>
+      </div>
     <div class="q-my-xl"></div>
-
-
-
   </q-page>
 </template>
 
@@ -416,6 +409,7 @@
   import { useI18n } from 'vue-i18n';
   // Importar los estilos CSS
   import '../css/pages/IndexPage.css';
+  import '../css/pages/EstilosGenerales.css';
   import PromoCard from '../components/PromoCard.vue';
   import OpinioneVerificadas from '../components/OpinioneVerificadas.vue';
 
