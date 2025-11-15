@@ -1,7 +1,7 @@
 # AreaPersonal.vue - Archivo Modificado ```vue
 <template>
   <q-page class="q-pa-lg">
-    <!-- Header con botones y saludo -->
+    <!-- Header con botones y saludo y otras cosas-->
     <div class="row items-center q-pa-lg q-mb-md">
       <!-- Botón Nueva Reserva a la izquierda -->
       <div class="col-auto">

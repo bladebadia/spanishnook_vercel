@@ -13,3 +13,5 @@
 2- Asociacion Bolt: 
         El proyecto Spanishnook_quasar de github corresponde al proyecto
         SpanishnookBoltQuasar en Bolt
+
+3- token github: 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
