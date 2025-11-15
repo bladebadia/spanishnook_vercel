@@ -27,6 +27,8 @@ export function useReservasClases() {
   const $q = useQuasar();
   const { t, locale } = useI18n();
   const { user } = useAuth();
+  console.log('👤 Usuario actual en useReservasClases:', user.value);
+  console.log('👤 Usuario actual en useReservasClases:', user);
 
   // Estado reactivo
   const seleccionClases = ref<string | null>(null);

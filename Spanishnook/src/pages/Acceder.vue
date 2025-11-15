@@ -1,6 +1,5 @@
 <template>
   <q-page class="q-pa-md column items-center justify-evenly">
-    <div class="q-mb-md text-h5">Acceder</div>
 
     <q-card class="q-pa-md" style="width: 400px; max-width: 90vw">
       <!-- Form wrapper sin afectar el layout -->
@@ -10,7 +9,7 @@
           <q-input
             filled
             v-model="email"
-            label="Correo electrónico"
+            :label="t('accederForm.correoElectronico')"
             type="email"
             dense
             :error="credencialesError"
@@ -21,32 +20,40 @@
           <q-input
             filled
             v-model="password"
-            label="Contraseña"
-            type="password"
+            :label="t('accederForm.contrasena')"
+            :type="passwordVisible ? 'text' : 'password'"
             class="q-mt-md"
             dense
             :error="credencialesError"
             :hide-bottom-space="true"
-            :error-message="credencialesError ? 'Credenciales incorrectas' : ''"
-          />
+            :error-message="credencialesError ? t('accederForm.credencialesIncorrectas') : ''"
+          >
+          <template v-slot:append>
+              <q-icon
+                :name="passwordVisible ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="togglePasswordVisibility"
+              />
+            </template>
+            </q-input>
         </q-card-section>
 
         <q-card-actions align="right">
           <!-- Botón como type submit -->
-          <q-btn label="Entrar" color="primary" type="submit" :loading="loading" />
+          <q-btn :label="t('accederForm.entrar')" color="primary" type="submit" :loading="loading" />
         </q-card-actions>
       </form>
 
       <!-- Sección de enlaces -->
       <q-card-section class="q-pt-none text-center">
         <div class="q-mb-md">
-          <span>¿Aún no tienes cuenta? </span>
-          <router-link to="/Registro" class="text-primary"> Regístrate aquí </router-link>
+          <span>{{ t('accederForm.aunNoTienes') }} </span>
+          <router-link to="/Registro" class="text-primary"> {{ t('accederForm.registrateAqui') }} </router-link>
         </div>
 
         <div>
           <a href="#" @click.prevent="olvidarPassword" class="text-primary">
-            ¿Has olvidado tu contraseña?
+            {{ t('accederForm.olvidarContrasena') }}
           </a>
         </div>
       </q-card-section>
@@ -56,28 +63,28 @@
     <q-dialog v-model="mostrarDialogoRecuperacion" persistent>
       <q-card style="width: 400px; max-width: 90vw">
         <q-card-section>
-          <div class="text-h6">Recuperar contraseña</div>
+          <div class="text-h6">{{ t('accederForm.recuperarContrasena') }}</div>
         </q-card-section>
 
         <q-card-section>
           <q-input
             filled
             v-model="emailRecuperacion"
-            label="Correo electrónico"
+            :label="t('accederForm.correoElectronico')"
             type="email"
             dense
             :error="!!errorRecuperacion"
             :error-message="errorRecuperacion"
           />
           <p class="text-caption text-grey q-mt-sm">
-            Te enviaremos un enlace para restablecer tu contraseña.
+            {{ t('accederForm.seHaEnviado') }}
           </p>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn flat :label="t('accederForm.cancelar')" color="primary" v-close-popup />
           <q-btn
-            label="Enviar"
+            :label="t('accederForm.enviar')"
             color="primary"
             @click="enviarLinkRecuperacion"
             :loading="loadingRecuperacion"
@@ -90,21 +97,21 @@
     <q-dialog v-model="mostrarDialogoConfirmacion">
       <q-card style="width: 400px; max-width: 90vw">
         <q-card-section>
-          <div class="text-h6">Correo enviado</div>
+          <div class="text-h6">{{ t('accederForm.correoEnviado') }}</div>
         </q-card-section>
 
         <q-card-section>
           <p>
-            Se ha enviado un enlace de recuperación a <strong>{{ emailRecuperacion }}</strong
+            {{ t('accederForm.seHaEnviado') }} <strong>{{ emailRecuperacion }}</strong
             >.
           </p>
           <p class="text-caption text-grey q-mt-sm">
-            Revisa tu bandeja de entrada y la carpeta de spam.
+            {{ t('accederForm.revisaBandeja') }}
           </p>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Aceptar" color="primary" v-close-popup />
+          <q-btn flat :label="t('accederForm.aceptar')" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -115,6 +122,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
+import { useI18n } from 'vue-i18n';
 
 defineOptions({ name: 'UserAcceder' });
 
@@ -123,6 +131,13 @@ const email = ref('');
 const password = ref('');
 const loading = ref(false);
 const credencialesError = ref(false);
+const passwordVisible = ref(false);
+const { t } = useI18n();
+
+
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 
 // Variables para recuperación de contraseña
 const mostrarDialogoRecuperacion = ref(false);
@@ -180,7 +195,7 @@ async function login() {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
-      password: password.value,
+      password: password.value,      
     });
 
     if (error) {

@@ -148,6 +148,44 @@ export default {
     nuestrosGruposFormativos: 'Nuestros grupos formativos',
     textoNuestrosGruposFormativos: 'En SpanishNook, nuestras clases grupales están diseñadas para ofrecerte una experiencia de aprendizaje dinámica y colaborativa. Con grupos reducidos de estudiantes, fomentamos la interacción y el intercambio cultural, lo que enriquece tu proceso de aprendizaje. Nuestros profesores expertos guían cada sesión, asegurándose de que cada alumno participe activamente y reciba atención personalizada. Ya sea que estés comenzando tu viaje en el español o buscando perfeccionar tus habilidades, nuestras clases grupales te proporcionan el entorno ideal para crecer y prosperar en tu dominio del idioma.',
 
+  },
+  personal: {
+    hola: 'Hola',
+    bienvenidoAreaPersonal: '¡Bienvenido a tu Área Personal!',
+    holaUsuario:' ¡Hola Usuario!',
+    
+    gestionaTusReservas: 'Desde aquí puedes gestionar tus reservas de clases individuales y grupales, así como actualizar tu información personal.',
+  },
+  registro:{
+    nombreOApodo: 'Nombre o Apodo',
+    correoElectronico: 'Correo Electrónico',
+    contrasena: 'Contraseña',
+    laContrasenaDebe: 'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo',
+    confirmarContrasena: 'Confirmar Contraseña',
+    lasContrasenasNo: 'Las contraseñas no coinciden',
+    aceptoLos: 'Acepto los',
+    terminosYCondiciones: 'Términos y Condiciones de privacidad',
+    debesAceptarLos: 'Debes aceptar los términos y condiciones',
+    registrarse:' Registrarse',
+    yaTengoCuenta: ' Inicia sesión',
+
+  },
+  accederForm:{
+    correoElectronico: 'Correo Electrónico',
+    teEnviaremosUnCorreo: 'Te enviaremos un correo electrónico para que puedas acceder a tu cuenta.',
+    credencialesIncorrectas: 'Credenciales incorrectas',
+    entrar: 'Entrar',
+    contrasena: 'Contraseña',
+    aunNotienes:' ¿Aún no tienes cuenta?',
+    registrateAqui: ' Regístrate aquí',
+    olvidarContrasena: '¿Olvidaste tu contraseña?',
+    recuperarContrasena: 'Recuperar Contraseña',
+    enviar:' Enviar',
+    correoEnviado:' Correo enviado',
+    seHaEnviado:' Se ha enviado un correo a tu dirección con las instrucciones para recuperar tu contraseña.',
+    revisaTubandeja: ' Revisa tu bandeja de entrada y la carpeta de spam.',
+    aceptar:' Aceptar',
+    
   }
 
 

@@ -1,7 +1,5 @@
 <template>
   <q-page class="q-pa-md column items-center justify-evenly">
-    <div class="q-mb-md text-h5">Registro</div>
-
     <q-card class="q-pa-md" style="width: 400px; max-width: 90vw">
       <!-- Formulario para manejar el submit con Enter -->
       <form @submit.prevent="registrar">
@@ -9,7 +7,7 @@
           <q-input
             filled
             v-model="nombre"
-            label="Nombre o apodo"
+            :label="t('registro.nombreOApodo')"
             dense
             :error="false"
             :hide-bottom-space="true"
@@ -18,7 +16,7 @@
           <q-input
             filled
             v-model="email"
-            label="Correo electrónico"
+            :label="t('registro.correoElectronico')"
             type="email"
             class="q-mt-md"
             dense
@@ -30,31 +28,45 @@
           <q-input
             filled
             v-model="password"
-            label="Contraseña"
-            type="password"
+            :label="t('registro.contrasena')"
+            :type="passwordVisible ? 'text' : 'password'"
             class="q-mt-md"
             dense
             :error="passwordError && mostrarErrores"
             :hide-bottom-space="!(passwordError && mostrarErrores)"
             :error-message="
               passwordError && mostrarErrores
-                ? 'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo'
+                ? t('registro.laContrasenaDebe')
                 : ''
             "
-          />
-
+          >
+          <template v-slot:append>
+              <q-icon
+                :name="passwordVisible ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="togglePasswordVisibility"
+              />
+            </template>
+          </q-input>
           <q-input
             filled
             v-model="confirmPassword"
-            label="Confirmar contraseña"
-            type="password"
+            :label="t('registro.confirmarContrasena')"
+            :type="confirmPasswordVisible ? 'text' : 'password'"
             class="q-mt-md"
             dense
             :error="confirmError && mostrarErrores"
             :hide-bottom-space="!(confirmError && mostrarErrores)"
-            :error-message="confirmError && mostrarErrores ? 'Las contraseñas no coinciden' : ''"
-          />
-
+            :error-message="confirmError && mostrarErrores ? t('registro.lasContrasenasNo') : ''"
+          >
+          <template v-slot:append>
+              <q-icon
+                :name="confirmPasswordVisible ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleConfirmPasswordVisibility"
+              />
+            </template>
+          </q-input>
           <!-- Checkbox de condiciones de privacidad -->
           <div class="q-mt-md">
             <div class="row items-center no-wrap">
@@ -65,9 +77,9 @@
               />
 
               <span class="text-cursor">
-                Acepto los
+                {{ t('registro.aceptoLos') }}
                 <router-link to="/Privacidad" class="text-primary text-weight-bold" @click.stop>
-                  términos y condiciones de privacidad
+                  {{ t('registro.terminosYCondiciones') }}
                 </router-link>
               </span>
             </div>
@@ -76,18 +88,18 @@
               v-if="privacidadError && mostrarErrores"
               class="text-negative text-caption q-mt-xs"
             >
-              Debes aceptar los términos y condiciones
+              {{ t('registro.debesAceptarLos') }}
             </div>
           </div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn label="Registrarse" color="primary" type="submit" :loading="loading" />
+          <q-btn :label="t('registro.registrarse')" color="primary" type="submit" :loading="loading" />
         </q-card-actions>
       </form>
 
       <q-card-section class="q-pt-none text-center">
-        <router-link to="/Acceder" class="text-primary"> Ya tengo cuenta </router-link>
+        <router-link to="/Acceder" class="text-primary"> {{ t('registro.yaTengoCuenta') }} </router-link>
       </q-card-section>
     </q-card>
   </q-page>
@@ -98,7 +110,9 @@ defineOptions({ name: 'UserRegistro' });
 import { ref, computed } from 'vue';
 import { supabase } from '../supabaseClient';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const nombre = ref('');
 const email = ref('');
 const password = ref('');
@@ -108,6 +122,16 @@ const mostrarErrores = ref(false);
 const errorMessage = ref('');
 const loading = ref(false);
 const router = useRouter();
+const passwordVisible = ref(false);
+const confirmPasswordVisible = ref(false);
+
+function togglePasswordVisibility() {
+  passwordVisible.value = !passwordVisible.value;
+}
+
+function toggleConfirmPasswordVisibility() {
+  confirmPasswordVisible.value = !confirmPasswordVisible.value;
+}
 
 // Regla de contraseña
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;

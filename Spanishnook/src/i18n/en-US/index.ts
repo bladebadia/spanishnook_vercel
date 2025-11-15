@@ -146,5 +146,41 @@ export default {
     
 
 
-  }
+  },
+  personal:{
+    hola: 'Hello',
+    bienvenidoAreaPersonal: 'Welcome to your Personal Area!',
+    holaUsuario:' Hello User!',
+    
+    gestionaTusReservas: 'From here you can manage your bookings for private and group classes, as well as update your personal information.',
+  },
+  registro:{
+    nombreOApodo: 'Name or Nickname',
+    correoElectronico: 'Email',
+    contrasena: 'Password',
+    laContrasenaDebe: 'Password must be at least 8 characters, including uppercase, lowercase, number, and symbol',
+    confirmarContrasena: 'Confirm Password',
+    lasContrasenasNo: 'Passwords do not match',
+    aceptoLos: 'I accept the',
+    terminosYCondiciones: 'Terms and Conditions',
+    politicaDePrivacidad: 'Privacy Policy',
+    debesAceptarLos: 'You must accept the terms and conditions',
+    registrarse:' Register',
+    yaTengoCuenta: ' Log in',
+  },
+  accederForm:{
+    correoElectronico: 'Email',
+    contrasena: 'Password',
+    olvidarContrasena: 'Forgot Password?',
+    teEnviaremosUnCorreo: 'We will send you an email to reset your password',
+    credencialesIncorrectas: 'Incorrect credentials',
+    entrar:' Log In',
+    aunNoTienes:" Don't have an account?",
+    registrateAqui: ' Register here',
+    recuperarContrasena: 'Reset Password',
+    enviar: 'Send',
+    seHaEnviado: 'An email has been sent to your address with instructions to reset your password.',
+    revisaTubandeja: 'Check your inbox and spam folder.',
+    aceptar: 'Accept',
+  },
 };

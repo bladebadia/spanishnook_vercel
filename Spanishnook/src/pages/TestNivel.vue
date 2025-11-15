@@ -140,7 +140,7 @@
                   class="q-ma-md"
                 >
                   <div class="text-h4 text-weight-bold">
-                   {{ testScore }}/{{ selectedAnswers.filter(a => a !== undefined).length }}
+                   {{ levelCorrect }}/{{ levelTotal }}
                   </div>
                 </q-circular-progress>
                 <div class="text-body1 text-grey-7">
@@ -209,6 +209,9 @@ const testScore = ref(0);
 const testLevel = ref('');
 const showResults = ref(false);
 const percentage = ref(0);
+// Nuevos refs para mostrar el rendimiento específico del nivel alcanzado
+const levelCorrect = ref(0);
+const levelTotal = ref(0);
 
 //const step = ref(1);
 const testQuestions = computed(() => [
@@ -385,6 +388,7 @@ type LevelScores = {
 type NivelDescription = {
   [key in Level]: string;
 };
+
 // Añadir estas funciones de evaluación
 const evaluateTestByLevel = (): string => {
   const levelScores: LevelScores = {
@@ -392,40 +396,49 @@ const evaluateTestByLevel = (): string => {
     A2: { correct: 0, total: 0 },
     B1: { correct: 0, total: 0 },
     B2: { correct: 0, total: 0 },
-    C1: { correct: 0, total: 0 },
+    C1: { correct: 0, total: 0 }
   };
 
-  let maxLevelReached: Level = 'A1';
-  let maxLevelScore: LevelScore = { correct: 0, total: 0 };
-  
-  // Contar respuestas por nivel
+  // Contar preguntas totales y correctas por nivel
   testQuestions.value.forEach((question, index) => {
     const level = question.level as Level;
+    levelScores[level].total++;
     if (selectedAnswers.value[index] !== undefined) {
-      levelScores[level].total++;
       if (selectedAnswers.value[index] === question.correct) {
         levelScores[level].correct++;
       }
     }
   });
 
-// Determinar el nivel máximo alcanzado y su puntuación
+  // Evaluar nivel por nivel, empezando por el más alto
   const levels: Level[] = ['C1', 'B2', 'B1', 'A2', 'A1'];
+  let assignedLevel: Level = 'A1';
+
   for (const level of levels) {
-    if (levelScores[level].total > 0 && 
-        (levelScores[level].correct / levelScores[level].total) >= 0.6) {
-      maxLevelReached = level;
-      maxLevelScore = levelScores[level];
-      break;
+    // Solo evaluar si hay respuestas en este nivel
+    if (levelScores[level].total > 0) {
+      const percentageForLevel = (levelScores[level].correct / levelScores[level].total) * 100;
+      
+      // Verificar si hay suficientes preguntas respondidas (al menos 60% del total de preguntas del nivel)
+      const answeredQuestionsPercentage = selectedAnswers.value.filter((answer, index) => 
+        answer !== undefined && testQuestions.value[index]?.level === level
+      ).length / levelScores[level].total * 100;
+
+      // Solo asignar nivel si:
+      // 1. Se respondió al menos el 60% de las preguntas del nivel
+      // 2. Se obtuvo al menos 60% de respuestas correctas
+      if (answeredQuestionsPercentage >= 60 && percentageForLevel >= 60) {
+        assignedLevel = level;
+        break;
+      }
     }
   }
 
-  // Actualizar el porcentaje basado en el nivel máximo alcanzado
-  percentage.value = maxLevelScore.total > 0 
-    ? (maxLevelScore.correct / maxLevelScore.total) * 100 
-    : 0;
+  // Asignar métricas sobre el total de preguntas existentes del nivel finalmente asignado
+  levelCorrect.value = levelScores[assignedLevel].correct;
+  levelTotal.value = levelScores[assignedLevel].total;
+  percentage.value = levelTotal.value > 0 ? (levelCorrect.value / levelTotal.value) * 100 : 0;
 
-  // Devolver el nivel con su descripción
   const nivelDescriptions: NivelDescription = {
     'C1': 'Dominio',
     'B2': 'Avanzado',
@@ -434,27 +447,25 @@ const evaluateTestByLevel = (): string => {
     'A1': 'Acceso'
   };
 
-  return `${maxLevelReached} - ${nivelDescriptions[maxLevelReached]}`;
+  return `${assignedLevel} - ${nivelDescriptions[assignedLevel]}`;
 };
 
 // Modificar la función finishTest
 const finishTest = () => {
   let score = 0;
-  let answeredQuestions = 0;
-
+  // Recorremos respuestas y sumamos correctas únicamente
   selectedAnswers.value.forEach((answer, index) => {
-    if (answer !== undefined) {
-      answeredQuestions++;
-      if (testQuestions.value[index] && answer === testQuestions.value[index].correct) {
-        score++;
-      }
+    if (
+      answer !== undefined &&
+      testQuestions.value[index] &&
+      answer === testQuestions.value[index].correct
+    ) {
+      score++;
     }
   });
 
   testScore.value = score;
-
-  percentage.value = answeredQuestions > 0 ? (score / answeredQuestions) * 100 : 0;
-  // Calcular nivel basado en preguntas respondidas
+  // Calcular nivel (esta función actualizará percentage, levelCorrect y levelTotal sobre el total del nivel alcanzado)
   testLevel.value = evaluateTestByLevel();
 
   testCompleted.value = true;
@@ -468,6 +479,9 @@ const restartTest = () => {
   testScore.value = 0;
   testLevel.value = '';
   showResults.value = false;
+  percentage.value = 0;
+  levelCorrect.value = 0;
+  levelTotal.value = 0;
 };
 
 function selectAnswer(answerIndex: number) {

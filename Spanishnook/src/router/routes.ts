@@ -19,6 +19,21 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, layout: 'empty' },
   },
   {
+    path: '/Administracion',
+    component: () => import('pages/PanelAdministracion.vue'),
+    beforeEnter: () => {
+      const { user } = useAuth();
+      if (!user.value) {
+        return '/Acceder';
+      }
+      // Verificar si el usuario tiene el rol de admin
+      if (user.value.user_metadata?.role !== 'admin') {
+        return '/Acceder'; // Redirigir si no es admin
+      }
+    },
+    meta: { requiresAuth: true, layout: 'empty' },
+  },
+  {
     path: '/ClasesGrupales',
     component: () => import('pages/ClasesGrupales.vue'),
     meta: { requiresAuth: false, layout: 'empty' },
