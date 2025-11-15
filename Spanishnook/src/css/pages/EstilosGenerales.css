@@ -1,194 +1,184 @@
-                               /*  TEXTOS GENERALES RESPONSIVOS  */ 
+/*  TEXTOS GENERALES RESPONSIVOS  */
 
 .titulo-responsivo {
-    font-size: 2.8rem;
-    font-weight: bold;
-    margin: 10px 20px;
-  }
+  font-size: 2.3rem;
+  font-weight: bold;
+  margin: 10px 20px;
+}
 
 /* Subtítulos responsivo */
+.subtitulo-responsivo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 20px;
+}
+.subtitulo2-responsivo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 20px;
+}
+
+/* Texto principal responsivo */
+.texto-responsivo {
+  font-size: 1.2rem;
+  margin: 0 50px;
+}
+
+/* Texto principal responsivo */
+.texto2-responsivo {
+  font-size: 1rem;
+  margin: 0 50px;
+}
+
+/*Titulo tarjetas*/
+.titulo-tarjeta {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/*Texto tarjetas*/
+.texto-tarjeta {
+  font-size: 1.3rem;
+}
+
+@media (max-width: 900px) {
+  .titulo-responsivo {
+    font-size: 1.3rem;
+  }
+
   .subtitulo-responsivo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin: 0 20px;
+    font-size: 1.1rem;
   }
+
   .subtitulo2-responsivo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 20px;
+    font-size: 0.9rem;
   }
 
-/* Texto principal responsivo */
-    .texto-responsivo {
-        font-size: 1.4rem;
-        margin: 0 50px;
-    }
+  .texto-responsivo {
+    font-size: 1rem;
+    margin: 0 30px;
+  }
 
-/* Texto principal responsivo */
-    .texto2-responsivo {
-        font-size: 1.2rem;
-        margin: 0 50px;
-    }
+  .texto2-responsivo {
+    font-size: 1rem;
+    margin: 0 30px;
+  }
+  .titulo-tarjeta {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  .texto-tarjeta {
+    font-size: 1rem;
+  }
+}
 
-    /*Titulo tarjetas*/
-    .titulo-tarjeta {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
+@media (max-width: 600px) {
+  .titulo-responsivo {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
 
-    /*Texto tarjetas*/
-    .texto-tarjeta {
-        font-size: 1.3rem;
-    }
+  .subtitulo-responsivo {
+    font-size: 1rem;
+    font-weight: bold;
+  }
 
-    
-    @media (max-width: 900px) {
-        .titulo-responsivo {
-            font-size: 1.3rem;
-        }
+  .subtitulo2-responsivo {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  .texto-responsivo {
+    font-size: 1rem;
+    margin: 0 50px;
+  }
+  .texto2-responsivo {
+    font-size: 0.8rem;
+    margin: 0 30px;
+  }
+  .titulo-tarjeta {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  .texto-tarjeta {
+    font-size: 1.3rem;
+  }
+}
 
-        .subtitulo-responsivo {
-            font-size: 1.1rem;
-        }
+/*  BOTONES GENERALES RESPONSIVOS  */
 
-        .subtitulo2-responsivo {
-            font-size: 1.1rem;
-        }
+/* Botón ovalado responsivo */
+.oval-btn {
+  border-radius: 64px !important;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-top: 30px;
+}
 
-        .texto-responsivo {
-            font-size: 1rem;
-            margin: 0 30px;
-        }
+.cuadrado-btn {
+  padding-left: 32px;
+  padding-right: 32px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
 
-        .texto2-responsivo {
-            font-size: 1rem;
-            margin: 0 30px;
-        }
-        .titulo-tarjeta {
-        font-size: 1.2rem;
-        font-weight: bold;
-        }
-        .texto-tarjeta {
-        font-size: 1rem;
-        }
-    }
+/* Clase para botones centrados en la parte inferior de las tarjetas */
+.btn-tarjeta-fixed {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
 
-    @media (max-width: 600px) {
-        .titulo-responsivo {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }    
-
-
-        .subtitulo-responsivo {
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        .subtitulo2-responsivo {
-            font-size: 1rem;
-            font-weight: bold;
-        }
-        .texto-responsivo {
-            font-size: 1rem;
-            margin: 0 50px;
-        }
-        .texto2-responsivo {
-            font-size: 0.8rem;
-            margin: 0 30px;
-        }
-        .titulo-tarjeta {
-        font-size: 1.2rem;
-        font-weight: bold;
-        }
-        .texto-tarjeta {
-        font-size: 1.3rem;
-        }
-
-    }
-
-    /*  BOTONES GENERALES RESPONSIVOS  */
-
-    /* Botón ovalado responsivo */
-    .oval-btn {
-        border-radius: 64px !important;
-        padding-left: 32px;
-        padding-right: 32px;
-        font-weight: bold;
-        font-size: 1.5rem;
-        margin-top: 30px;
-    }
-
-    .cuadrado-btn {
-        padding-left: 32px;
-        padding-right: 32px;
-        font-weight: bold;
-        font-size: 1.4rem;
-        margin-top: 30px;
-    }
-
-    /* Clase para botones centrados en la parte inferior de las tarjetas */
-    .btn-tarjeta-fixed {
-        position: absolute;
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: auto;
-        margin: 0;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-
-    /* Móvil  pequeño */
-    @media (max-width: 600px) {
-        .oval-btn {
-            font-size: 14px;
-            padding: 8px 20px;
-            min-width: 160px;
-        }
-    }
+/* Móvil  pequeño */
 
 
-    @media  (max-width: 900) {
-        .oval-btn {
-            border-radius: 64px !important;
-            padding-left: 25px;
-            padding-right: 25px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 30px;
-        }
-        .cuadrado-btn {
-            padding-left: 25px;
-            padding-right: 25px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 30px;
-        }        
-    }
-    @media (max-width: 600px) {
-        .oval-btn {
-            border-radius: 64px !important;
-            padding-left: 20px;
-            padding-right: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-        .cuadrado-btn {
-            padding-left: 20px;
-            padding-right: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-        .btn-tarjeta-fixed {
-        bottom: 12px;
-        width: auto;
-    }
-    }
+@media (max-width: 900) {
+  .oval-btn {
+    border-radius: 64px !important;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 30px;
+  }
+  .cuadrado-btn {
+    padding-left: 25px;
+    padding-right: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 30px;
+  }
+}
+@media (max-width: 600px) {
+  .oval-btn {
+    border-radius: 64px !important;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+    font-size: 0.8rem !important;
+    margin-top: 30px;
+  }
+  .cuadrado-btn {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-top: 30px;
+  }
+  .btn-tarjeta-fixed {
+    bottom: 12px;
+    width: auto;
+  }
+}
 
-    /* Fondo degradado rojo oscuro */
-    .degradado-fondo {
-        background: #851319;
-    }
+/* Fondo degradado rojo oscuro */
+.degradado-fondo {
+  background: #851319;
+}

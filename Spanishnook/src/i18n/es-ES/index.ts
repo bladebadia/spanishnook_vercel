@@ -45,7 +45,7 @@ export default {
   indexAprenderEnGrupo: 'Aprender en grupo',
   indexClasesDeConversacion: 'Clases de conversación (B1+)',
   indexMejoraTuConfianza: 'Mejora tu confianza y fluidez conversando en español en grupos pequeños, relajados y divertidos. Muy pronto abriremos nuevas plazas.',
-  indexUneteALaLista: 'Únete a la lista de espera',
+  indexUneteALaLista: 'Empezar ahora',
   indexDescubreTuPunto: 'Descubre tu punto de partida: test de nivel gratuito',
   indexEnSolo: 'En solo 10 minutos sabrás cuál es tu nivel de español y qué opción es mejor para ti. El primer paso para aprender a tu ritmo.',
   indexHacerTest: 'Hacer el test ',
@@ -74,7 +74,7 @@ export default {
         instrucciones: 'Instrucciones',
         elTestConsta: 'El test consta de 25 preguntas secuenciadas por niveles',
         cadaPreguntaTiene: 'Cada pregunta tiene 3 opciones de respuesta, selecciona una. Cuando creas que no sabes/puedes continuar con el test, deja las preguntas en blanco',
-        alCompletar:'Al completar el test, recibirás un correo electrónico con tu nivel estimado y recomendaciones personalizadas para tu aprendizaje',
+        alCompletar:'Al finalizar recibirás una orientación aproximada de tu nivel de español. Este test no sustituye a una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
         comenzarTest: 'Comenzar Test',
         elTestToma:'El test toma aproximadamente 10 minutos',
         pregunta:'Pregunta',
@@ -106,8 +106,8 @@ export default {
 
   // Sección de Clases Individuales y Grupales
   individuales: {
-    nuestrasClases: 'Nuestras Clases Individuales',
-    textoNuestrasClases: 'En nuestras clases individuales, cada sesión está diseñada exclusivamente para ti. Juntos, identificamos tus objetivos y adaptamos el contenido a tus intereses y necesidades. Ya sea que quieras mejorar tu gramática, ampliar tu vocabulario o practicar la conversación, nuestras clases 1:1 te ofrecen la atención personalizada que necesitas para avanzar rápidamente y con confianza en tu aprendizaje del español.',
+    nuestrasClases: 'Nuestras Clases',
+    textoNuestrasClases: 'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su estilo de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupo reducido.',
     botonSeleccionaClase: 'Selecciona tu clase',
     botonReservaClase: 'Reserva tu clase',
     botonMasInfo: 'Más información',

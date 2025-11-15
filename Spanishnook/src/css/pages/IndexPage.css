@@ -58,11 +58,11 @@
 
 /* Agrandar icono de q-expansion-item en FAQs */
     .faqs-section .q-expansion-item__toggle-icon {
-        font-size: 3.5rem !important;
+        font-size: 1.8rem !important;
     }
 /* Agrandar icono de q-expansion-item en FAQs usando ::v-deep para Quasar */
     .faqs-section ::v-deep .q-expansion-item__toggle-icon {
-        font-size: 2.5rem !important;
+        font-size: 2.3rem !important;
     }
 
 

@@ -3,7 +3,7 @@
       <!-- Imagen cabecera -->
       <div style="width: 100%; margin-bottom: 3%;">
         <q-img
-          style="width: 100%; height: auto;"
+          style="width: 60%; height: auto;"
         fit="cover" position="center"
           src="/img/estudiante_1024.jpg">        
         </q-img>
@@ -14,8 +14,7 @@
           {{ t('individuales.nuestrasClases') }}
         </p>
 
-        <p class="q-ma-md texto-responsivo" >
-          {{ t('individuales.textoNuestrasClases') }}
+        <p class="q-ma-md texto-responsivo" v-html="t('individuales.textoNuestrasClases')">
         </p>
         <q-btn
           class="oval-btn"

@@ -86,25 +86,14 @@
             {{ $t('inicio') }}
           </q-btn>
     
-          <q-btn-dropdown 
-            flat 
-            auto-close 
+          <q-btn 
+            flat
             class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
             :label="$t('clases')"
-            dropdown-icon="expand_more"
-            menu-anchor="bottom middle"
-            menu-self="top middle"
+            to="/ClasesIndividuales"
           >
-            <q-list>
-              <q-item clickable @click="$router.push('/ClasesIndividuales')">
-                <q-item-section class="text-h6">{{ $t('clasesIndividuales') }}</q-item-section>
-              </q-item>
-              <q-item clickable @click="$router.push('/ClasesGrupales')">
-                <q-item-section class="text-h6">{{ $t('clasesGrupales') }}</q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+          </q-btn>
     
           <q-btn 
             flat 
@@ -310,14 +299,9 @@ const linksList = computed((): EssentialLinkProps[] => [
     link: '/TestNivel',
   },
   {
-    title: t('clasesIndividuales'),
+    title: t('clases'),
     icon: 'record_voice_over',
     link: '/ClasesIndividuales',
-  },
-  {
-    title: t('clasesGrupales'),
-    icon: 'chat',
-    link: '/ClasesGrupales',
   },
   {
     title: t('sobre'),

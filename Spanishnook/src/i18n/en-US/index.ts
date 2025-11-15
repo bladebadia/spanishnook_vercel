@@ -47,7 +47,7 @@ export default {
   indexAprenderEnGrupo: 'Learn in a group',
   indexClasesDeConversacion: 'Conversation Classes',
   indexMejoraTuConfianza: 'Improve your confidence and fluency by speaking with others. Suitable for all levels.',
-  indexUneteALaLista: 'Join the waiting list',
+  indexUneteALaLista: 'Start now',
   indexDescubreTuPunto: 'Discover your starting point: take the level test',
   indexEnSolo: 'In just 20 minutes, find out your level and receive personalized recommendations for your learning journey.',
   indexHacerTest: 'Take the test',
@@ -82,7 +82,7 @@ export default {
         instrucciones: 'Instructions',
         elTestConsta: 'The test consists of 25 questions sequenced by levels',
         cadaPreguntaTiene: 'Each question has 3 answer options, select one. When you think you cannot continue with the test, leave the questions blank',
-        alCompletar: 'Upon completing the test, you will receive an email with your estimated level and personalized recommendations for your learning',
+        alCompletar: 'At the end, you will receive an approximate orientation of your Spanish level. This test does not replace an official evaluation, but it will help you choose the course that best fits you.',
         comenzarTest: 'Start Test',
         elTestToma: 'The test takes approximately 10 minutes',
         pregunta: 'Question',
@@ -102,8 +102,8 @@ export default {
 
   },
   individuales: {
-    nuestrasClases: 'Our Private Classes',
-    textoNuestrasClases: 'In our private classes, each session is designed exclusively for you. Together, we identify your goals and adapt the content to your interests and needs. Whether you want to improve your grammar, expand your vocabulary, or practice conversation, our 1:1 classes offer you the personalized attention you need to progress quickly and confidently in your Spanish learning.',
+    nuestrasClases: 'Our  lessons',
+    textoNuestrasClases: 'At SpanishNook there isn’t just one path: every student has their own goals, time, and learning style. That’s why we offer flexible options so you can choose what fits you best: private lessons or small group courses',
     botonSeleccionaClase: 'Select your class',
     botonReservaClase: 'Book your class',
     botonMasInfo: 'More information',

@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import '../css/pages/EstilosGenerales.css';
 
 interface Props {
   imageSrc: string;
@@ -72,16 +73,16 @@ const onImageError = (event: Event) => {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
+  
   max-width: 500px;
   padding: 10px 10px;
-  font-size: 1.2rem !important;
+  font-size: 1rem !important;
   margin: 0px 0px !important;
 }
 @media (max-width: 600px) {
   .btn-fijo {
-    font-size: 0.9rem !important;
-    padding: 10px 10  px;
+    font-size: 0.8rem !important;
+    padding: 10px 10px;
   }
 
 }
