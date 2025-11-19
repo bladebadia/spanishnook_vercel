@@ -560,3 +560,45 @@
   margin: 0 auto
   padding: 2rem 0
 </style>          
+
+<img
+          src="/img/animacion1.png"
+          alt="Estudiantes"
+          class="img-animada move-lr"
+          style="max-width: 300px; width: 100%; position: absolute; left: 0; top: 0; margin: 0; padding: 0;"
+          @animationend="mostrarBocadillo = true"
+          />
+
+<q-footer class="bg-black text-white">
+      <q-bar class="footer-bar">
+        <div class="row flex items-center full-width">
+          <div class="q-mr-lg">© 2025 Spanishnook · Todos los derechos reservados</div>
+          <router-link to="/Aviso" class="q-px-md q-mx-md text-white">Aviso Legal</router-link>
+          <router-link to="/Privacidad" class="q-px-md q-mx-md text-white"
+            >Política de Privacidad</router-link
+          >
+          <router-link to="/Cookies" class="q-px-md q-mx-md text-white"
+            >Política de Cookies</router-link
+          >
+          <router-link to="/Condiciones" class="q-px-md q-mx-md text-white"
+            >Condiciones de Venta</router-link
+          >
+        </div>
+      </q-bar>
+    </q-footer>
+
+    // texto en la imagen
+    <div
+          class="text-weight-bolder titulo-responsivo"
+          style="
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-shadow: 0 2px 8px #000;
+            text-align: center;
+            width: 90%;
+            z-index: 2;
+            background-color: rgba(0, 0, 0, 0);
+          "
+        >Texto</div>

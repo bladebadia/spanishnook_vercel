@@ -1,7 +1,7 @@
-# AreaPersonal.vue - Archivo Modificado ```vue
+
 <template>
   <q-page class="q-pa-lg">
-    <!-- Header con botones y saludo y otras cosas-->
+    <!-- Header con botones y saludo OK  -->
     <div class="row items-center q-pa-lg q-mb-md">
       <!-- Botón Nueva Reserva a la izquierda -->
       <div class="col-auto">
@@ -104,37 +104,6 @@
               <q-item-section>Datos Personales</q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active="menuActivo === 'mensajes'"
-              @click="seleccionarMenu('mensajes')"
-              active-class="menu-activo"
-            >
-              <q-item-section avatar>
-                <q-icon name="comment" color="primary" />
-              </q-item-section>
-              <q-item-section>Mensajes</q-item-section>
-              <q-item-section side>
-                <q-badge v-if="nuevosMensajes > 0" color="orange" rounded>
-                  {{ nuevosMensajes }}
-                </q-badge>
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active="menuActivo === 'configuracion'"
-              @click="seleccionarMenu('configuracion')"
-              active-class="menu-activo"
-            >
-              <q-item-section avatar>
-                <q-icon name="settings" color="primary" />
-              </q-item-section>
-              <q-item-section>Configuración</q-item-section>
-            </q-item>
-
             <!-- Panel de Administración (solo para admins) -->
             <q-item
               v-if="esAdmin"
@@ -206,136 +175,92 @@
         <q-card v-if="menuActivo === 'datos'">
           <q-card-section>
             <div class="text-h6 q-mb-md">Datos Personales</div>
+              <q-form @submit="enviarDatosPersonales" class="q-gutter-md">
+                <div class="row q-col-gutter-md">
+                  <!-- Columna izquierda -->
+                  <div class="col-12 col-md-6">
+                    <q-input
+                      v-model="formDatos.nombre"
+                      label="Nombre *"
+                      outlined
+                      :rules="[(val) => !!val || 'El nombre es obligatorio']"
+                    />
 
-            <q-form @submit="enviarDatosPersonales" class="q-gutter-md">
-              <div class="row q-col-gutter-md">
-                <!-- Columna izquierda -->
-                <div class="col-12 col-md-6">
-                  <q-input
-                    v-model="formDatos.nombre"
-                    label="Nombre *"
-                    outlined
-                    :rules="[(val) => !!val || 'El nombre es obligatorio']"
-                  />
+                    <q-input v-model="formDatos.apellido1" label="Primer Apellido" outlined />
 
-                  <q-input
-                    v-model="formDatos.apellido1"
-                    label="Primer Apellido *"
-                    outlined
-                    :rules="[(val) => !!val || 'El primer apellido es obligatorio']"
-                  />
+                    <q-input v-model="formDatos.apellido2" label="Segundo Apellido" outlined />
 
-                  <q-input v-model="formDatos.apellido2" label="Segundo Apellido" outlined />
+                    <q-input v-model="formDatos.direccion" label="Dirección" outlined />
 
-                  <q-input
-                    v-model="formDatos.direccion"
-                    label="Dirección *"
-                    outlined
-                    :rules="[(val) => !!val || 'La dirección es obligatoria']"
-                  />
+                    <q-input v-model="formDatos.codigoPostal" label="Código Postal" outlined mask="#####" />
+                  </div>
 
-                  <q-input
-                    v-model="formDatos.codigoPostal"
-                    label="Código Postal *"
-                    outlined
-                    mask="#####"
-                    :rules="[(val) => !!val || 'El código postal es obligatorio']"
-                  />
+                  <!-- Columna derecha -->
+                  <div class="col-12 col-md-6">
+                    <q-input v-model="formDatos.ciudad" label="Ciudad" outlined />
+
+                    <q-select v-model="formDatos.pais" :options="paises" label="País" outlined />
+
+                    <q-input v-model="formDatos.nif" label="NIF/NIE" outlined mask="XXXXXXXXX" />
+
+                    <q-input
+                      v-model="formDatos.email"
+                      label="Correo Electrónico *"
+                      type="email"
+                      outlined
+                      :rules="[(val) => (!!val && /.+@.+\..+/.test(val)) || 'Email debe ser válido']"
+                    />
+
+                    <q-input v-model="formDatos.telefono" label="Teléfono" outlined mask="### ### ###" />
+                  </div>
                 </div>
 
-                <!-- Columna derecha -->
-                <div class="col-12 col-md-6">
-                  <q-input
-                    v-model="formDatos.ciudad"
-                    label="Ciudad *"
-                    outlined
-                    :rules="[(val) => !!val || 'La ciudad es obligatoria']"
-                  />
-
-                  <q-select
-                    v-model="formDatos.pais"
-                    :options="paises"
-                    label="País *"
-                    outlined
-                    :rules="[(val) => !!val || 'El país es obligatorio']"
-                  />
-
-                  <q-input
-                    v-model="formDatos.nif"
-                    label="NIF/NIE *"
-                    outlined
-                    mask="XXXXXXXXX"
-                    :rules="[(val) => !!val || 'El NIF es obligatorio']"
-                  />
-
-                  <q-input
-                    v-model="formDatos.email"
-                    label="Correo Electrónico *"
-                    type="email"
-                    outlined
-                    :rules="[(val) => (!!val && /.+@.+\..+/.test(val)) || 'Email debe ser válido']"
-                  />
-
-                  <q-input
-                    v-model="formDatos.telefono"
-                    label="Teléfono *"
-                    outlined
-                    mask="### ### ###"
-                    :rules="[(val) => !!val || 'El teléfono es obligatorio']"
-                  />
-                </div>
-              </div>
-
-              <!-- Campos adicionales -->
-              <div class="row q-col-gutter-md">
-                <div class="col-12 col-md-6">
-                  <q-input
-                    v-model="formDatos.fechaNacimiento"
-                    label="Fecha de Nacimiento"
-                    outlined
-                    type="date"
-                  />
-                </div>
-                <div class="col-12 col-md-6">
-                  <q-select
-                    v-model="formDatos.genero"
-                    :options="['Masculino', 'Femenino', 'Otro', 'Prefiero no decir']"
-                    label="Género"
-                    outlined
-                  />
-                </div>
-              </div>
-
-              <q-input
-                v-model="formDatos.observaciones"
-                label="Observaciones"
-                outlined
-                type="textarea"
-                rows="3"
-              />
-
-              <!-- Botones de acción -->
-              <div class="row q-gutter-md q-mt-lg">
-                <q-btn
-                  label="Validar Datos"
-                  color="info"
-                  @click="validarDatos"
-                  icon="check_circle"
+                <!-- Campos adicionales -->
+                <q-input
+                  v-model="formDatos.observaciones"
+                  label="Observaciones"
+                  outlined
+                  type="textarea"
+                  rows="3"
                 />
-                <q-btn label="Guardar Cambios" type="submit" color="primary" icon="save" />
-                <q-btn label="Limpiar" color="grey" @click="limpiarFormulario" icon="clear" />
-              </div>
-            </q-form>
-          </q-card-section>
-        </q-card>
+
+                <!-- Botones de acción -->
+                <div class="row q-gutter-md q-mt-lg">
+                  <q-btn
+                    label="Validar Datos"
+                    color="info"
+                    @click="validarDatos"
+                    icon="check_circle"
+                  />
+                  <q-btn label="Guardar Cambios" type="submit" color="primary" icon="save" />
+                  <q-btn label="Limpiar" color="grey" @click="limpiarFormulario" icon="clear" />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
 
         <!-- Otros contenidos según selección del menú -->
         <q-card v-if="menuActivo === 'historial'">
           <q-card-section>
-            <div class="text-h6">Historial de Clases</div>
-            <p class="text-grey">Aquí aparecerá tu historial completo de clases.</p>
+            <div class="text-h6">Tu historial de Clases</div>
           </q-card-section>
-        </q-card>
+          <q-card-section>
+          <q-list bordered v-if="reservasPasadas.length > 0">
+            <q-item v-for="reserva in reservasPasadas" :key="reserva.id" class="q-mb-sm">
+              <q-item-section>
+                <q-item-label class="text-weight-bold">
+                  {{ formatFecha(reserva.fecha) }} a las {{ reserva.hora.slice(0, 5) }}
+                </q-item-label>
+                <q-item-label caption>
+                  {{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+        </q-list>
+
+        <p v-else class="text-grey">No tienes clases en tu historial.</p>
+      </q-card-section>
+    </q-card>
 
         <q-card v-if="menuActivo === 'mensajes'">
           <q-card-section>
@@ -372,14 +297,153 @@ const reservasConfirmadas = ref<Reserva[]>([]);
 const { t } = useI18n();
 const menuVisible = ref($q.screen.gt.sm);
 const menuActivo = ref('reservadas');
-const nuevosMensajes = ref(0);
+
+
+const cargarDatosPersonales = async () => {
+  if (!user.value?.id) {
+    $q.notify({
+      type: 'warning',
+      message: 'No se pudo cargar la información del usuario. ID no encontrado.',
+      timeout: 3000,
+    });
+    return;
+  }
+
+  try {
+    // Verificar si el usuario ya tiene un registro en la tabla `datos_usuarios`
+    const { data, error } = await supabase
+      .from('datos_usuarios')
+      .select('*')
+      .eq('user_id', user.value.id)
+      .single(); // Obtener un único registro
+
+    if (error && error.code !== 'PGRST116') {
+      // Error distinto a "no se encontró registro"
+      console.error('Error cargando datos personales:', error);
+      $q.notify({
+        type: 'negative',
+        message: 'Error al cargar los datos personales.',
+        timeout: 3000,
+      });
+      return;
+    }
+
+    if (data) {
+      // Si el registro ya existe, validar el correo
+      if (data.email !== user.value.email) {
+        $q.notify({
+          type: 'negative',
+          message: 'El correo electrónico no coincide con el registro existente.',
+          timeout: 3000,
+        });
+        return;
+      }
+
+      // Sobrescribir los datos en el formulario
+      formDatos.value = {
+        nombre: data.nombre || '',
+        apellido1: data.apellido1 || '',
+        apellido2: data.apellido2 || '',
+        direccion: data.direccion || '',
+        codigo_postal: data.codigo_postal || '',
+        ciudad: data.ciudad || '',
+        pais: data.pais || null,
+        nif: data.nif || '',
+        email: data.email || '',
+        telefono: data.telefono || '',
+        observaciones: data.observaciones || '',
+      };
+
+      $q.notify({
+        type: 'positive',
+        message: 'Datos personales cargados correctamente.',
+        timeout: 3000,
+      });
+    } else {
+      // Si no existe, crear un nuevo registro
+      const nuevoRegistro = {
+        user_id: user.value.id,
+        nombre: '',
+        apellido1: '',
+        apellido2: '',
+        direccion: '',
+        codigo_postal: '',
+        ciudad: '',
+        pais: null,
+        nif: '',
+        email: user.value.email || '',
+        telefono: '',
+        observaciones: '',
+      };
+
+      const { error: insertError } = await supabase
+        .from('datos_usuarios')
+        .insert([nuevoRegistro]);
+
+      if (insertError) {
+        console.error('Error creando nuevo registro:', insertError);
+        $q.notify({
+          type: 'negative',
+          message: 'Error al crear el registro de datos personales.',
+          timeout: 3000,
+        });
+        return;
+      }
+
+      formDatos.value = nuevoRegistro;
+
+      $q.notify({
+        type: 'positive',
+        message: 'Nuevo registro creado correctamente.',
+        timeout: 3000,
+      });
+    }
+  } catch (error) {
+    console.error('Error cargando datos personales:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al cargar los datos personales.',
+      timeout: 3000,
+    });
+  }
+};
 
 // Computed para verificar si es admin
 const esAdmin = computed(() => {
   return user.value?.user_metadata?.role === 'admin';
 });
 
+const reservasPasadas = ref<Reserva[]>([]);
 
+
+const cargarReservasPasadas = async () => {
+  if (!user.value?.id) {
+    reservasPasadas.value = [];
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('reservas')
+      .select('*')
+      .eq('user_id', user.value.id)
+      .eq('estado', 'confirmada')
+      .lt('fecha', new Date().toISOString().split('T')[0]) // Reservas anteriores a hoy
+      .order('fecha', { ascending: false }) // Ordenar por fecha descendente
+      .order('hora', { ascending: false });
+      console.log('Reservas pasadas cargadas:', data);
+
+    if (error) {
+      console.error('Error cargando reservas pasadas:', error);
+      return;
+    }
+
+    reservasPasadas.value = data || [];
+  } catch (error) {
+    console.error('Error cargando reservas pasadas:', error);
+    reservasPasadas.value = [];
+  }
+};
 
 // Formulario de datos personales
 const formDatos = ref<{
@@ -388,28 +452,24 @@ const formDatos = ref<{
   apellido1: string;
   apellido2: string;
   direccion: string;
-  codigoPostal: string;
+  codigo_postal: string;
   ciudad: string;
   pais: string | null;
   nif: string;
   email: string;
   telefono: string;
-  fechaNacimiento: string;
-  genero: string | null;
   observaciones: string;
 }>({
   nombre: '',
   apellido1: '',
   apellido2: '',
   direccion: '',
-  codigoPostal: '',
+  codigo_postal: '',
   ciudad: '',
   pais: null,
   nif: '',
   email: '',
   telefono: '',
-  fechaNacimiento: '',
-  genero: null,
   observaciones: '',
 });
 
@@ -436,17 +496,7 @@ const irAPanelAdmin = async () => {
 
 // Función para validar datos
 const validarDatos = () => {
-  const camposRequeridos = [
-    'nombre',
-    'apellido1',
-    'direccion',
-    'codigoPostal',
-    'ciudad',
-    'pais',
-    'nif',
-    'email',
-    'telefono',
-  ];
+  const camposRequeridos = ['nombre', 'email'];
 
   const camposFaltantes = camposRequeridos.filter((campo) => !formDatos.value[campo]);
 
@@ -465,16 +515,34 @@ const validarDatos = () => {
   }
 };
 
+
 // Función para enviar datos personales
 const enviarDatosPersonales = async () => {
   try {
-    // Aquí iría la lógica para guardar en Supabase
-    console.log('Guardando datos:', formDatos.value);
-    await supabase
-      .from('usuarios')
-      .update(formDatos.value)
-      .eq('id', user.value?.id);
+    // Filtrar solo los campos necesarios para enviar a Supabase
+    const datosAEnviar = {
+      nombre: formDatos.value.nombre,
+      apellido1: formDatos.value.apellido1,
+      apellido2: formDatos.value.apellido2,
+      direccion: formDatos.value.direccion,
+      codigo_postal: formDatos.value.codigoPostal,
+      ciudad: formDatos.value.ciudad,
+      pais: formDatos.value.pais,
+      nif: formDatos.value.nif,
+      email: formDatos.value.email,
+      telefono: formDatos.value.telefono,
+      observaciones: formDatos.value.observaciones,
+    };
 
+    // Enviar los datos a la tabla `datos_usuarios`
+    const { data, error } = await supabase
+      .from('datos_usuarios')
+      .upsert([datosAEnviar], { onConflict: 'email' }); // Actualiza si el correo ya existe
+
+    if (error) {
+      throw error;
+    }
+      console.log('Datos guardados:', data);
     $q.notify({
       type: 'positive',
       message: 'Datos guardados correctamente',
@@ -502,6 +570,12 @@ const limpiarFormulario = () => {
 // Función para seleccionar menú
 const seleccionarMenu = (menu: string) => {
   menuActivo.value = menu;
+
+  if (menu === 'historial') {
+    void cargarReservasPasadas();
+  }else if (menu === 'datos') {
+    void cargarDatosPersonales();
+  }
 
   if ($q.screen.lt.md) {
     menuVisible.value = false;
