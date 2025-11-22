@@ -11,8 +11,7 @@
         <q-card-section class="q-pa-none q-ma-none" >
           <div class="row items-start q-pa-none q-ma-none">
             <p class="texto-responsivo q-mb-md q-pb-md">
-                Spanish Nook es un espacio dedicado a la enseñanza del español, creado con pasión por su fundador. Con años de experiencia en la enseñanza de idiomas, el propietario ha diseñado este sitio para ofrecer recursos, clases y herramientas que ayuden a los estudiantes a alcanzar sus metas lingüísticas.
-              </p>
+                 {{ t('SobreSpanish.intro') }}
             <div class="col-4 ">
               <iframe
                 width="100%"
@@ -98,6 +97,8 @@
 <script setup lang="ts">
 // No se requiere lógica adicional para esta página estática
 import '../css/pages/EstilosGenerales.css';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <style scoped>

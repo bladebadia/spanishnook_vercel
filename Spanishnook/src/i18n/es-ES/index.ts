@@ -186,7 +186,29 @@ export default {
     revisaTubandeja: ' Revisa tu bandeja de entrada y la carpeta de spam.',
     aceptar:' Aceptar',
     
-  }
+  },
+  SobreSpanish:{
+    sobre: 'Sobre SpanishNook',
+    conoce: 'Conoce SpanishNook',
+    intro: 'Detrás de cada clase hay una persona, una historia y una forma de enseñar pensada para ti. En un mundo frenético, aprender también puede ser un refugio.',
+    tulug: 'Tu lugar',
+    aprender: 'Aprender un idioma no debería sentirse frío ni distante. SpanishNook nace para ofrecer un aprendizaje cercano en un entorno virtual: un lugar donde sentirte acompañado, avanzar con confianza y formar parte de una pequeña comunidad.',
+    enmedio: 'En medio de un mundo donde el tiempo no se detiene, aquí encontrarás flexibilidad, calidad y un proceso que se adapta a ti y a tus objetivos. Nuestro objetivo es proporcionar un entorno de aprendizaje accesible y efectivo, adaptado a las necesidades de cada estudiante.',
+    quien: 'Quién hay detrás de SpanishNook',
+    soy: 'Soy Paula, profesora de español, traductora e intérprete.',
+    tras: 'Tras más de 4 años enseñando en escuelas, online y de forma privada alrededor de distintas ciudades europeas, he podido acompañar a estudiantes de perfiles muy distintos a descubrir su propia voz en español. Con el tiempo me di cuenta de que la enseñanza en las aulas tiene algunas limitaciones en la actualidad: no es necesario compartir un mismo espacio físico para vivir una experiencia de aprendizaje significativa, basta con crear un espacio seguro y estimulante donde poder ser y estar, vincularse y crecer sin impedimentos. De esta idea nació SpanishNook: un lugar donde la enseñanza online conserva la cercanía y autenticidad de una buena clase, con la ventaja de llegar a cualquier rincón del mundo y de adaptarse mejor a tu día a día, ofreciéndote la flexibilidad y el control de tu tiempo que necesitas para aprender.',
+    filosofía: 'Filosofía',
+    mipropuesta: 'Mi propuesta une materiales auténticos, clases dinámicas y un enfoque comunicativo en el que tú eres el protagonista de tu aprendizaje. Todo ello con un toque creativo (sí, incluso doodles y pizarras digitales) que hace que cada sesión tenga su propia personalidad.',
+    loque: 'Lo que encontrarás en Spanish Nook:',
+    cercania: 'Cercanía: trato humano, clases reducidas, ambiente relajado.',
+    flexibilidad: 'Flexibilidad: el español se adapta a tu ritmo de vida.',
+    Confianza: 'acompañamiento real en cada paso de tu aprendizaje.',
+    ojalá: '✦ Ojalá este rincón también pueda ser el tuyo.',
+    espero: 'Te espero en SpanishNook para dar juntos el siguiente paso.',
+    proximo: '👉  Tu próximo paso en SpanishNook.',
+
+
+  },
 
 
 

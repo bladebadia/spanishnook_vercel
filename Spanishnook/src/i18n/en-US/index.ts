@@ -183,4 +183,26 @@ export default {
     revisaTubandeja: 'Check your inbox and spam folder.',
     aceptar: 'Accept',
   },
+  SobreSpanish:{
+    sobre: 'About SpanishNook',
+    conoce: 'Get to know SpanishNook',
+    intro: 'Behind every class there’s a person, a story, and a way of teaching designed just for you. In a fast-paced world, learning can also become a safe haven.',
+    tulug: 'Your place',
+    aprender: 'Learning a language shouldn’t feel cold or distant. SpanishNook was created to offer a warm and personal learning experience in a virtual environment: a place where you can feel supported, grow with confidence, and be part of a small community.',
+    enmedio: 'In a world where time is always rushing, here you’ll find flexibility, quality, and a process that adapts to you and your goals. Our goal is to provide an accessible and effective learning environment, tailored to the needs of each student.',
+    quien: 'Who is behind SpanishNook',
+    soy: 'I’m Paula, Spanish teacher, translator and interpreter.',
+    tras: 'After more than four years teaching in schools, online, and privately in various European cities, I\'ve had the opportunity to guide students from very different backgrounds in discovering their own voice in Spanish. Over time, I\'ve realized that traditional classroom teaching has some limitations: it\'s not necessary to share the same physical space to have a meaningful learning experience; it\'s enough to create a safe and stimulating space where students can simply be themselves, connect, and grow without barriers.',
+    filosofía: 'Philosophy',
+    mipropuesta: 'My approach brings together authentic materials, dynamic classes, and a communicative method where you are at the center of your learning. All of this with a creative touch (yes, even doodles and digital whiteboards!) that gives each session its own personality.',
+    loque: 'What you’ll find at SpanishNook:',
+    cercania: 'Closeness: human connection, small groups, relaxed atmosphere.',
+    flexibilidad: 'Flexibility: Spanish that adapts to your lifestyle.',
+    confianza: 'Confidence: real support at every step of your learning journey.',
+    ojalá: '✦ I hope this little corner can become yours too.',
+    espero: ' I’ll be waiting for you at SpanishNook to take the next step together.',
+    proximo: '👉 Your next step at SpanishNook',
+
+  },
+
 };
