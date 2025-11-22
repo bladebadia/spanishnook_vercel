@@ -1,4 +1,3 @@
-
 <template>
   <q-page class="q-pa-lg">
     <!-- Header con botones y saludo OK  -->
