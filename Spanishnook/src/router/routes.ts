@@ -123,6 +123,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ReservasClases.vue'),
     meta: { layout: 'empty' },
   },
+    {
+    path: '/TestSubscriptions',
+    component: () => import('pages/TestSubscriptions.vue'),
+    meta: { layout: 'empty' },
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
