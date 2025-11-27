@@ -5,6 +5,14 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 6G
+        reservations:
+          memory: 3G
     volumes:
       - ..:/workspaces/Spanishnook:cached
     command: sleep infinity
