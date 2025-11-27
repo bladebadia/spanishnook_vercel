@@ -313,11 +313,554 @@
           </q-card>
         </div>
 
-        <!-- Sección Cursos y Tarjetas -->
+        <!-- Sección Cursos  -->
+                <!-- Sección Cursos -->
         <div v-if="seccionActual === 'cursos'">
+          <div class="row items-center justify-between q-mb-md">
+            <div class="text-h4">Gestión de Cursos Grupales</div>
+            <q-btn
+              color="primary"
+              icon="add"
+              label="Nuevo Curso"
+              @click="abrirDialogNuevoCurso"
+              unelevated
+            />
+          </div>
+
+          <!-- Estado vacío -->
+          <q-card v-if="cursosGrupales.length === 0" flat bordered class="q-pa-lg text-center">
+            <q-icon name="school" size="64px" color="grey-5" />
+            <div class="text-h6 text-grey-7 q-mt-md">No hay cursos disponibles</div>
+            <div class="text-body2 text-grey-6">
+              Crea tu primer curso haciendo clic en "Nuevo Curso"
+            </div>
+          </q-card>
+
+          <!-- Lista de cursos -->
+          <q-list v-else bordered separator class="rounded-borders">
+            <q-expansion-item
+              v-for="curso in cursosGrupales"
+              :key="curso.id ?? 0"
+              :model-value="cursoExpandido === curso.id"
+              @update:model-value="curso.id !== undefined && toggleCurso(curso.id)"
+              expand-separator
+              :header-class="
+                curso.estado_curso === 'Activo'
+                  ? 'bg-green-1'
+                  : curso.estado_curso === 'Completo'
+                    ? 'bg-blue-1'
+                    : 'bg-grey-2'
+              "
+            >
+              <template v-slot:header>
+                <q-item-section avatar>
+                  <q-avatar
+                    :color="curso.estado_curso === 'Activo' ? 'primary' : 'grey'"
+                    text-color="white"
+                    icon="school"
+                  />
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label class="text-h6">
+                    {{ curso.nombre_curso }}
+                    <q-badge :color="curso.estado_curso === 'Activo' ? 'positive' : 'grey'" class="q-ml-sm">
+                      {{ curso.codigo_curso }}
+                    </q-badge>
+                  </q-item-label>
+                  <q-item-label caption>
+                    <q-chip size="sm" :color="getColorEstado(curso.estado_curso)" text-color="white" dense>
+                      {{ curso.estado_curso }}
+                    </q-chip>
+                    <q-chip v-if="curso.nivel" size="sm" color="primary" text-color="white" dense class="q-ml-xs">
+                      {{ curso.nivel }}
+                    </q-chip>
+                    <q-chip v-if="curso.precio_curso" size="sm" color="secondary" text-color="white" dense class="q-ml-xs">
+                      {{ curso.precio_curso }}€
+                    </q-chip>
+                  </q-item-label>
+                </q-item-section>
+
+                <q-item-section side>
+                  <q-btn flat round dense icon="edit" color="primary" size="sm" />
+                </q-item-section>
+              </template>
+
+              <!-- Formulario expandido -->
+              <q-card flat>
+                <q-card-section>
+                  <div class="row q-col-gutter-md">
+                    <!-- Fila 1: Información básica -->
+                    <div class="col-12 col-md-4">
+                      <q-input
+                        v-model="cursoFormulario.codigo_curso"
+                        label="Código del curso *"
+                        filled
+                        dense
+                        :rules="[(val) => !!val || 'Campo obligatorio']"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="tag" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                      <q-input
+                        v-model="cursoFormulario.nombre_curso"
+                        label="Nombre del curso *"
+                        filled
+                        dense
+                        :rules="[(val) => !!val || 'Campo obligatorio']"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="title" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                      <q-select
+                        v-model="cursoFormulario.estado_curso"
+                        :options="estadosCurso"
+                        label="Estado *"
+                        filled
+                        dense
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="info" />
+                        </template>
+                      </q-select>
+                    </div>
+
+                    <!-- Fila 2: Nivel y capacidad -->
+                    <div class="col-12 col-md-4">
+                      <q-select
+                        v-model="cursoFormulario.nivel"
+                        :options="nivelesDisponibles"
+                        label="Nivel"
+                        filled
+                        dense
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="signal_cellular_alt" />
+                        </template>
+                      </q-select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                      <q-input
+                        v-model.number="cursoFormulario.max_estudiantes"
+                        label="Máx. estudiantes"
+                        type="number"
+                        filled
+                        dense
+                        min="1"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="group" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                      <q-input
+                        v-model.number="cursoFormulario.precio_curso"
+                        label="Precio (€)"
+                        type="number"
+                        filled
+                        dense
+                        min="0"
+                        step="0.01"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="euro" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <!-- Fila 3: Fechas -->
+                    <div class="col-12 col-md-6">
+                      <q-input
+                        v-model="cursoFormulario.fecha_inicio"
+                        label="Fecha inicio"
+                        type="date"
+                        filled
+                        dense
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="event" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <q-input
+                        v-model="cursoFormulario.fecha_fin"
+                        label="Fecha fin"
+                        type="date"
+                        filled
+                        dense
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="event" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <!-- Fila 4: Días de la semana y Horarios -->
+                    <div class="col-12 col-md-6">
+                      <q-select
+                        v-model="cursoFormulario.dias_semana"
+                        :options="diasSemanaOpciones"
+                        label="Días de la semana"
+                        filled
+                        dense
+                        multiple
+                        use-chips
+                        counter
+                        hint="Selecciona los días en que se imparte el curso"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="calendar_month" />
+                        </template>
+                      </q-select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <q-select
+                        v-model="cursoFormulario.horarios_curso"
+                        :options="horariosDisponibles"
+                        label="Horarios"
+                        filled
+                        dense
+                        multiple
+                        use-chips
+                        counter
+                        emit-value
+                        map-options
+                        options-dense
+                        hint="Selecciona los horarios disponibles"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="schedule" />
+                        </template>
+                        <template v-slot:selected-item="scope">
+                          <q-chip
+                            removable
+                            @remove="scope.removeAtIndex(scope.index)"
+                            :tabindex="scope.tabindex"
+                            color="primary"
+                            text-color="white"
+                            dense
+                            class="q-ma-xs"
+                          >
+                            {{ scope.opt }}
+                          </q-chip>
+                        </template>
+                      </q-select>
+                    </div>
+
+                    <!-- Fila 5: Descripción -->
+                    <div class="col-12">
+                      <q-input
+                        v-model="cursoFormulario.descripcion"
+                        label="Descripción"
+                        type="textarea"
+                        filled
+                        dense
+                        rows="3"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="description" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <!-- Fila 6: Información de la tarjeta -->
+                    <div class="col-12">
+                      <q-separator class="q-my-md" />
+                      <div class="text-subtitle1 text-weight-medium q-mb-sm">Información de la tarjeta</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <q-input
+                        v-model="cursoFormulario.titulo_tarjeta"
+                        label="Título de la tarjeta"
+                        filled
+                        dense
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="badge" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <q-input
+                        v-model="cursoFormulario.boton_tarjeta"
+                        label="Texto del botón"
+                        filled
+                        dense
+                        placeholder="Más información"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="smart_button" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <div class="col-12">
+                      <q-input
+                        v-model="cursoFormulario.imagen_tarjeta"
+                        label="URL de la imagen"
+                        filled
+                        dense
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="image" />
+                        </template>
+                      </q-input>
+                    </div>
+
+                    <!-- Fila 7: Usuarios (array) -->
+                    <div class="col-12">
+                      <q-separator class="q-my-md" />
+                      <div class="text-subtitle1 text-weight-medium q-mb-sm">Usuarios inscritos</div>
+                    </div>
+
+                    <div class="col-12">
+                      <q-select
+                        v-model="cursoFormulario.usuarios"
+                        label="Usuarios"
+                        filled
+                        dense
+                        multiple
+                        use-chips
+                        use-input
+                        new-value-mode="add-unique"
+                        input-debounce="0"
+                        hint="Escribe el email y presiona Enter"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="people" />
+                        </template>
+                      </q-select>
+                    </div>
+                  </div>
+
+                  <!-- Botones de acción -->
+                  <div class="row q-gutter-sm q-mt-md">
+                    <q-btn
+                      label="Guardar cambios"
+                      color="primary"
+                      icon="save"
+                      @click="guardarCurso"
+                      :loading="guardandoCurso"
+                      unelevated
+                    />
+                    <q-btn
+                      label="Eliminar curso"
+                      color="negative"
+                      icon="delete"
+                      @click="eliminarCurso(curso.id!)"
+                      outline
+                    />
+                    <q-btn label="Cancelar" color="grey" @click="cursoExpandido = null" flat />
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+
+          <!-- Dialog para nuevo curso -->
+          <q-dialog v-model="dialogNuevoCurso" persistent>
+            <q-card style="min-width: 700px; max-width: 90vw">
+              <q-card-section class="row items-center">
+                <div class="text-h6">Crear Nuevo Curso</div>
+                <q-space />
+                <q-btn icon="close" flat round dense v-close-popup />
+              </q-card-section>
+
+              <q-separator />
+
+              <q-card-section style="max-height: 70vh" class="scroll">
+                <div class="row q-col-gutter-md">
+                  <!-- Información básica -->
+                  <div class="col-12 col-md-4">
+                    <q-input
+                      v-model="cursoFormulario.codigo_curso"
+                      label="Código del curso *"
+                      filled
+                      :rules="[(val) => !!val || 'Campo obligatorio']"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-8">
+                    <q-input
+                      v-model="cursoFormulario.nombre_curso"
+                      label="Nombre del curso *"
+                      filled
+                      :rules="[(val) => !!val || 'Campo obligatorio']"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <q-select
+                      v-model="cursoFormulario.estado_curso"
+                      :options="estadosCurso"
+                      label="Estado"
+                      filled
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <q-select
+                      v-model="cursoFormulario.nivel"
+                      :options="nivelesDisponibles"
+                      label="Nivel"
+                      filled
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <q-input
+                      v-model.number="cursoFormulario.precio_curso"
+                      label="Precio (€)"
+                      type="number"
+                      filled
+                      min="0"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <q-input
+                      v-model="cursoFormulario.fecha_inicio"
+                      label="Fecha inicio"
+                      type="date"
+                      filled
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <q-input v-model="cursoFormulario.fecha_fin" label="Fecha fin" type="date" filled />
+                  </div>
+
+                  <!-- Días y horarios -->
+                  <div class="col-12 col-md-6">
+                    <q-select
+                      v-model="cursoFormulario.dias_semana"
+                      :options="diasSemanaOpciones"
+                      label="Días de la semana"
+                      filled
+                      multiple
+                      use-chips
+                      counter
+                      hint="Días en que se imparte"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <q-select
+                      v-model="cursoFormulario.horarios_curso"
+                      :options="horariosDisponibles"
+                      label="Horarios"
+                      filled
+                      multiple
+                      use-chips
+                      counter
+                      emit-value
+                      map-options
+                      options-dense
+                      hint="Horarios disponibles"
+                    >
+                      <template v-slot:selected-item="scope">
+                        <q-chip
+                          removable
+                          @remove="scope.removeAtIndex(scope.index)"
+                          :tabindex="scope.tabindex"
+                          color="primary"
+                          text-color="white"
+                          dense
+                          class="q-ma-xs"
+                        >
+                          {{ scope.opt }}
+                        </q-chip>
+                      </template>
+                    </q-select>
+                  </div>
+
+                  <div class="col-12">
+                    <q-input
+                      v-model.number="cursoFormulario.max_estudiantes"
+                      label="Máx. estudiantes"
+                      type="number"
+                      filled
+                      min="1"
+                    />
+                  </div>
+
+                  <div class="col-12">
+                    <q-input
+                      v-model="cursoFormulario.descripcion"
+                      label="Descripción"
+                      type="textarea"
+                      filled
+                      rows="3"
+                    />
+                  </div>
+
+                  <!-- Información de la tarjeta -->
+                  <div class="col-12">
+                    <q-separator class="q-my-md" />
+                    <div class="text-subtitle1 text-weight-medium">Información de la tarjeta</div>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <q-input v-model="cursoFormulario.titulo_tarjeta" label="Título tarjeta" filled />
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <q-input
+                      v-model="cursoFormulario.boton_tarjeta"
+                      label="Texto del botón"
+                      filled
+                      placeholder="Más información"
+                    />
+                  </div>
+
+                  <div class="col-12">
+                    <q-input
+                      v-model="cursoFormulario.imagen_tarjeta"
+                      label="URL de la imagen"
+                      filled
+                      placeholder="https://ejemplo.com/imagen.jpg"
+                    />
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-separator />
+
+              <q-card-actions align="right">
+                <q-btn label="Cancelar" color="grey" flat @click="cerrarDialogNuevoCurso" />
+                <q-btn
+                  label="Crear Curso"
+                  color="primary"
+                  @click="guardarCurso"
+                  :loading="guardandoCurso"
+                  unelevated
+                />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+        </div>
+        <!-- Sección Cursos  -->
+        <div v-if="seccionActual === 'tarjetas'">
           <q-card>
             <q-card-section>
-              <div class="text-h4 q-mb-md">Cursos y Tarjetas</div>
+              <div class="text-h4 q-mb-md"> Tarjetas</div>
               <div class="text-body1">
                 Esta sección está en desarrollo. Aquí podrás gestionar los cursos y tarjetas del
                 sistema.
@@ -325,7 +868,6 @@
             </q-card-section>
           </q-card>
         </div>
-
         <!-- Sección Noticias -->
         <div v-if="seccionActual === 'noticias'">
           <q-card>
@@ -371,6 +913,30 @@ interface OpcionTipoDia {
   value: string;
 }
 
+// ⬇️ REEMPLAZAR la interface CursoGrupal existente
+interface CursoGrupal {
+  id?: number;
+  codigo_curso: string;
+  nombre_curso: string;
+  estado_curso: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
+  horarios_curso?: string[];
+  dias_semana?: string[];
+  descripcion?: string;
+  usuarios?: string[];
+  imagen_tarjeta?: string;
+  titulo_tarjeta?: string;
+  boton_tarjeta?: string;
+  nivel?: string;
+  max_estudiantes?: number;
+  precio_curso?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+
+
 const $q = useQuasar();
 
 // Estado de la aplicación
@@ -381,6 +947,53 @@ const guardando = ref<boolean>(false);
 const mesActual = ref<string>(new Date().toISOString().slice(0, 7));
 const fechasSeleccionadas = ref<string[]>([]);
 const datosCalendario = ref<EntradaCalendario[]>([]);
+const cursosGrupales = ref<CursoGrupal[]>([]);
+const cursoExpandido = ref<number | null>(null);
+const dialogNuevoCurso = ref<boolean>(false);
+const editandoCurso = ref<boolean>(false);
+const guardandoCurso = ref<boolean>(false);
+
+const cursoFormulario = ref<CursoGrupal>({
+  codigo_curso: '',
+  nombre_curso: '',
+  estado_curso: 'Activo',
+  fecha_inicio: '',
+  fecha_fin: '',
+  dias_semana: [], // ⬅️ CAMBIADO a array vacío
+  horarios_curso: [], // ⬅️ CAMBIADO a array vacío
+  descripcion: '',
+  usuarios: [],
+  imagen_tarjeta: '',
+  titulo_tarjeta: '',
+  boton_tarjeta: 'Más información',
+  nivel: 'Principiante',
+  max_estudiantes: 10,
+  precio_curso: 0,
+});
+
+const diasSemanaOpciones = [
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+];
+
+const horariosDisponibles = [
+  '09:00',
+  '10:00',
+  '11:00',
+  '12:00',
+  '13:00',
+  '15:00',
+  '16:00',
+  '17:00',
+  '18:00',
+  '19:00',
+];
+
+const nivelesDisponibles = ['Principiante', 'Elemental', 'Intermedio', 'Avanzado', 'Nativo'];
+const estadosCurso = ['Activo', 'En reserva', 'Finalizado', 'Completo', 'En preparación'];
 
 // Configuración
 const configuracion = ref<Configuracion>({
@@ -458,8 +1071,6 @@ const mesAnterior = (): void => {
   }
 };
 
-// ...existing code...
-
 const mesSiguiente = (): void => {
   const fecha = new Date(mesActual.value + '-01');
   fecha.setMonth(fecha.getMonth() + 1);
@@ -487,6 +1098,23 @@ const mesSiguiente = (): void => {
   }
 };
 
+const cambiarMes = (nuevoMes: string | number | null): void => {
+  if (!nuevoMes || typeof nuevoMes !== 'string') return;
+  
+  // Validar formato YYYY-MM
+  if (!/^\d{4}-\d{2}$/.test(nuevoMes)) return;
+  
+  // Validar rango
+  if (nuevoMes >= '2024-01' && nuevoMes <= '2030-12') {
+    mesActual.value = nuevoMes;
+  } else {
+    $q.notify({
+      type: 'warning',
+      message: 'El mes debe estar entre Enero 2024 y Diciembre 2030',
+      timeout: 2000
+    });
+  }
+};
 
 // Selección de días
 const seleccionarDia = (fecha: Date | null): void => {
@@ -868,11 +1496,276 @@ const cargarUsuario = async (): Promise<void> => {
 // Inicialización
 let subscription: ReturnType<typeof supabase.channel> | null = null;
 
+// Funciones para gestionar cursos grupales
+const cargarCursosGrupales = async (): Promise<void> => {
+  try {
+    console.log('Cargando cursos grupales desde Supabase...');
+
+    const { data, error } = await supabase
+      .from('cursos_grupales')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error al cargar cursos:', error);
+      throw error;
+    }
+
+    // ⬇️ PARSEAR ARRAYS CORRECTAMENTE
+    cursosGrupales.value = (data || []).map((curso) => ({
+      ...curso,
+      // Asegurar que dias_semana sea un array válido
+      dias_semana: Array.isArray(curso.dias_semana) 
+        ? curso.dias_semana 
+        : curso.dias_semana 
+          ? [curso.dias_semana] 
+          : [],
+      // Asegurar que horarios_curso sea un array válido
+      horarios_curso: Array.isArray(curso.horarios_curso)
+        ? curso.horarios_curso
+        : curso.horarios_curso
+          ? [curso.horarios_curso]
+          : [],
+      // Asegurar que usuarios sea un array válido
+      usuarios: Array.isArray(curso.usuarios)
+        ? curso.usuarios
+        : curso.usuarios
+          ? [curso.usuarios]
+          : [],
+    }));
+
+    console.log('Cursos cargados y parseados:', cursosGrupales.value.length);
+    console.log('Ejemplo de curso parseado:', cursosGrupales.value[0]);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    $q.notify({
+      type: 'negative',
+      message: `Error al cargar cursos: ${errorMessage}`,
+      timeout: 3000,
+    });
+  }
+};
+
+const toggleCurso = (id: number): void => {
+  cursoExpandido.value = cursoExpandido.value === id ? null : id;
+
+  if (cursoExpandido.value === id) {
+    const curso = cursosGrupales.value.find((c) => c.id === id);
+    if (curso) {
+      console.log('Curso encontrado:', curso);
+      console.log('horarios_curso original:', curso.horarios_curso);
+      
+      // ⬇️ DEEP CLONE con JSON para asegurar arrays independientes
+      const horariosArray = Array.isArray(curso.horarios_curso) 
+        ? JSON.parse(JSON.stringify(curso.horarios_curso))
+        : [];
+      
+      const diasArray = Array.isArray(curso.dias_semana)
+        ? JSON.parse(JSON.stringify(curso.dias_semana))
+        : [];
+      
+      const usuariosArray = Array.isArray(curso.usuarios)
+        ? JSON.parse(JSON.stringify(curso.usuarios))
+        : [];
+      
+      cursoFormulario.value = {
+        ...curso,
+        dias_semana: diasArray,
+        horarios_curso: horariosArray,
+        usuarios: usuariosArray,
+      };
+      
+      console.log('Formulario después de asignar:', cursoFormulario.value);
+      console.log('horarios_curso en formulario:', cursoFormulario.value.horarios_curso);
+      console.log('Es array?', Array.isArray(cursoFormulario.value.horarios_curso));
+      
+      editandoCurso.value = true;
+    }
+  } else {
+    editandoCurso.value = false;
+  }
+};
+
+const abrirDialogNuevoCurso = (): void => {
+  cursoFormulario.value = {
+    codigo_curso: '',
+    nombre_curso: '',
+    estado_curso: 'Activo',
+    fecha_inicio: '',
+    fecha_fin: '',
+    dias_semana: [],
+    horarios_curso: [],
+    descripcion: '',
+    usuarios: [],
+    imagen_tarjeta: '',
+    titulo_tarjeta: '',
+    boton_tarjeta: 'Más información',
+    nivel: 'Principiante',
+    max_estudiantes: 10,
+    precio_curso: 0,
+  };
+  editandoCurso.value = false;
+  dialogNuevoCurso.value = true;
+};
+
+const cerrarDialogNuevoCurso = (): void => {
+  dialogNuevoCurso.value = false;
+};
+
+const guardarCurso = async (): Promise<void> => {
+  if (!cursoFormulario.value.codigo_curso || !cursoFormulario.value.nombre_curso) {
+    $q.notify({
+      type: 'warning',
+      message: 'El código y nombre del curso son obligatorios',
+      timeout: 2000,
+    });
+    return;
+  }
+
+  guardandoCurso.value = true;
+
+  try {
+    // ⬇️ ASEGURAR QUE LOS ARRAYS ESTÉN BIEN FORMATEADOS
+    const datosGuardar = {
+      codigo_curso: cursoFormulario.value.codigo_curso,
+      nombre_curso: cursoFormulario.value.nombre_curso,
+      estado_curso: cursoFormulario.value.estado_curso,
+      fecha_inicio: cursoFormulario.value.fecha_inicio || null,
+      fecha_fin: cursoFormulario.value.fecha_fin || null,
+      // ⬇️ CONVERTIR A ARRAY DE POSTGRESQL
+      dias_semana: Array.isArray(cursoFormulario.value.dias_semana) 
+        ? cursoFormulario.value.dias_semana 
+        : [],
+      horarios_curso: Array.isArray(cursoFormulario.value.horarios_curso)
+        ? cursoFormulario.value.horarios_curso
+        : [],
+      descripcion: cursoFormulario.value.descripcion || null,
+      usuarios: Array.isArray(cursoFormulario.value.usuarios)
+        ? cursoFormulario.value.usuarios
+        : [],
+      imagen_tarjeta: cursoFormulario.value.imagen_tarjeta || null,
+      titulo_tarjeta: cursoFormulario.value.titulo_tarjeta || null,
+      boton_tarjeta: cursoFormulario.value.boton_tarjeta || 'Más información',
+      nivel: cursoFormulario.value.nivel || null,
+      max_estudiantes: cursoFormulario.value.max_estudiantes || null,
+      precio_curso: cursoFormulario.value.precio_curso || null,
+    };
+
+    console.log('Datos a guardar:', datosGuardar);
+
+    let resultado;
+
+    if (editandoCurso.value && cursoFormulario.value.id) {
+      // ACTUALIZAR
+      resultado = await supabase
+        .from('cursos_grupales')
+        .update(datosGuardar)
+        .eq('id', cursoFormulario.value.id)
+        .select(); // ⬅️ AÑADIR .select() para ver el resultado
+
+      if (resultado.error) {
+        console.error('Error al actualizar:', resultado.error);
+        throw resultado.error;
+      }
+
+      $q.notify({
+        type: 'positive',
+        message: 'Curso actualizado correctamente',
+        timeout: 2000,
+      });
+    } else {
+      // CREAR
+      resultado = await supabase
+        .from('cursos_grupales')
+        .insert([datosGuardar])
+        .select(); // ⬅️ AÑADIR .select() para ver el resultado
+
+      if (resultado.error) {
+        console.error('Error al insertar:', resultado.error);
+        throw resultado.error;
+      }
+
+      $q.notify({
+        type: 'positive',
+        message: 'Curso creado correctamente',
+        timeout: 2000,
+      });
+
+      dialogNuevoCurso.value = false;
+    }
+
+    console.log('Resultado de Supabase:', resultado);
+
+    await cargarCursosGrupales();
+    cursoExpandido.value = null;
+    editandoCurso.value = false;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    console.error('Error completo al guardar curso:', error);
+    
+    // ⬇️ MOSTRAR MÁS DETALLES DEL ERROR
+    if (error && typeof error === 'object' && 'details' in error) {
+      console.error('Detalles del error:', (error as { details: unknown }).details);
+    }
+    
+    $q.notify({
+      type: 'negative',
+      message: `Error al guardar: ${errorMessage}`,
+      timeout: 5000,
+    });
+  } finally {
+    guardandoCurso.value = false;
+  }
+};
+
+
+  // Remover 'async' ya que el código asíncrono está en el callback interno
+const eliminarCurso = (id: number): void => {
+  $q.dialog({
+    title: 'Confirmar eliminación',
+    message: '¿Estás seguro de que deseas eliminar este curso? Esta acción no se puede deshacer.',
+    persistent: true,
+    ok: {
+      label: 'Eliminar',
+      color: 'negative',
+    },
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+    },
+  }).onOk(() => {
+    void (async () => {
+      try {
+        const { error } = await supabase.from('cursos_grupales').delete().eq('id', id);
+
+        if (error) throw error;
+
+        $q.notify({
+          type: 'positive',
+          message: 'Curso eliminado correctamente',
+          timeout: 2000,
+        });
+
+        await cargarCursosGrupales();
+        cursoExpandido.value = null;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+        console.error('Error al eliminar curso:', error);
+        $q.notify({
+          type: 'negative',
+          message: `Error al eliminar: ${errorMessage}`,
+          timeout: 3000,
+        });
+      }
+    })();
+  });
+};
+
 onMounted(async (): Promise<void> => {
   await cargarUsuario();
   await cargarDatosCalendario();
+  await cargarCursosGrupales(); // ⬅️ AÑADIR ESTA LÍNEA
 
-  // Suscribirse a cambios en tiempo real
   subscription = supabase
     .channel('calendario-changes')
     .on(
@@ -889,6 +1782,23 @@ onMounted(async (): Promise<void> => {
     )
     .subscribe();
 });
+
+const getColorEstado = (estado: string): string => {
+  switch (estado) {
+    case 'Activo':
+      return 'positive';
+    case 'Completo':
+      return 'blue';
+    case 'Finalizado':
+      return 'grey-7';
+    case 'En reserva':
+      return 'orange';
+    case 'En preparación':
+      return 'purple';
+    default:
+      return 'grey';
+  }
+};
 
 onUnmounted(() => {
   if (subscription) {

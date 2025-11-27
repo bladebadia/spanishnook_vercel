@@ -82,7 +82,7 @@
 
           <q-btn
             flat
-            :to="'/ClasesIndividuales'"
+            :to="'/Clases'"
              class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
             :label="$t('clases')"
@@ -386,7 +386,7 @@ const linksList = computed((): EssentialLinkProps[] => [
   {
     title: t('clases'),
     icon: 'record_voice_over',
-    link: '/ClasesIndividuales',
+    link: '/Clases',
   },
   {
     title: t('sobre'),

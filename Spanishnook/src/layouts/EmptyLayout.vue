@@ -91,7 +91,7 @@
             class="nave-btn" 
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
             :label="$t('clases')"
-            to="/ClasesIndividuales"
+            to="/Clases"
           >
           </q-btn>
     
@@ -184,7 +184,7 @@
         round
         color="green-6"
         icon="mdi-whatsapp"
-        size="xl"
+        size="lg"
         href="https://wa.me/34600000000"
         target="_blank"
         rel="noopener"
@@ -301,7 +301,7 @@ const linksList = computed((): EssentialLinkProps[] => [
   {
     title: t('clases'),
     icon: 'record_voice_over',
-    link: '/ClasesIndividuales',
+    link: '/Clases',
   },
   {
     title: t('sobre'),
