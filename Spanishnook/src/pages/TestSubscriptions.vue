@@ -8,7 +8,15 @@
           <q-card-section>
             <div class="text-h6">Clases de Conversación</div>
             <div class="text-subtitle2 text-grey">Practica hablando</div>
+
+            <div v-if="datosPrecios.conversacion" class="text-h4 text-positive q-mt-sm">
+              {{ datosPrecios.conversacion }}€<span class="text-caption">/mes</span>
+            </div>
+            <div v-else class="q-mt-sm flex flex-center">
+              <q-spinner color="secondary" size="1.5em" />
+            </div>
           </q-card-section>
+
           <q-card-actions align="center">
             <q-btn
               color="secondary"
@@ -26,7 +34,15 @@
           <q-card-section>
             <div class="text-h6">Curso por Niveles</div>
             <div class="text-subtitle2 text-grey">Gramática y estructura</div>
+
+            <div v-if="datosPrecios.niveles" class="text-h4 text-primary q-mt-sm">
+              {{ datosPrecios.niveles }}€<span class="text-caption">/mes</span>
+            </div>
+            <div v-else class="q-mt-sm flex flex-center">
+              <q-spinner color="primary" size="1.5em" />
+            </div>
           </q-card-section>
+
           <q-card-actions align="center">
             <q-btn
               color="primary"
@@ -67,25 +83,63 @@
         >
           <q-item v-for="sub in misSuscripciones" :key="sub.id">
             <q-item-section avatar>
-              <q-icon name="check_circle" color="positive" />
+              <q-icon
+                :name="sub.cancel_at_period_end ? 'event_busy' : 'check_circle'"
+                :color="sub.cancel_at_period_end ? 'orange' : 'positive'"
+              />
             </q-item-section>
+
             <q-item-section>
-              <q-item-label class="text-weight-bold">ID Curso: {{ sub.course_id }}</q-item-label>
-              <q-item-label caption>Estado: {{ sub.estado }}</q-item-label>
-              <q-item-label caption
-                >Renueva: {{ new Date(sub.current_period_end).toLocaleDateString() }}</q-item-label
-              >
+              <q-item-label class="text-weight-bold">
+                {{ obtenerNombreCurso(sub.course_id) }}
+              </q-item-label>
+
+              <q-item-label caption>
+                Estado:
+                <q-badge :color="sub.estado === 'active' ? 'positive' : 'grey'">
+                  {{ sub.estado }}
+                </q-badge>
+                <q-badge v-if="sub.cancel_at_period_end" color="orange" class="q-ml-sm">
+                  Cancelación programada
+                </q-badge>
+              </q-item-label>
+
+              <q-item-label caption class="text-grey-8">
+                {{ sub.cancel_at_period_end ? 'Acceso válido hasta:' : 'Próxima renovación:' }}
+                <strong>{{ formatearFecha(sub.current_period_end) }}</strong>
+              </q-item-label>
             </q-item-section>
+
             <q-item-section side>
-              <q-badge :color="sub.estado === 'active' ? 'positive' : 'grey'">{{
-                sub.estado
-              }}</q-badge>
+              <div class="row q-gutter-sm">
+                <q-btn
+                  v-if="!sub.cancel_at_period_end && sub.estado === 'active'"
+                  flat
+                  round
+                  color="negative"
+                  icon="cancel"
+                  @click="confirmarCancelacion(sub)"
+                >
+                  <q-tooltip>Cancelar suscripción</q-tooltip>
+                </q-btn>
+
+                <q-btn
+                  v-if="sub.cancel_at_period_end && sub.estado === 'active'"
+                  flat
+                  round
+                  color="positive"
+                  icon="restore"
+                  @click="reactivarSuscripcion(sub)"
+                >
+                  <q-tooltip>Reactivar renovación automática</q-tooltip>
+                </q-btn>
+              </div>
             </q-item-section>
           </q-item>
         </q-list>
 
         <div v-else class="text-center text-grey q-pa-lg border-dashed">
-          No tienes suscripciones activas registradas en la base de datos.
+          No tienes suscripciones registradas.
         </div>
       </div>
     </div>
@@ -97,30 +151,87 @@ import { ref, onMounted } from 'vue';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
+import { useQuasar } from 'quasar';
 
-const { procesando, handleSubscribe } = useSuscripciones();
+const $q = useQuasar();
+const { procesando, handleSubscribe, cambiarEstadoCancelacion } = useSuscripciones();
 const { user } = useAuth();
 
-const misSuscripciones = ref<unknown[]>([]);
+// Interface actualizada con los campos necesarios
+interface Suscripcion {
+  id: string;
+  course_id: number;
+  stripe_subscription_id: string; // Importante para cancelar
+  estado: string;
+  current_period_end: string;
+  cancel_at_period_end: boolean; // Importante para la UI
+  created_at: string;
+}
 
-// ⚠️ IMPORTANTE: Pon aquí los IDs reales de Stripe que creaste
+const misSuscripciones = ref<Suscripcion[]>([]);
+const datosPrecios = ref({ conversacion: null as number | null, niveles: null as number | null });
+
+// ⚠️ IDs REALES DE STRIPE
 const PRICE_ID_CONVERSACION = 'price_1SXvSpLFUAzgw0DDMUPJgHzv';
 const PRICE_ID_NIVELES = 'price_1SXvZ6LFUAzgw0DDUBrvyDSQ';
 
+// --- LOGICA DE PRECIOS ---
+const obtenerPrecioStripe = async (priceId: string) => {
+  try {
+    const { data, error } = await supabase.functions.invoke('subscription-webhook', {
+      body: { action: 'get_price_details', priceId: priceId },
+    });
+    if (error || !data || !data.amount) return null;
+    return data.amount / 100;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+};
+
+const cargarPrecios = async () => {
+  const [precioA, precioB] = await Promise.all([
+    obtenerPrecioStripe(PRICE_ID_CONVERSACION),
+    obtenerPrecioStripe(PRICE_ID_NIVELES),
+  ]);
+  datosPrecios.value.conversacion = precioA;
+  datosPrecios.value.niveles = precioB;
+};
+
+// --- LOGICA SUSCRIPCION / CANCELACIÓN ---
 const suscribirse = async (tipo: 'conversacion' | 'niveles') => {
   const priceId = tipo === 'conversacion' ? PRICE_ID_CONVERSACION : PRICE_ID_NIVELES;
-  
-  // AHORA USAMOS IDs REALES (Números)
-  // '1' para conversación, '2' para niveles (o los IDs que tengas en tu tabla 'cursos_grupales')
   const realCourseId = tipo === 'conversacion' ? 1 : 2;
-
-  // Nota: handleSubscribe espera string, así que convertimos el número a string
   await handleSubscribe(priceId, realCourseId.toString());
 };
 
+const confirmarCancelacion = (sub: Suscripcion) => {
+  const fechaFin = formatearFecha(sub.current_period_end);
+
+  $q.dialog({
+    title: '¿Cancelar Suscripción?',
+    message: `Seguirás teniendo acceso al curso hasta el <b>${fechaFin}</b>, pero no se te volverá a cobrar.`,
+    html: true,
+    persistent: true,
+    ok: { label: 'Sí, cancelar', color: 'negative', flat: true },
+    cancel: { label: 'Volver', color: 'primary' }, // Este es el que vale
+  }).onOk(() => {
+    void (async () => {
+      const exito = await cambiarEstadoCancelacion(sub.stripe_subscription_id, true);
+      if (exito) await cargarSuscripciones();
+    })();
+  });
+};
+
+const reactivarSuscripcion = async (sub: Suscripcion) => {
+  // Llamamos a la función con FALSE (No cancelar / Reactivar)
+  const exito = await cambiarEstadoCancelacion(sub.stripe_subscription_id, false);
+  if (exito) await cargarSuscripciones();
+};
+
+// --- CARGA DE DATOS ---
 const cargarSuscripciones = async () => {
   if (!user.value) return;
-
   const { data, error } = await supabase
     .from('user_subscriptions')
     .select('*')
@@ -128,12 +239,27 @@ const cargarSuscripciones = async () => {
     .order('created_at', { ascending: false });
 
   if (!error && data) {
-    misSuscripciones.value = data;
+    misSuscripciones.value = data as Suscripcion[];
   }
+};
+
+// --- HELPERS ---
+const obtenerNombreCurso = (id: number) => {
+  if (id === 1) return 'Clases de Conversación';
+  if (id === 2) return 'Curso por Niveles';
+  return `Curso ID: ${id}`;
+};
+
+const formatearFecha = (fecha: string) => {
+  if (!fecha) return '---';
+  const date = new Date(fecha);
+  if (isNaN(date.getTime())) return 'Fecha inválida';
+  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
 onMounted(() => {
   void cargarSuscripciones();
+  void cargarPrecios();
 });
 </script>
 
