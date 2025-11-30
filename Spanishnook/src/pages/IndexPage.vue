@@ -46,7 +46,7 @@
               <q-card-actions class="flex justify-center">
                 <q-btn
                   color="primary"
-                  to="/ClasesIndividuales"
+                  to="/Clases"
                   unelevated
                   class="cuadrado-btn "
                 >
@@ -101,7 +101,8 @@
               :title="t('indexClasesPrivadas')"
               :description="t('indexAvanzaEnTu')"
               :button-text="t('indexQuieroMiClase')"
-              button-link="/ClasesIndividuales"
+              :to="{ path: '/Clases', hash: '#clases-individuales' }"
+              
             />
             <!-- Componente 2: Clases Grupales -->
             <PromoCard
@@ -109,7 +110,7 @@
               :title="t('indexClasesGrupales')"
               :description="t('indexAprendeEspañol')"
               :button-text="t('indexAprenderEnGrupo')"
-              button-link="/ClasesIndividuales"
+              :to="{ path: '/Clases', hash: '#clases-conversacion' }"
             />
             <!-- Componente 3: Clases de Conversación -->
             <PromoCard
@@ -117,8 +118,9 @@
               :title="t('indexClasesDeConversacion')"
               :description="t('indexMejoraTuConfianza')"
               :button-text="t('indexUneteALaLista')"
-              button-link="/ClasesIndividuales"
-            />            
+              :to="{ path: '/Clases', hash: '#clases-conversacion' }"
+            />     
+                  
           </div>
         </div>
       </transition>
@@ -127,7 +129,7 @@
       <div
         v-intersect="onPromoIntersect2"
         class="q-mt-xl q-mb-xl row degradado-fondo"
-        style="min-height: 400px; width: 100%"
+        style="min-height: 300px; width: 100%"
         >
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div
@@ -145,7 +147,7 @@
             </p>
             <q-btn
               color="black"
-              to="/ClasesIndividuales"
+              to="/TestNivel"
               class="oval-btn q-mx-lg"
               unelevated
               >{{ t('indexHacerTest') }}</q-btn
@@ -233,7 +235,7 @@
                   <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
                     <OpinioneVerificadas 
                       :opinion="opinion"
-                      avatar-size="80px"
+                      :show-avatar="false"
                       class="single-opinion-card"
                     />
                   </div>

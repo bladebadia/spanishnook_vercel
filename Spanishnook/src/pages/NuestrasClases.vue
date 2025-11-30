@@ -25,7 +25,7 @@
         items-center
         color="primary"
         unelevated
-        to="/Reservas"
+        @click="scrollToSection('clases-conversacion')"
       >
         Clases de conversacion
       </q-btn>
@@ -35,7 +35,7 @@
         items-center
         color="primary"
         unelevated
-        to="/Reservas"
+        @click="scrollToSection('clases-individuales')"
       >
         Clases Individuales
       </q-btn>
@@ -86,12 +86,10 @@
         </div>
       </div>
     </div>
-    
-    <!-- seccion clases grupales -->
-    <!-- ...existing code... -->
+      
 
     <!-- Sección clases grupales: Imagen izquierda + Banner derecho -->
-    <div class="row full-width q-my-xl items-center" style="gap: 32px;">
+    <div id="clases-conversacion" class="row full-width q-my-xl items-center" style="gap: 32px;scroll-margin-top: 120px;">
       <!-- Imagen izquierda -->
       <div class="col-12 col-md-5 flex justify-center">
         <q-img
@@ -111,46 +109,94 @@
       </div>
     </div>
 
+    <!-- div de servicio clases de conversación -->
+    <div class="row flex q-my-xl" style="width: 100%; gap: 32px;">
+      <div class="col-12 flex flex-center" >
+        <q-card  class="tarjeta-formativos text-center shadow-2 bg-white text-dark ">
+          <div class="titulo-responsivo  text-center">Nuestras clases de conversación</div>
+            <p class=" texto-responsivo ">
+              {{$t("grupales.textoNuestrosGruposFormativos")}}
+            </p>
+        </q-card>          
+      </div>     
+    </div>
 
+    <!-- Cursos desde Supabase -->
+    <div class="promocards-container">
+  <PromoCard
+    v-for="curso in cursosPromo"
+    :key="curso.id"
+    :image-src="curso.imagen_tarjeta"
+    :title="curso.titulo_tarjeta"
+    :description="curso.texto_tarjeta"
+    :button-text="curso.boton_tarjeta"
+    :show-promo="curso.showPromo"
+    :promo-text="curso.promoText"
+    :show-price="curso.showPrice"
+    :price="curso.price"
+    :original-price="curso.originalPrice"
+    :button-link="curso.buttonLink "
+  />
+</div>
 
-  <!-- div de servicio clases de conversación -->
-  <div class="row flex q-my-xl" style="width: 100%; gap: 32px;">
-    <div class="col-12 flex flex-center" >
-      <q-card  class="tarjeta-formativos text-center shadow-2 bg-white text-dark ">
-        <div class="titulo-responsivo  text-center">Nuestras clases de conversación</div>
-          <p class=" texto-responsivo ">
-            {{$t("grupales.textoNuestrosGruposFormativos")}}
-          </p>
-      </q-card>          
-    </div>     
-  </div>
-
-  <div class=" promocards-container ">
-        <!-- Componente 1:  -->
-        <PromoCard
-          :image-src="'img/45sintitulo.webp'"
-          :title="t('individuales.tituloClasesA1')"
-          :description="t('individuales.textoClasesA1')"
-          :button-text="t('individuales.botonClasesA1')"
-          to="/Reservas"
-          />
-        <!-- Componente 2:  -->
-        <PromoCard
-          :image-src="'img/44sintitulo.webp'"
-          :title="t('individuales.tituloClasesB1')"
-          :description="t('individuales.textoClasesB1')"
-          :button-text="t('individuales.botonClasesB1')"
-          to="/Reservas"
-          />
-        <!-- Componente 3:  -->
-        <PromoCard
-          :image-src="'img/48sintitulo.webp'"
-          :title="t('individuales.tituloClasesConversacion')"
-          :description="t('individuales.textoClasesConversacion')"
-          :button-text="t('individuales.botonClasesConversacion')"
-          to="/Reservas"
-          />                   
+    <!--Seccion clases individuales-->
+    <div id="clases-individuales" class="row full-width q-my-xl items-center" style="gap: 32px; scroll-margin-top: 120px;">
+      <!-- Banner rojo izquierdo -->
+      <div class="col-12 col-md-6 flex justify-center">
+        <div class="banner-clases-grupales">
+          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center">
+            Clases Individuales Personalizadas
+          </h2>
+        </div>
       </div>
+      
+      <!-- Imagen derecha -->
+      <div class="col-12 col-md-5 flex justify-center">
+        <q-img
+          src="/img/estudiante_1024.jpg"
+          style="width: 100%; max-width: 500px; border-radius: 16px;"
+          fit="cover"
+        />
+      </div>
+    </div>
+
+    <!-- div de servicio clases individuales -->
+    <div class="row flex q-my-xl" style="width: 100%; gap: 32px;">
+      <div class="col-12 flex flex-center">
+        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
+          <div class="titulo-responsivo text-center">Nuestras clases individuales</div>
+          <p class="texto-responsivo">
+            Aprende español a tu ritmo con clases personalizadas adaptadas a tus necesidades específicas. 
+            Nuestros profesores nativos crean un plan de estudios único para ti, 
+            enfocándose en tus objetivos y disponibilidad de horario.
+          </p>
+        </q-card>
+      </div>
+    </div>
+
+    <!-- Tarjetas de clases individuales (puedes agregar más o cargar desde Supabase) -->
+    <div class="promocards-container">
+      <PromoCard
+        image-src="img/45sintitulo.webp"
+        :title="t('individuales.tituloClasesA1')"
+        :description="t('individuales.textoClasesA1')"
+        :button-text="t('individuales.botonClasesA1')"
+        :show-promo="true"
+        :promo-text="'¡Prueba tu clase gratis!'"
+        to="/Reservas"
+      />
+      <PromoCard
+        image-src="img/44sintitulo.webp"
+        :title="t('individuales.tituloClasesB1')"
+        :description="t('individuales.textoClasesB1')"
+        :button-text="t('individuales.botonClasesB1')"
+        :show-promo="true"
+        :promo-text="'¡Prueba tu clase gratis!'"
+        to="/Reservas"
+      />
+    </div>
+
+
       <!-- Sección de Opiniones Verificadas - CARRUSEL -->
       <div  class="q-my-xl opiniones-section bg-grey-1">
         <div  class="q-py-xl q-px-md">
@@ -280,18 +326,22 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { ref, onMounted, nextTick, watch } from 'vue';
 import type { Ref } from 'vue';
 import '../css/pages/EstilosGenerales.css';
 import PromoCard from '../components/PromoCard.vue';
 import { useI18n } from 'vue-i18n';
 import OpinioneVerificadas from '../components/OpinioneVerificadas.vue';
 import '../css/pages/ClasesGrupales.css';
+import { supabase } from 'src/supabaseClient';
+import { useRoute } from 'vue-router';
+import { scroll } from 'quasar';
   
-    const {  t } = useI18n();
-//    const mostrarBocadillo = ref(false);
-    const showAnimatedImg = ref(false);
-    const currentSlide = ref(0);
+const route = useRoute(); 
+const { getScrollTarget, setVerticalScrollPosition } = scroll;  
+const {  t } = useI18n(); 
+const showAnimatedImg = ref(false);    
+const currentSlide = ref(0);
 const todasLasOpiniones = ref([
   {
     name: 'María González',
@@ -355,6 +405,30 @@ const todasLasOpiniones = ref([
   }
 ]);
 
+function scrollDirecto(hash: string, offset = 80) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const el = document.querySelector(hash) as HTMLElement | null;
+  if (!el) return;
+  const target = getScrollTarget(el);
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  setVerticalScrollPosition(target, top, 0); // 0ms = instantáneo
+}
+
+
+const cursosPromo = ref<Array<{
+  id: number;
+  imagen_tarjeta: string;
+  titulo_tarjeta: string;
+  texto_tarjeta: string;
+  boton_tarjeta: string;
+  showPromo: boolean;      
+  promoText: string;     
+  showPrice: boolean;   
+  price: string;          
+  originalPrice: string;
+  buttonLink: string; 
+}>>([]);
+
   let animacionMostrada = false;
 
   function onImgIntersect(entry: IntersectionObserverEntry) {
@@ -408,7 +482,100 @@ const todasLasOpiniones = ref([
         count4.value = 0;
       }
     }
+    async function cargarCursosPromo(): Promise<void> {
+  const { data, error } = await supabase
+    .from('cursos_grupales')
+    .select(`
+      id, 
+      imagen_tarjeta, 
+      titulo_tarjeta, 
+      texto_tarjeta, 
+      boton_tarjeta, 
+      estado_curso, 
+      visibilidad,
+      mostrar_promo,
+      texto_promo,
+      mostrar_precio,
+      precio_curso,
+      precio_original,
+      usuarios,
+      max_estudiantes
+    `)
+    .eq('visibilidad', true)
+    .order('created_at', { ascending: false });
 
+  if (error) {
+    console.error('Error cargando cursos:', error);
+    return;
+  }
+  
+  console.log('📊 Datos crudos de Supabase:', data);
+  
+  // Filtrar además por estados activos
+  const visibles = (data ?? []).filter(c =>
+    ['Activo', 'En reserva', 'Completo'].includes(c.estado_curso ?? 'Activo')
+  );
+
+  cursosPromo.value = visibles.map((c) => {
+    const numUsuarios = Array.isArray(c.usuarios) ? c.usuarios.length : 0;
+    const maxEstudiantes = c.max_estudiantes || 0;
+    const estadoCurso = c.estado_curso || 'Activo';
+
+    let buttonLink = '';
+
+    if (estadoCurso === 'En reserva' || estadoCurso === 'Completo') {
+      buttonLink = `/ReservasCursos?id=${c.id}`;
+    } else if (estadoCurso === 'Activo') {
+      if (numUsuarios >= maxEstudiantes) {
+        buttonLink = `/ReservasCursos?id=${c.id}`;
+      } else {
+        // FIX: usar backticks correctamente para interpolar el id
+        buttonLink = `/TestSubscriptions?id=${c.id}`;
+      }
+    } else {
+      buttonLink = `/ReservasCursos?id=${c.id}`;
+    }
+
+    return {
+      id: c.id,
+      imagen_tarjeta: (c.imagen_tarjeta ?? '').replace(/^['"]|['"]$/g, '').trim(),
+      titulo_tarjeta: c.titulo_tarjeta ?? '',
+      texto_tarjeta: c.texto_tarjeta ?? '',
+      boton_tarjeta: c.boton_tarjeta ?? 'Reservar',
+      showPromo: c.mostrar_promo ?? false,
+      promoText: c.texto_promo ?? '¡Prueba tu clase gratis!',
+      showPrice: c.mostrar_precio ?? false,
+      price: c.precio_curso ?? '',
+      originalPrice: c.precio_original ?? '',
+      buttonLink,
+    };
+  });
+}
+
+//Función para scroll suave a sección
+function scrollToSection(sectionId: string) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+}
+
+onMounted(async () => {
+  await cargarCursosPromo();
+  if (route.hash) {
+    await nextTick();
+    if (route.hash) {
+    await nextTick();
+    scrollDirecto(route.hash);
+  }
+  }
+});
+watch(() => route.hash, (h) => {
+  if (h) scrollDirecto(h);
+});
 
 </script>
 

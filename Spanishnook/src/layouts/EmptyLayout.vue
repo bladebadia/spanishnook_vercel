@@ -13,6 +13,16 @@
         <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior"
           >{{ $t('acceder') }}
         </q-btn>
+        <!-- NUEVO: Botón Cerrar sesión -->
+        <q-btn
+          v-if="user"
+          flat
+          class="text-white btn-nav-superior"
+          @click="cerrarSesion"
+        >
+          Cerrar sesión
+        </q-btn>
+        <!-- Boton Acceder / Carrito -->        
         <q-btn
           to="/CarritoCompra"
           v-if="user"
@@ -204,10 +214,12 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
 import { useI18n } from 'vue-i18n';
 import { useAuth } from 'src/stores/auth';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { supabase } from 'src/supabaseClient';
 
 const { user } = useAuth();
 const { locale, t } = useI18n();
+const router = useRouter();
 
 // Banner de cookies
 const showCookiesBanner = ref(false);
@@ -320,18 +332,32 @@ const leftDrawerOpen = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+// Cerrar sesión
+const cerrarSesion = async () => {
+  try {
+    await supabase.auth.signOut();
+    // Limpia estado local si aplica
+    localStorage.removeItem('carritoReservas');
+    carritoCount.value = 0;
+    // Redirigir al inicio o a Acceder
+   await router.push('/').catch(() => {});
+  } catch (e) {
+    console.error('Error al cerrar sesión:', e);
+  }
+};
 </script>
 
 <style lang="scss">
 // Botón barra superior
 .btn-nav-superior {
-  font-size: 0.8rem !important;
+  font-size: 0.6rem !important;
   font-weight: 300 !important;
   text-decoration: underline;
   margin-right: 5%;  
   
   @media (min-width: 1024px) {
-    font-size: 1rem !important;
+    font-size: 0.8rem !important;
   }
 }
 

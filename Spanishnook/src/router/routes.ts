@@ -34,16 +34,6 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, layout: 'empty' },
   },
   {
-    path: '/ClasesGrupales',
-    component: () => import('pages/ClasesGrupales.vue'),
-    meta: { requiresAuth: false, layout: 'empty' },
-  },
-  {
-    path: '/ClasesIndividuales',
-    component: () => import('pages/ClasesIndividuales.vue'),
-    meta: { requiresAuth: false, layout: 'empty' },
-  },
-  {
     path: '/Contacto',
     component: () => import('pages/ContactoForm.vue'),
     meta: { requiresAuth: false, layout: 'empty' },
@@ -131,6 +121,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/Clases',
     component: () => import('pages/NuestrasClases.vue'),
+    meta: { layout: 'empty' },
+  },
+  {
+    path: '/ReservasCursos',
+    component: () => import('pages/ReservasCursos.vue'),
     meta: { layout: 'empty' },
   },
   // Always leave this as last one,

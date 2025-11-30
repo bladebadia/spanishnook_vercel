@@ -1,26 +1,39 @@
 <!-- filepath: /workspaces/Spanishnook/Spanishnook/src/components/PromoCard.vue -->
 <template>
   <div class="q-pa-none q-ma-none">
-    <q-card class="altura q-ma-none q-pa-none">
-      <q-img
-        :src="imageSrc"
-        fit="contain"
-        :style="computedImageStyle"
-        class="card-img-animada "
-        ratio="1"
-        @error="onImageError"
-      />
-      <q-card-section class="text-center subtitulo-responsivo margenes">
+    <q-card class="card promo-card q-ma-none q-pa-none">
+      <!-- Contenedor de imagen con badge de promoción -->
+      <div class="image-container">
+        <q-img
+          :src="imageSrc"
+          fit="contain"
+          class="card-img-animada"
+          @error="onImageError"
+          :ratio="undefined"
+          :style="computedImageStyle"
+        />
+        <!-- Badge de promoción -->
+        <div v-if="showPromo" class="promo-badge">
+          <q-icon name="star" size="18px" class="q-mr-xs" />
+          <span>{{ promoText }}</span>
+        </div>
+      </div>
+      <!-- Badge de precio -->
+        <div v-if="showPrice && price" class="price-badge">
+          <div v-if="originalPrice" class="original-price">{{ originalPrice }}</div>
+          <div class="current-price">{{ price }}</div>
+        </div>
+      <q-card-section class="title subtitulo-responsivo">
         {{ title }}
       </q-card-section>
-      <q-card-section class="texto-responsivo text-justify margenes">
+      <q-card-section class="description texto-responsivo">
         {{ description }}
       </q-card-section>
-      <q-card-actions class="flex flex-center" >
+      <q-card-actions class="actions flex flex-center">
         <q-btn
           color="primary"
-          :to="buttonLink"
-          class="oval-btn btn-fijo"
+          :to="to || buttonLink"
+          class="oval-btn"
           unelevated
           @click="handleButtonClick"
         >
@@ -32,8 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed} from 'vue';
+//import { useRoute } from 'vue-router';
 import '../css/pages/EstilosGenerales.css';
+
 
 interface Props {
   imageSrc: string;
@@ -41,12 +56,25 @@ interface Props {
   description: string;
   buttonText: string;
   buttonLink?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  to?: any;
   imageStyle?: string;
+  showPromo?: boolean;
+  promoText?: string;
+  showPrice?: boolean; 
+  price?: string;    
+  originalPrice?: string; 
 }
 
-const props = defineProps<Props>();
 
-// Definir el emit para el evento del botón
+const props = withDefaults(defineProps<Props>(), {
+  showPromo: false,
+  promoText: '¡Prueba tu clase gratis!',
+  showPrice: false,
+  price: ' ',
+  originalPrice: ''
+});
+
 const emit = defineEmits<{
   buttonClick: [];
 }>();
@@ -65,82 +93,188 @@ const onImageError = (event: Event) => {
   console.warn('Error cargando imagen:', target.src);
   target.src = '/img/estudiante_1024.jpg';
 };
+
+
+
 </script>
 
 <style scoped>
-.btn-fijo {
+/* Card como columna y sin overflow */
+.card.promo-card {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 420px;
+  overflow: visible;
+  width: 100%;
+}
+
+/* Contenedor de imagen con posición relativa para el badge */
+.image-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Badge de promoción */
+.promo-badge {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  max-width: 500px;
-  padding: 10px 10px;
-  font-size: 1rem !important;
-  margin: 0px 0px !important;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(238, 90, 111, 0.4);
+  z-index: 10;
+  animation: pulse-glow 2s ease-in-out infinite;
 }
-@media (max-width: 600px) {
-  .btn-fijo {
-    font-size: 0.8rem !important;
-    padding: 10px 10px;
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(238, 90, 111, 0.4);
   }
-
-}
-
-.altura{
-  height: 100%;
-   position: relative;
-   padding-bottom: 70px;
-}
-@media (max-width: 600px) {
-  .margenes {
-    padding: 0px;
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(238, 90, 111, 0.6);
   }
-
 }
 
-/* Agregar efecto hover */
-.tarjeta-onPromo1:hover {
+/* Badge de precio */
+.price-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Precio original tachado */
+.original-price {
+  font-size: 0.75rem;
+  text-decoration: line-through;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* Precio actual destacado */
+.current-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Imagen controlada - MÁS PEQUEÑA y COMPLETA */
+.card-img-animada {
+  min-height: 200px;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  padding: 8px;
+}
+
+/* Título: corte seguro */
+.title {
+  padding: 8px 12px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  text-align: center;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: visible;
+  white-space: normal;
+}
+
+/* Descripción: MOSTRAR TODO sin line-clamp */
+.description {
+  padding: 8px 12px 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  overflow: visible;
+  display: block;
+  white-space: pre-line;
+  text-overflow: clip;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Acciones: al final, sin posición absoluta */
+.actions {
+  margin-top: auto;
+  padding: 12px;
+  position: static;
+  text-align: center;
+}
+
+/* Botón sin posición fija */
+.oval-btn {
+  font-size: 1rem;
+  padding: 10px 14px;
+}
+
+/* Hover suave */
+.card.promo-card:hover {
   box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.15),
     0 4px 8px rgba(0, 0, 0, 0.12),
     0 0 0 2px rgba(133, 19, 25, 0.15) !important;
   transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
-/* Animación de imagen */
-.card-img-animada {
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.card-img-animada:hover {
-  transform: scale(1.15);
-}
-
-
-/* ========== RESPONSIVE DESIGN ========== */
-
-/* Desktop (1024px+) */
-@media (min-width: 1024px) {
-  .tarjeta-onPromo1 {
-    width: 100%;
-    position: relative;
+/* Responsive */
+@media (max-width: 768px) {
+  .card.promo-card {
+    min-height: 380px;
   }
-
+  
+  .card-img-animada { 
+    height: 140px;
+    padding: 6px;
+  }
+  
+  .promo-badge {
+    top: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .oval-btn { 
+    font-size: 0.9rem; 
+    padding: 10px 12px; 
+  }
 }
 
-
-
-
-  /* Mantener el efecto hover en móviles pero más sutil */
-  .tarjeta-onPromo1:hover {
-    box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.12),
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(133, 19, 25, 0.12) !important;
-    transform: translateY(-1px);
+@media (max-width: 480px) {
+  .card.promo-card {
+    min-height: 360px;
   }
-
+  
+  .card-img-animada { 
+    height: 120px;
+    padding: 4px;
+  }
+  
+  .promo-badge {
+    font-size: 0.7rem;
+    padding: 5px 8px;
+  }
+}
 </style>

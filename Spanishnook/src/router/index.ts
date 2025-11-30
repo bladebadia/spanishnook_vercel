@@ -24,9 +24,23 @@ export default defineRouter(function (/* { store, ssrContext } */) {
       : createWebHashHistory;
 
   const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
-
+    scrollBehavior(to, _from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.hash) {
+      // Scroll directo (sin animación) con offset del header
+      return new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          const el = document.querySelector(to.hash) as HTMLElement | null;
+          if (!el) return resolve({ left: 0, top: 0 });
+          const top = el.getBoundingClientRect().top + window.scrollY - 80;
+          resolve({ left: 0, top, behavior: 'auto' });
+        });
+      });
+    }
+    return { left: 0, top: 0 };
+  },
     // Leave this as is and make changes in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
