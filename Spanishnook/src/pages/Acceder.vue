@@ -1,6 +1,5 @@
 <template>
   <q-page class="q-pa-md column items-center justify-evenly">
-
     <q-card class="q-pa-md" style="width: 400px; max-width: 90vw">
       <!-- Form wrapper sin afectar el layout -->
       <form @submit.prevent="login">
@@ -28,19 +27,24 @@
             :hide-bottom-space="true"
             :error-message="credencialesError ? t('accederForm.credencialesIncorrectas') : ''"
           >
-          <template v-slot:append>
+            <template v-slot:append>
               <q-icon
                 :name="passwordVisible ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer"
                 @click="togglePasswordVisibility"
               />
             </template>
-            </q-input>
+          </q-input>
         </q-card-section>
 
         <q-card-actions align="right">
           <!-- Botón como type submit -->
-          <q-btn :label="t('accederForm.entrar')" color="primary" type="submit" :loading="loading" />
+          <q-btn
+            :label="t('accederForm.entrar')"
+            color="primary"
+            type="submit"
+            :loading="loading"
+          />
         </q-card-actions>
       </form>
 
@@ -48,7 +52,9 @@
       <q-card-section class="q-pt-none text-center">
         <div class="q-mb-md">
           <span>{{ t('accederForm.aunNoTienes') }} </span>
-          <router-link to="/Registro" class="text-primary"> {{ t('accederForm.registrateAqui') }} </router-link>
+          <router-link to="/Registro" class="text-primary">
+            {{ t('accederForm.registrateAqui') }}
+          </router-link>
         </div>
 
         <div>
@@ -82,7 +88,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat :label="t('accederForm.cancelar')" color="primary" v-close-popup />
+          <q-btn flat :label="t('cancelar')" color="primary" v-close-popup />
           <q-btn
             :label="t('accederForm.enviar')"
             color="primary"
@@ -133,7 +139,6 @@ const loading = ref(false);
 const credencialesError = ref(false);
 const passwordVisible = ref(false);
 const { t } = useI18n();
-
 
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
@@ -195,7 +200,7 @@ async function login() {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
-      password: password.value,      
+      password: password.value,
     });
 
     if (error) {

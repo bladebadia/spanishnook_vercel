@@ -32,3 +32,8 @@ supabase functions deploy stripe-webhook
 
 checkout.session.completed y charge.refunded
 poner URL de la función (https://zleqsdfpjepdangitcxv.supabase.co/functions/v1/stripe-webhook)
+
+
+RESEND API_KEY
+
+re_bkLZWdpi_3GssgceNtSaWpPvAz4g3WLEZ

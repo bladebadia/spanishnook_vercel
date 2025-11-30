@@ -4,20 +4,16 @@
       <q-card-section class="text-h6 text-center"> Restablecer contraseña </q-card-section>
 
       <q-card-section>
-        <!-- Nueva contraseña -->
         <q-input
           filled
           v-model="nuevaPassword"
           label="Nueva contraseña"
           :type="mostrarPassword ? 'text' : 'password'"
           dense
-          :error="passwordError && mostrarErrores"
-          :hide-bottom-space="!passwordError || !mostrarErrores"
-          :error-message="
-            passwordError && mostrarErrores
-              ? 'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo'
-              : ''
-          "
+          @update:model-value="serverPasswordError = ''"
+          :error="(passwordError && mostrarErrores) || !!serverPasswordError"
+          :hide-bottom-space="(!passwordError || !mostrarErrores) && !serverPasswordError"
+          :error-message="obtenerMensajeErrorPassword"
         >
           <template v-slot:append>
             <q-icon
@@ -28,7 +24,6 @@
           </template>
         </q-input>
 
-        <!-- Confirmar nueva contraseña -->
         <q-input
           filled
           v-model="confirmarPassword"
@@ -40,6 +35,13 @@
           :hide-bottom-space="!confirmarError || !mostrarErrores"
           :error-message="confirmarError && mostrarErrores ? 'Las contraseñas no coinciden' : ''"
         />
+
+        <q-banner v-if="errorMessage" class="bg-negative text-white q-mt-md rounded-borders">
+          <template v-slot:avatar>
+            <q-icon name="error" color="white" />
+          </template>
+          {{ errorMessage }}
+        </q-banner>
       </q-card-section>
 
       <q-card-actions align="center">
@@ -52,8 +54,9 @@
         />
       </q-card-actions>
 
-      <q-card-section v-if="success" class="text-positive text-center">
-        ✅ Contraseña restablecida correctamente. Redirigiendo...
+      <q-card-section v-if="success" class="text-positive text-center text-weight-bold">
+        ✅ Contraseña restablecida correctamente. <br />
+        Redirigiendo...
       </q-card-section>
     </q-card>
   </q-page>
@@ -69,32 +72,44 @@ const nuevaPassword = ref('');
 const confirmarPassword = ref('');
 const mostrarPassword = ref(false);
 const loading = ref(false);
-const errorMessage = ref('');
+
+// Errores
+const errorMessage = ref(''); // Error genérico (Banner)
+const serverPasswordError = ref(''); // Error específico del input (Estilo nativo)
 const success = ref(false);
 const mostrarErrores = ref(false);
 
-// ✅ Misma regla de contraseña que en registro
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 const passwordValida = computed(() => passwordRegex.test(nuevaPassword.value));
 
-// ✅ Errores (solo después de intentar)
 const passwordError = computed(() => !passwordValida.value);
 const confirmarError = computed(() => confirmarPassword.value !== nuevaPassword.value);
 
+// Computed para decidir qué mensaje mostrar en el input de contraseña
+const obtenerMensajeErrorPassword = computed(() => {
+  if (passwordError.value && mostrarErrores.value) {
+    return 'Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo';
+  }
+  if (serverPasswordError.value) {
+    return serverPasswordError.value;
+  }
+  return '';
+});
+
 onMounted(() => {
-  // Verificar que el usuario viene de un link válido de recuperación
+  // Verificar sesión
 });
 
 const resetPassword = async () => {
   mostrarErrores.value = true;
+  errorMessage.value = '';
+  serverPasswordError.value = ''; // Limpiamos errores previos del input
 
-  // ✅ Validaciones igual que en registro
   if (!passwordValida.value || confirmarPassword.value !== nuevaPassword.value) {
     return;
   }
 
   loading.value = true;
-  errorMessage.value = '';
 
   try {
     const { error } = await supabase.auth.updateUser({
@@ -107,12 +122,19 @@ const resetPassword = async () => {
     setTimeout(() => {
       void router.push('/Acceder');
     }, 2000);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error restableciendo contraseña:', error);
-    if (error instanceof Error) {
-      errorMessage.value = error.message;
+
+    let msg = 'Error al restablecer la contraseña';
+    if (error instanceof Error) msg = error.message;
+
+    // LÓGICA DE ESTILOS:
+    if (msg.includes('different from the old password')) {
+      // Si es el error de "misma contraseña", lo mandamos al INPUT
+      serverPasswordError.value = 'La nueva contraseña no puede ser igual a la anterior.';
     } else {
-      errorMessage.value = 'Error al restablecer la contraseña';
+      // Cualquier otro error raro, lo mandamos al BANNER general
+      errorMessage.value = msg;
     }
   } finally {
     loading.value = false;
@@ -121,7 +143,6 @@ const resetPassword = async () => {
 </script>
 
 <style scoped>
-/* Espaciado consistente con el registro */
 .q-mt-md {
   margin-top: 16px;
 }

@@ -3,8 +3,8 @@
     <h4>🛒 Carrito de Reservas</h4>
 
     <div v-if="carrito.length === 0" class="text-center q-mt-xl">
-      <q-icon name="shopping_cart" size="100px" color="black-4" />
-      <p class="text-black q-mt-md">Tu carrito está vacío</p>
+      <q-icon name="shopping_cart" size="100px" color="grey-4" />
+      <p class="text-grey q-mt-md">Tu carrito está vacío</p>
       <q-btn
         color="primary"
         label="Ir a Clases individuales"
@@ -14,7 +14,6 @@
     </div>
 
     <div v-else>
-      <!-- Lista de reservas en carrito -->
       <q-list bordered class="q-mb-lg">
         <q-item
           v-for="(reserva, index) in carrito"
@@ -48,12 +47,11 @@
         </q-item>
       </q-list>
 
-      <!-- Resumen del pedido -->
       <div class="bg-yellow-2 q-pa-md rounded-borders q-mb-lg">
         <h6>Resumen del Pedido</h6>
         <div class="row justify-between items-center">
           <span>{{ carrito.length }} reserva(s)</span>
-          <span class="text-h6 text-primary">Total: {{ total }}€</span>
+          <span class="text-h6 text-primary">Total estimado: {{ total }}€</span>
         </div>
         <div class="text-caption text-grey-7 q-mt-xs">
           {{ totalNormal }} clase(s) normal(es) + {{ totalConversacion }} clase(s) conversación
@@ -63,19 +61,17 @@
         </div>
       </div>
 
-      <!-- Botones de acción -->
       <div class="row q-gutter-md justify-end">
         <q-btn color="grey" label="Seguir Reservando" to="/ClasesIndividuales" outline />
         <q-btn
           color="primary"
           label="Pagar y Confirmar Reservas"
           @click="confirmarReservas"
-          :disabled="!usuarioLogueado || reservasConflictivas.length > 0"
+          :disable="!usuarioLogueado || reservasConflictivas.length > 0"
           :loading="confirmando"
         />
       </div>
 
-      <!-- Mensajes informativos -->
       <q-banner v-if="!usuarioLogueado" class="bg-warning text-dark q-mt-md">
         ⚠️ Debes iniciar sesión para confirmar reservas
       </q-banner>
@@ -107,11 +103,10 @@ import { useAuth } from 'src/stores/auth';
 
 const { user } = useAuth();
 
-// ACTUALIZAR la interfaz para incluir el tipo
 interface ReservaCarrito {
   fecha: string;
   hora: string;
-  tipo: 'normal' | 'conversacion'; // ← AÑADIR ESTO
+  tipo: 'normal' | 'conversacion';
 }
 
 const carrito = ref<ReservaCarrito[]>([]);
@@ -121,7 +116,7 @@ const reservasConflictivas = ref<ReservaCarrito[]>([]);
 // Computed properties
 const usuarioLogueado = computed(() => !!user.value?.id);
 
-// Calcular total basado en el tipo de cada reserva
+// Calcular total (Solo visual, el cobro real lo hace el backend)
 const total = computed(() => {
   return carrito.value.reduce((sum, reserva) => {
     return sum + (reserva.tipo === 'normal' ? 32 : 20);
@@ -225,29 +220,19 @@ const verificarDisponibilidad = async () => {
   }
 };
 
-// Confirmar reservas y crear sesión de Stripe
+// --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+// Confirmar reservas y crear sesión de Stripe (Seguro)
 const confirmarReservas = async () => {
   if (!usuarioLogueado.value || reservasConflictivas.value.length > 0) return;
   confirmando.value = true;
 
   try {
-    // CREAR line_items con precios diferentes según el tipo
-    const line_items = carrito.value.map((reserva) => ({
-      price_data: {
-        currency: 'eur',
-        product_data: {
-          name: `${reserva.tipo === 'normal' ? 'Clase Normal' : 'Clase Conversación'} - ${reserva.fecha} ${reserva.hora}`,
-        },
-        unit_amount: reserva.tipo === 'normal' ? 3200 : 2000, // 32€ o 20€ en centavos
-      },
-      quantity: 1,
-    }));
-
-    // Incluir el tipo en el metadata para futuras referencias
+    // 1. Preparamos solo los metadatos necesarios
+    // Ya NO enviamos precios ni line_items desde aquí por seguridad
     const reservasMetadata = carrito.value.map((r) => ({
       fecha: r.fecha,
       hora: r.hora,
-      tipo: r.tipo, // ← INCLUIR EL TIPO EN METADATA
+      tipo: r.tipo,
     }));
 
     const {
@@ -256,33 +241,34 @@ const confirmarReservas = async () => {
     const token = session?.access_token;
     if (!token) throw new Error('Usuario no autenticado');
 
+    // 2. Llamamos a la Edge Function
     const res = await fetch(
       'https://zleqsdfpjepdangitcxv.supabase.co/functions/v1/stripe-webhook',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          line_items,
-          reservas: reservasMetadata,
+          reservas: reservasMetadata, // Solo enviamos la lista de lo que quiere
           user_id: user.value!.id,
         }),
       },
     );
 
-    if (!res.ok) throw new Error('Error al crear la sesión de pago');
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Error al crear la sesión de pago');
+    }
 
     const responseData = await res.json();
     if (!responseData.url) throw new Error('No se pudo obtener la URL de Stripe Checkout');
 
+    // 3. Redirigimos a Stripe
     window.location.href = responseData.url;
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error('❌ Error confirmando reservas:', err);
-      alert(err.message);
-    } else {
-      console.error('❌ Error confirmando reservas (no Error object):', err);
-      alert('Error al confirmar reservas');
-    }
+    let mensaje = 'Error al confirmar reservas';
+    if (err instanceof Error) mensaje = err.message;
+    console.error('❌ Error:', err);
+    alert(mensaje);
   } finally {
     confirmando.value = false;
   }
@@ -295,12 +281,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.q-item {
-  border-radius: 8px;
-  margin-bottom: 8px;
-  transition: background-color 0.3s ease;
-}
-
 .bg-negative-1 {
   background-color: #851319;
 }

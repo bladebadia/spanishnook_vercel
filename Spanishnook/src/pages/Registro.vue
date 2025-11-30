@@ -1,7 +1,10 @@
 <template>
   <q-page class="q-pa-md column items-center justify-evenly">
     <q-card class="q-pa-md" style="width: 400px; max-width: 90vw">
-      <!-- Formulario para manejar el submit con Enter -->
+      <q-card-section class="text-center">
+        <div class="text-h6 text-primary">Crear Cuenta</div>
+      </q-card-section>
+
       <form @submit.prevent="registrar">
         <q-card-section>
           <q-input
@@ -34,13 +37,9 @@
             dense
             :error="passwordError && mostrarErrores"
             :hide-bottom-space="!(passwordError && mostrarErrores)"
-            :error-message="
-              passwordError && mostrarErrores
-                ? t('registro.laContrasenaDebe')
-                : ''
-            "
+            :error-message="passwordError && mostrarErrores ? t('registro.laContrasenaDebe') : ''"
           >
-          <template v-slot:append>
+            <template v-slot:append>
               <q-icon
                 :name="passwordVisible ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer"
@@ -48,6 +47,7 @@
               />
             </template>
           </q-input>
+
           <q-input
             filled
             v-model="confirmPassword"
@@ -59,7 +59,7 @@
             :hide-bottom-space="!(confirmError && mostrarErrores)"
             :error-message="confirmError && mostrarErrores ? t('registro.lasContrasenasNo') : ''"
           >
-          <template v-slot:append>
+            <template v-slot:append>
               <q-icon
                 :name="confirmPasswordVisible ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer"
@@ -67,40 +67,45 @@
               />
             </template>
           </q-input>
-          <!-- Checkbox de condiciones de privacidad -->
+
           <div class="q-mt-md">
             <div class="row items-center no-wrap">
               <q-checkbox
                 v-model="aceptoPrivacidad"
                 :error="privacidadError && mostrarErrores"
                 class="q-mr-sm"
+                dense
               />
-
-              <span class="text-cursor">
+              <span class="text-caption text-grey-8">
                 {{ t('registro.aceptoLos') }}
                 <router-link to="/Privacidad" class="text-primary text-weight-bold" @click.stop>
                   {{ t('registro.terminosYCondiciones') }}
                 </router-link>
               </span>
             </div>
-
             <div
               v-if="privacidadError && mostrarErrores"
-              class="text-negative text-caption q-mt-xs"
+              class="text-negative text-caption q-mt-xs q-ml-md"
             >
               {{ t('registro.debesAceptarLos') }}
             </div>
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn :label="t('registro.registrarse')" color="primary" type="submit" :loading="loading" />
+        <q-card-actions class="row justify-between items-center q-px-md q-pt-md">
+          <router-link to="/Acceder" class="text-primary text-body2 link-sin-subrayar">
+            {{ t('registro.yaTengoCuenta') }}
+          </router-link>
+
+          <q-btn
+            :label="t('registro.registrarse')"
+            color="primary"
+            type="submit"
+            :loading="loading"
+            unelevated
+          />
         </q-card-actions>
       </form>
-
-      <q-card-section class="q-pt-none text-center">
-        <router-link to="/Acceder" class="text-primary"> {{ t('registro.yaTengoCuenta') }} </router-link>
-      </q-card-section>
     </q-card>
   </q-page>
 </template>
@@ -211,11 +216,18 @@ async function registrar() {
 </script>
 
 <style scoped>
-/* Opcional: mejorar el estilo del enlace dentro del checkbox */
 .text-primary {
-  text-decoration: underline;
+  text-decoration: none;
 }
 .text-primary:hover {
+  text-decoration: underline;
+}
+
+.link-sin-subrayar {
   text-decoration: none;
+  font-weight: 500;
+}
+.link-sin-subrayar:hover {
+  text-decoration: underline;
 }
 </style>
