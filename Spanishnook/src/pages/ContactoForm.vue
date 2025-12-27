@@ -12,20 +12,20 @@
                 <strong>Teléfono:</strong> +34 123 456 789
               </p>
               <p class="text-body1">
-                <strong>Email:</strong> contacto@spanishnook.com
+                <strong>Email:</strong> info@spanishnook.com
               </p>
               <p class="text-body1">
                 <strong>Redes Sociales:</strong>
               </p>
               <ul>
                 <li>
-                  <a href="https://facebook.com/spanishnook" target="_blank" class="text-primary">
-                    Facebook
+                  <a href="https://www.youtube.com/@SpanishNook" target="_blank" class="text-primary">
+                    youtube
                   </a>
                 </li>
                 <li>
-                  <a href="https://twitter.com/spanishnook" target="_blank" class="text-primary">
-                    Twitter
+                  <a href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP" target="_blank" class="text-primary">
+                    TikTok
                   </a>
                 </li>
                 <li>

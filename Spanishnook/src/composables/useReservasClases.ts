@@ -23,12 +23,17 @@ export interface ReservaConfirmada {
   precio?: number;
 }
 
+export interface DiaCalendario {
+  fecha: string;
+  tipo_dia: string; // 'laborable', 'especial', 'festivo', 'null'
+  horario: string[];
+}
+
 export function useReservasClases() {
   const $q = useQuasar();
   const { t, locale } = useI18n();
   const { user } = useAuth();
   console.log('👤 Usuario actual en useReservasClases:', user.value);
-  console.log('👤 Usuario actual en useReservasClases:', user);
 
   // Estado reactivo
   const seleccionClases = ref<string | null>(null);
@@ -37,6 +42,8 @@ export function useReservasClases() {
   const misReservas = ref<ReservaConfirmada[]>([]);
   const carrito = ref<ReservaCarrito[]>([]);
   const tipoClase = ref<'normal' | 'conversacion'>('normal');
+  const calendario = ref<DiaCalendario[]>([]);
+  const reservasExistentes = ref<ReservaConfirmada[]>([]);
 
   // Computed properties
   const opcionesTipoClase = computed(() => [
@@ -50,65 +57,103 @@ export function useReservasClases() {
     },
   ]);
 
-  // Fechas mínima y máxima (3 meses vista)
-  const fechaMinima = new Date().toISOString().split('T')[0];
-  const fechaMaxima = computed(() => {
-    const date = new Date();
-    date.setMonth(date.getMonth() + 3);
-    return date.toISOString().split('T')[0];
+  // Fechas mínima y máxima
+  const fechaMinima = computed<string>(() => {
+    const hoy = new Date();
+    hoy.setDate(hoy.getDate() + 1); // Mínimo mañana
+    return hoy.toISOString().split('T')[0] || '';
   });
 
-  // Horarios disponibles
-  const todosLosHorarios = [
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00',
-  ];
+  const fechaMaxima = computed<string>(() => {
+    const maxima = new Date();
+    maxima.setMonth(maxima.getMonth() + 9); // Máximo 9 meses
+    return maxima.toISOString().split('T')[0] || '';
+  });
 
-  // Fechas que tienen eventos (para el calendario)
+  // Fechas que tienen eventos (días con horarios disponibles en el calendario)
   const fechasConEventos = computed(() => {
-    const fechas = new Set();
+    const fechas = new Set<string>();
+    
+    // Añadir fechas del calendario con horarios disponibles
+    calendario.value.forEach((dia) => {
+      if ((dia.tipo_dia === 'laborable' || dia.tipo_dia === 'especial') && 
+          dia.horario && 
+          dia.horario.length > 0) {
+        fechas.add(dia.fecha);
+      }
+    });
+    
+    // Añadir fechas de mis reservas
     misReservas.value.forEach((reserva) => fechas.add(reserva.fecha));
+    
+    // Añadir fechas del carrito
     carrito.value.forEach((reserva) => fechas.add(reserva.fecha));
-    return Array.from(fechas) as string[];
+    
+    return Array.from(fechas);
   });
 
-  // Horarios disponibles filtrados
+  // ✅ NUEVO: Computed para opciones de fechas (en lugar de función)
+  const opcionesFechasComputed = computed(() => {
+    // Crear un Set con todas las fechas válidas
+    const fechasValidas = new Set<string>();
+    
+    calendario.value.forEach((dia) => {
+      // Solo agregar si es laborable/especial con horarios
+      if ((dia.tipo_dia === 'laborable' || dia.tipo_dia === 'especial') && 
+          dia.horario && 
+          dia.horario.length > 0) {
+        fechasValidas.add(dia.fecha);
+      }
+    });
+    
+    console.log('✅ Fechas válidas computed:', Array.from(fechasValidas));
+    
+    // Devolver función que verifica contra el Set
+    return (fecha: string): boolean => {
+      const fechaMin = fechaMinima.value;
+      const fechaMax = fechaMaxima.value;
+      
+      // Validar rango
+      if (fecha < fechaMin || fecha > fechaMax) {
+        return false;
+      }
+      
+      // Verificar si está en el Set
+      const esValida = fechasValidas.has(fecha);
+      
+      return esValida;
+    };
+  });
+
+
+  // Horarios disponibles filtrados según calendario y reservas
   const horariosDisponiblesFiltrados = computed(() => {
-    return todosLosHorarios.filter(
-      (hora) => !horasOcupadas.value.includes(hora) && !estaEnCarrito(hora),
+    if (!fechaSeleccionada.value) return [];
+
+    // Obtener horarios del día en el calendario
+    const diaCalendario = calendario.value.find(d => d.fecha === fechaSeleccionada.value);
+    if (!diaCalendario || !diaCalendario.horario || diaCalendario.horario.length === 0) {
+      return [];
+    }
+
+    // Filtrar horarios ocupados (reservas confirmadas) y los del carrito
+    const horariosReservados = reservasExistentes.value
+      .filter(r => r.fecha === fechaSeleccionada.value && r.estado === 'confirmada')
+      .map(r => r.hora.slice(0, 5));
+
+    return diaCalendario.horario.filter(
+      (hora) => !horariosReservados.includes(hora) && !estaEnCarrito(hora)
     );
   });
-
   // Funciones utilitarias
   const activarSeleccionClases = () => {
     seleccionClases.value = 'activa';
   };
 
-  // Opciones para fechas disponibles
-  const opcionesFechas = (date: string) => {
-    const selectedDate = new Date(date);
-    const today = new Date();
-    const maxDate = new Date();
-
-    maxDate.setMonth(today.getMonth() + 3);
-    today.setHours(0, 0, 0, 0);
-    maxDate.setHours(0, 0, 0, 0);
-
-    if (selectedDate < today) return false;
-    if (selectedDate > maxDate) return false;
-
-    const day = selectedDate.getDay();
-    return day !== 0 && day !== 6; // Excluir fines de semana
+  // Mantener la función original para compatibilidad
+  const opcionesFechas = (fecha: string): boolean => {
+    return opcionesFechasComputed.value(fecha);
   };
-
   // Función para obtener el texto del tipo de clase
   const getTipoClaseTexto = (reserva: ReservaConfirmada): string => {
     return reserva.tipo === 'normal' 
@@ -118,12 +163,12 @@ export function useReservasClases() {
 
   // Función para obtener el precio
   const getPrecioClase = (reserva: ReservaConfirmada): number => {
-    return reserva.tipo === 'normal' ? 32 : 20;
+    return reserva.precio || (reserva.tipo === 'normal' ? 32 : 20);
   };
 
   // Función formatFecha mejorada con i18n
   const formatFecha = (fecha: string) => {
-    const d = new Date(fecha);
+    const d = new Date(fecha + 'T00:00:00');
     
     // Mapear locales de i18n a locales del navegador
     const localeMap: { [key: string]: string } = {
@@ -139,8 +184,6 @@ export function useReservasClases() {
     
     const currentLocale = localeMap[locale.value] || 'es-ES';
     
-    console.log('🌐 Formateando fecha:', fecha, 'con locale:', locale.value, '->', currentLocale);
-    
     return d.toLocaleDateString(currentLocale, {
       weekday: 'long',
       year: 'numeric',
@@ -149,7 +192,75 @@ export function useReservasClases() {
     });
   };
 
-  // Cargar TODAS las horas ocupadas (solo confirmadas)
+  // Cargar calendario desde Supabase
+  const cargarCalendario = async (): Promise<void> => {
+    try {
+      const fechaMin = fechaMinima.value;
+      const fechaMax = fechaMaxima.value;
+
+      console.log('📅 Cargando calendario entre:', fechaMin, 'y', fechaMax);
+
+      const { data, error } = await supabase
+        .from('Calendario')
+        .select('fecha, tipo_dia, horario')
+        .gte('fecha', fechaMin)
+        .lte('fecha', fechaMax)
+        .order('fecha', { ascending: true });
+
+      if (error) throw error;
+
+      console.log('📊 Datos crudos del calendario:', data);
+
+      calendario.value = (data || []).map(dia => ({
+        fecha: dia.fecha,
+        tipo_dia: dia.tipo_dia || 'null',
+        horario: Array.isArray(dia.horario) ? dia.horario : (dia.horario ? [dia.horario] : [])
+      }));
+
+      console.log('✅ Calendario procesado:', calendario.value);
+      console.log('📅 Total días cargados:', calendario.value.length);
+      
+      // Debug: mostrar días laborables/especiales
+      const diasDisponibles = calendario.value.filter(d => 
+        (d.tipo_dia === 'laborable' || d.tipo_dia === 'especial') && 
+        d.horario.length > 0
+      );
+      console.log('✅ Días disponibles (laborable/especial con horarios):', diasDisponibles);
+
+    } catch (error) {
+      console.error('❌ Error cargando calendario:', error);
+      $q.notify({
+        type: 'negative',
+        message: 'Error al cargar el calendario',
+        timeout: 2000
+      });
+    }
+  };
+
+
+  // Cargar reservas existentes (para marcar horarios ocupados)
+  const cargarReservasExistentes = async (): Promise<void> => {
+    try {
+      const fechaMin = fechaMinima.value;
+      const fechaMax = fechaMaxima.value;
+
+      const { data, error } = await supabase
+        .from('reservas')
+        .select('*')
+        .gte('fecha', fechaMin)
+        .lte('fecha', fechaMax)
+        .eq('estado', 'confirmada');
+
+      if (error) throw error;
+
+      reservasExistentes.value = data || [];
+      console.log('📊 Reservas existentes cargadas:', reservasExistentes.value.length);
+    } catch (error) {
+      console.error('❌ Error cargando reservas existentes:', error);
+    }
+  };
+
+  // Cargar horarios ocupados para una fecha específica
   const cargarHorariosOcupados = async (fecha: string) => {
     if (!fecha) {
       horasOcupadas.value = [];
@@ -168,7 +279,7 @@ export function useReservasClases() {
         return;
       }
 
-      horasOcupadas.value = reservasConfirmadas.map((r) => r.hora.slice(0, 5)); // HH:mm
+      horasOcupadas.value = reservasConfirmadas.map((r) => r.hora.slice(0, 5));
       console.log('✅ Horarios ocupados cargados:', horasOcupadas.value);
     } catch (error) {
       console.error('💥 Error cargando horarios ocupados:', error);
@@ -363,6 +474,7 @@ export function useReservasClases() {
           // Recargar disponibilidad
           if (fechaSeleccionada.value) {
             await cargarHorariosOcupados(fechaSeleccionada.value);
+            await cargarReservasExistentes();
           }
 
           $q.notify({
@@ -393,6 +505,8 @@ export function useReservasClases() {
   // Inicialización
   const inicializar = async () => {
     cargarCarrito();
+    await cargarCalendario();
+    await cargarReservasExistentes();
     await cargarMisReservas();
   };
 
@@ -409,11 +523,40 @@ export function useReservasClases() {
   };
 
   // Lifecycle hook
-  onMounted(async () => {
-    await inicializar();
-    setupWatchers();
-  });
+  onMounted(() => {
+    void (async () => {
+      await inicializar();
+      setupWatchers();
 
+      // Suscripción a cambios en tiempo real
+      const subscription = supabase
+        .channel('reservas-calendario-changes')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'reservas' },
+          () => {
+            void cargarReservasExistentes();
+            void cargarMisReservas();
+            if (fechaSeleccionada.value) {
+              void cargarHorariosOcupados(fechaSeleccionada.value);
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'Calendario' },
+          () => {
+            void cargarCalendario();
+          }
+        )
+        .subscribe();
+
+      // Cleanup al desmontar
+      return () => {
+        void subscription.unsubscribe();
+      };
+    })();
+  });
   // API pública del composable
   return {
     // Estado reactivo
@@ -423,14 +566,16 @@ export function useReservasClases() {
     misReservas,
     carrito,
     tipoClase,
+    calendario,
+    reservasExistentes,
 
     // Computed properties
     opcionesTipoClase,
     fechaMinima,
     fechaMaxima,
-    todosLosHorarios,
     fechasConEventos,
     horariosDisponiblesFiltrados,
+    opcionesFechasComputed, // ✅ NUEVO: exportar computed
 
     // Métodos
     activarSeleccionClases,
@@ -438,6 +583,8 @@ export function useReservasClases() {
     getTipoClaseTexto,
     getPrecioClase,
     formatFecha,
+    cargarCalendario,
+    cargarReservasExistentes,
     cargarHorariosOcupados,
     estaEnCarrito,
     agregarAlCarrito,

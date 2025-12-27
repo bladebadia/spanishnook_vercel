@@ -102,6 +102,13 @@
               </q-item-section>
               <q-item-section>Datos Personales</q-item-section>
             </q-item>
+            <q-item clickable v-ripple :active="menuActivo === 'eliminar'"
+              @click="seleccionarMenu('eliminar')" active-class="menu-activo">
+              <q-item-section avatar><q-icon name="delete_forever" color="negative" />
+              </q-item-section>
+              <q-item-section>Eliminar Cuenta
+              </q-item-section>
+            </q-item>
 
             <!-- Panel de Administración (solo para admins) -->
             <q-item
@@ -268,6 +275,19 @@
           </q-card-section>
         </q-card>
 
+        <q-card v-if="menuActivo === 'eliminar'">
+          <q-card-section>
+            <div class="text-h6 q-mb-md">Eliminar Cuenta</div>
+              <q-form @submit="eliminarCuenta" class="q-gutter-md">
+                <q-input v-model="passwordConfirm" type="password" label="Confirma tu contraseña" outlined required />
+
+                <div class="row q-gutter-md q-mt-lg">
+                  <q-btn label="Eliminar Cuenta" type="submit" color="negative" icon="delete_forever" :loading="deleting" />
+                </div>
+              </q-form>
+          </q-card-section>
+        </q-card>
+
         <q-card v-if="menuActivo === 'configuracion'">
           <q-card-section>
             <div class="text-h6">Configuración</div>
@@ -296,7 +316,45 @@ const reservasConfirmadas = ref<Reserva[]>([]);
 const { t } = useI18n();
 const menuVisible = ref($q.screen.gt.sm);
 const menuActivo = ref('reservadas');
+const passwordConfirm = ref('');
+const deleting = ref(false);
 
+const eliminarCuenta = async () => {
+ if (!user.value?.email || !user.value?.id) {
+    $q.notify({ type: 'negative', message: 'No se encontró el usuario autenticado.', timeout: 3000 });
+    return;
+  }
+  if (!passwordConfirm.value) {
+    $q.notify({ type: 'warning', message: 'Introduce tu contraseña para confirmar.', timeout: 3000 });
+    return;
+  }
+  deleting.value = true;
+  try {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.value.email,
+      password: passwordConfirm.value,
+    });
+    if (signInError) {
+      $q.notify({ type: 'negative', message: 'Contraseña incorrecta.', timeout: 3000 });
+      return;
+    }
+    const {error } = await supabase.functions.invoke('delete-account', {
+ body: {},
+    });
+ if (error) {
+      $q.notify({ type: 'negative', message: error.message || 'Error eliminando la cuenta', timeout: 4000 });
+      return;
+    }
+    $q.notify({ type: 'positive', message: 'Tu cuenta ha sido eliminada.', timeout: 3000 });
+    await logout();
+    await router.push('/');
+ } catch (err: unknown) {
+  const message = err instanceof Error ? err.message : 'Error inesperado';
+  $q.notify({ type: 'negative', message, timeout: 4000 });
+} finally {
+  deleting.value = false;
+}
+};
 
 const cargarDatosPersonales = async () => {
   if (!user.value?.id) {

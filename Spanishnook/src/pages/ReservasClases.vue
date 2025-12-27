@@ -4,6 +4,17 @@
         <p class="titulo-responsivo text-center q-my-xl" style="width: 100%; color: #851319">
           {{ t('individuales.reservaTuClase') }}
         </p>
+        
+        <!-- Debug info (temporal - elimina después de verificar) -->
+        <div class="col-12 q-mb-md bg-blue-1 q-pa-sm rounded-borders">
+          <div class="text-caption">
+            <strong>Debug:</strong> 
+            📅 Días en calendario: {{ calendario.length }} | 
+            ✅ Días con eventos: {{ fechasConEventos.length }} | 
+            🔢 Días disponibles: {{ diasDisponiblesCount }}
+          </div>
+        </div>
+
         <!-- Columna izquierda: Carrito + Reservas -->
         <div class="col-12 col-md-5">
           <!-- Carrito -->
@@ -95,20 +106,26 @@
         <!-- Calendario -->
         <div class="q-mb-xl">
           <q-date
-            v-model="fechaSeleccionada"
-            :options="opcionesFechas"
-            :min="fechaMinima"
-            :max="fechaMaxima"
-            landscape
-            class="custom-calendar shadow-1 rounded-borders"
-            today-btn
-            mask="YYYY-MM-DD"
-            color="primary"
-            text-color="white"
-            :events="fechasConEventos"
-            event-color="orange"
-            first-day-of-week="1"
+            v-if="calendarioCargado"
+        v-model="fechaSeleccionada"
+        :options="opcionesFechasComputed"
+        :min="fechaMinima"
+        :max="fechaMaxima"
+        :events="fechasConEventos"
+        event-color="orange"
+        landscape
+        class="custom-calendar shadow-1 rounded-borders"
+        today-btn
+        mask="YYYY-MM-DD"
+        color="primary"
+        text-color="white"
+        first-day-of-week="1"
+        @update:model-value="handleFechaSeleccionada"
           />
+          <div v-else class="text-center q-pa-xl">
+            <q-spinner color="primary" size="3em" />
+            <div class="text-grey q-mt-md">Cargando calendario...</div>
+          </div>
         </div>
 
         <!-- Horarios disponibles -->
@@ -138,23 +155,22 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useReservasClases } from 'src/composables/useReservasClases';
 import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
-
 
 const { t } = useI18n();
 
 // Usar el composable para toda la lógica
 const {
   // Estado reactivo
-  //seleccionClases,
   fechaSeleccionada,
-  //horasOcupadas,
   misReservas,
   carrito,
   tipoClase,
+  calendario,
 
   // Computed properties
   opcionesTipoClase,
@@ -162,6 +178,7 @@ const {
   fechaMaxima,
   fechasConEventos,
   horariosDisponiblesFiltrados,
+  opcionesFechasComputed,
 
   // Métodos
   opcionesFechas,
@@ -174,4 +191,45 @@ const {
   puedeCancelar,
   cancelarReserva,
 } = useReservasClases();
+
+// Estado para controlar cuándo el calendario está listo
+const calendarioCargado = ref(false);
+
+// Computed para contar días disponibles (debug)
+const diasDisponiblesCount = computed(() => {
+  return calendario.value.filter(d => 
+    (d.tipo_dia === 'laborable' || d.tipo_dia === 'especial') && 
+    d.horario.length > 0
+  ).length;
+});
+
+// Wrapper para la función options que fuerza reactividad
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const opcionesFechasWrapper = (fecha: string): boolean => {
+  const resultado = opcionesFechas(fecha);
+  return resultado;
+};
+
+// Handler para fecha seleccionada con debug
+const handleFechaSeleccionada = (val: string) => {
+  console.log('📅 Fecha seleccionada:', val);
+  const diaInfo = calendario.value.find(d => d.fecha === val);
+  if (diaInfo) {
+    console.log('✅ Info del día:', diaInfo);
+  }
+};
+
+// Watch para detectar cuándo se carga el calendario
+watch(() => calendario.value.length, (nuevoLength) => {
+  console.log('📊 Calendario actualizado. Total días:', nuevoLength);
+  if (nuevoLength > 0) {
+    calendarioCargado.value = true;
+    console.log('✅ Calendario marcado como cargado');
+  }
+}, { immediate: true });
+
+// Watch para debug de eventos
+watch(() => fechasConEventos.value, (eventos) => {
+  console.log('🎯 Fechas con eventos actualizadas:', eventos);
+}, { immediate: true });
 </script>

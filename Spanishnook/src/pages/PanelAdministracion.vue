@@ -46,6 +46,20 @@
             <q-item
               clickable
               v-ripple
+              :active="seccionActual === 'particulares'"
+              @click="cambiarSeccion('particulares')"
+              class="menu-item"
+            >
+              <q-item-section avatar>
+                <q-icon name="person" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Clases Particulares</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-ripple
               :active="seccionActual === 'noticias'"
               @click="cambiarSeccion('noticias')"
               class="menu-item"
@@ -1112,6 +1126,264 @@
           </q-dialog>
         </div>
 
+        <!-- Sección Clases Particulares -->
+        <div v-if="seccionActual === 'particulares'">
+          <div class="row items-center justify-between q-mb-md">
+            <div class="text-h4">Gestión de Clases Particulares</div>
+            <q-chip color="primary" text-color="white" icon="event">
+              {{ reservasActivas.length }} reserva(s) activa(s)
+            </q-chip>
+          </div>
+
+          <!-- Filtros -->
+          <q-card class="q-mb-md">
+            <q-card-section class="row q-col-gutter-md">
+              <div class="col-12 col-md-4">
+                <q-input
+                  v-model="filtroReservas.userId"
+                  label="Buscar por User ID"
+                  filled
+                  dense
+                  clearable
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-12 col-md-3">
+                <q-select
+                  v-model="filtroReservas.tipo"
+                  :options="['Todos', 'Individual', 'Grupal', 'Conversación']"
+                  label="Tipo de clase"
+                  filled
+                  dense
+                />
+              </div>
+              <div class="col-12 col-md-3">
+                <q-input
+                  v-model="filtroReservas.fechaDesde"
+                  label="Fecha desde"
+                  type="date"
+                  filled
+                  dense
+                />
+              </div>
+              <div class="col-12 col-md-2 flex items-center">
+                <q-btn
+                  color="primary"
+                  icon="refresh"
+                  label="Recargar"
+                  @click="cargarReservas"
+                  unelevated
+                  class="full-width"
+                />
+              </div>
+            </q-card-section>
+          </q-card>
+
+          <!-- Estado vacío -->
+          <q-card v-if="reservasActivas.length === 0" flat bordered class="q-pa-lg text-center">
+            <q-icon name="event_busy" size="64px" color="grey-5" />
+            <div class="text-h6 text-grey-7 q-mt-md">No hay reservas activas</div>
+            <div class="text-body2 text-grey-6">
+              Las reservas futuras aparecerán aquí automáticamente
+            </div>
+          </q-card>
+
+          <!-- Lista de reservas -->
+          <q-list v-else bordered separator class="rounded-borders">
+            <q-item
+              v-for="(reserva, index) in reservasFiltradas"
+              :key="reserva.id ?? `reserva-${index}`"
+              class="q-pa-md"
+            >
+              <q-item-section avatar>
+                <q-avatar :color="getColorTipo(reserva.tipo)" text-color="white" icon="person" />
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label class="text-weight-bold">
+                  {{ formatFechaReserva(reserva.fecha) }} - {{ reserva.hora }}
+                </q-item-label>
+                <q-item-label caption>
+                  <q-chip size="sm" color="primary" text-color="white" dense>
+                    User ID: {{ truncarUserId(reserva.user_id) }}
+                  </q-chip>
+                  <q-chip size="sm" :color="getColorTipo(reserva.tipo)" text-color="white" dense class="q-ml-xs">
+                    {{ reserva.tipo || 'Sin tipo' }}
+                  </q-chip>
+                  <q-chip v-if="reserva.precio" size="sm" color="green" text-color="white" dense class="q-ml-xs">
+                    {{ reserva.precio }}€
+                  </q-chip>
+                </q-item-label>
+                <q-item-label v-if="reserva.stripe_payment_intent" caption class="q-mt-xs">
+                  <q-icon name="payment" size="xs" />
+                  Pago: {{ truncarStripeId(reserva.stripe_payment_intent) }}
+                </q-item-label>
+              </q-item-section>
+
+              <q-item-section side>
+                <div class="row q-gutter-sm">
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    icon="visibility"
+                    color="primary"
+                    @click="verDetalleReserva(reserva)"
+                  >
+                    <q-tooltip>Ver detalles</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    icon="edit"
+                    color="orange"
+                    @click="editarReserva(reserva)"
+                  >
+                    <q-tooltip>Editar</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    icon="delete"
+                    color="negative"
+                    @click="eliminarReserva(reserva.id!)"
+                  >
+                    <q-tooltip>Eliminar</q-tooltip>
+                  </q-btn>
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-list>
+
+          <!-- Paginación -->
+          <div v-if="reservasActivas.length > 0" class="q-mt-md flex flex-center">
+            <q-pagination
+              v-model="paginaActual"
+              :max="totalPaginas"
+              :max-pages="7"
+              direction-links
+              boundary-links
+              color="primary"
+            />
+          </div>
+        </div>
+
+        <!-- Dialog detalle reserva -->
+        <q-dialog v-model="dialogDetalleReserva">
+          <q-card style="min-width: 500px">
+            <q-card-section>
+              <div class="text-h6">Detalle de Reserva</div>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-section v-if="reservaSeleccionada">
+              <div class="q-gutter-sm">
+                <div class="row">
+                  <div class="col-5 text-weight-bold">User ID:</div>
+                  <div class="col-7">{{ reservaSeleccionada.user_id }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-5 text-weight-bold">Fecha:</div>
+                  <div class="col-7">{{ formatFechaReserva(reservaSeleccionada.fecha) }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-5 text-weight-bold">Hora:</div>
+                  <div class="col-7">{{ reservaSeleccionada.hora }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-5 text-weight-bold">Tipo:</div>
+                  <div class="col-7">{{ reservaSeleccionada.tipo || 'Sin tipo' }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-5 text-weight-bold">Precio:</div>
+                  <div class="col-7">{{ reservaSeleccionada.precio }}€</div>
+                </div>
+                <div v-if="reservaSeleccionada.stripe_payment_intent" class="row">
+                  <div class="col-5 text-weight-bold">Payment Intent:</div>
+                  <div class="col-7 text-caption">{{ reservaSeleccionada.stripe_payment_intent }}</div>
+                </div>
+              </div>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-actions align="right">
+              <q-btn flat label="Cerrar" color="grey" v-close-popup />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
+        <!-- Dialog editar reserva -->
+        <q-dialog v-model="dialogEditarReserva" persistent>
+          <q-card style="min-width: 500px">
+            <q-card-section>
+              <div class="text-h6">Editar Reserva</div>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-section>
+              <div class="q-gutter-md">
+                <q-input
+                  v-model="reservaFormulario.user_id"
+                  label="User ID"
+                  filled
+                  dense
+                  readonly
+                />
+                <q-input
+                  v-model="reservaFormulario.fecha"
+                  label="Fecha"
+                  type="date"
+                  filled
+                  dense
+                />
+                <q-input
+                  v-model="reservaFormulario.hora"
+                  label="Hora"
+                  type="time"
+                  filled
+                  dense
+                />
+                <q-select
+                  v-model="reservaFormulario.tipo"
+                  :options="['Individual', 'Grupal', 'Conversación']"
+                  label="Tipo de clase"
+                  filled
+                  dense
+                />
+                <q-input
+                  v-model.number="reservaFormulario.precio"
+                  label="Precio (€)"
+                  type="number"
+                  filled
+                  dense
+                  min="0"
+                />
+              </div>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-actions align="right">
+              <q-btn flat label="Cancelar" color="grey" @click="cerrarDialogEditar" />
+              <q-btn
+                label="Guardar"
+                color="primary"
+                @click="guardarReserva"
+                :loading="guardandoReserva"
+                unelevated
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
         <!-- Sección Tarjetas -->
         <div v-if="seccionActual === 'tarjetas'">
           <q-card>
@@ -1199,6 +1471,18 @@ interface CursoGrupal {
   created_at?: string;
 }
 
+interface Reserva {
+  id?: number;
+  user_id: string;
+  fecha: string;
+  hora: string;
+  stripe_payment_intent?: string;
+  precio?: number;
+  tipo?: string;
+  created_at?: string;
+}
+
+
 const $q = useQuasar();
 
 // Estado de la aplicación
@@ -1264,6 +1548,31 @@ const horariosDisponibles = [
 
 const nivelesDisponibles = ['Principiante', 'Elemental', 'Intermedio', 'Avanzado', 'Nativo'];
 const estadosCurso = ['Activo', 'En reserva', 'Finalizado', 'Completo', 'En preparación'];
+const reservasActivas = ref<Reserva[]>([]);
+const reservaSeleccionada = ref<Reserva | null>(null);
+const dialogDetalleReserva = ref(false);
+const dialogEditarReserva = ref(false);
+const guardandoReserva = ref(false);
+const paginaActual = ref(1);
+const itemsPorPagina = 10;
+
+const filtroReservas = ref({
+  userId: '',
+  tipo: 'Todos',
+  fechaDesde: new Date().toISOString().split('T')[0]
+});
+
+const reservaFormulario = ref<Reserva>({
+  user_id: '',
+  fecha: '',
+  hora: '',
+  tipo: '',
+  precio: 0,
+  stripe_payment_intent: ''
+});
+
+
+
 
 // Configuración
 const configuracion = ref<Configuracion>({
@@ -1377,8 +1686,11 @@ const cambiarMes = (nuevoMes: string | number | null): void => {
 const seleccionarDia = (fecha: Date | null): void => {
   if (!fecha) return;
 
-  const fechaStr = fecha.toISOString().split('T')[0];
-  if (!fechaStr) return;
+  // FIX: Usar formato local en vez de toISOString para evitar cambio de zona horaria
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0');
+  const day = String(fecha.getDate()).padStart(2, '0');
+  const fechaStr = `${year}-${month}-${day}`;
 
   if (seleccionMultiple.value) {
     const index = fechasSeleccionadas.value.indexOf(fechaStr);
@@ -1393,6 +1705,7 @@ const seleccionarDia = (fecha: Date | null): void => {
 
   cargarConfiguracionAutomatica();
 };
+
 
 const cargarConfiguracionAutomatica = (): void => {
   if (fechasSeleccionadas.value.length === 0) {
@@ -1443,10 +1756,17 @@ const getClasesDia = (fecha: Date | null): string => {
   if (!fecha) return 'dia-vacio';
 
   const clases = ['dia-calendario'];
-  const fechaStr = fecha.toISOString().split('T')[0] ?? '';
-  const hoy = new Date().toDateString();
+  
+  // FIX: Mismo formato local para comparar
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0');
+  const day = String(fecha.getDate()).padStart(2, '0');
+  const fechaStr = `${year}-${month}-${day}`;
+  
+  const hoy = new Date();
+  const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
 
-  if (fecha.toDateString() === hoy) {
+  if (fechaStr === hoyStr) {
     clases.push('dia-hoy');
   }
 
@@ -1458,7 +1778,12 @@ const getClasesDia = (fecha: Date | null): string => {
 };
 
 const getClaseTipoDia = (fecha: Date): string => {
-  const fechaStr = fecha.toISOString().split('T')[0];
+  // FIX: Mismo formato local
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0');
+  const day = String(fecha.getDate()).padStart(2, '0');
+  const fechaStr = `${year}-${month}-${day}`;
+  
   const entrada = datosCalendario.value.find((item) => item.fecha === fechaStr);
 
   if (!entrada) return '';
@@ -1474,6 +1799,7 @@ const getClaseTipoDia = (fecha: Date): string => {
       return '';
   }
 };
+
 
 // Funciones auxiliares
 const activarSeleccionMultiple = (): void => {
@@ -1931,7 +2257,7 @@ onMounted(async (): Promise<void> => {
   await cargarUsuario();
   await cargarDatosCalendario();
   await cargarCursosGrupales();
-
+  await cargarReservas();
   subscription = supabase
     .channel('calendario-changes')
     .on(
@@ -1943,6 +2269,17 @@ onMounted(async (): Promise<void> => {
       },
       () => {
         void cargarDatosCalendario();
+      },
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'reservas',
+      },
+      () => {
+        void cargarReservas();
       },
     )
     .subscribe();
@@ -1964,6 +2301,194 @@ const getColorEstado = (estado: string): string => {
       return 'grey';
   }
 };
+
+// Computed para reservas filtradas y paginadas
+const reservasFiltradas = computed(() => {
+  let resultado = [...reservasActivas.value];
+
+  // Filtro por user_id
+  if (filtroReservas.value.userId) {
+    resultado = resultado.filter(r => 
+      r.user_id.toLowerCase().includes(filtroReservas.value.userId.toLowerCase())
+    );
+  }
+
+  // Filtro por tipo
+  if (filtroReservas.value.tipo && filtroReservas.value.tipo !== 'Todos') {
+    resultado = resultado.filter(r => r.tipo === filtroReservas.value.tipo);
+  }
+
+  // Filtro por fecha desde (con validación)
+  if (filtroReservas.value.fechaDesde) {
+    const fechaDesde = filtroReservas.value.fechaDesde;
+    resultado = resultado.filter(r => r.fecha >= fechaDesde);
+  }
+
+  // Paginación
+  const inicio = (paginaActual.value - 1) * itemsPorPagina;
+  const fin = inicio + itemsPorPagina;
+  return resultado.slice(inicio, fin);
+});
+
+const totalPaginas = computed(() => {
+  const total = reservasActivas.value.length;
+  return Math.ceil(total / itemsPorPagina);
+});
+
+// Funciones auxiliares para Clases Particulares
+const getColorTipo = (tipo?: string): string => {
+  switch (tipo) {
+    case 'Individual': return 'primary';
+    case 'Grupal': return 'secondary';
+    case 'Conversación': return 'accent';
+    default: return 'grey';
+  }
+};
+
+const truncarUserId = (userId: string): string => {
+  return userId.length > 20 ? userId.substring(0, 20) + '...' : userId;
+};
+
+const truncarStripeId = (stripeId?: string): string => {
+  if (!stripeId) return 'N/A';
+  return stripeId.length > 25 ? stripeId.substring(0, 25) + '...' : stripeId;
+};
+
+const formatFechaReserva = (fecha: string): string => {
+  return new Date(fecha).toLocaleDateString('es-ES', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+const verDetalleReserva = (reserva: Reserva): void => {
+  reservaSeleccionada.value = reserva;
+  dialogDetalleReserva.value = true;
+};
+
+const editarReserva = (reserva: Reserva): void => {
+  reservaFormulario.value = { ...reserva };
+  dialogEditarReserva.value = true;
+};
+
+const cerrarDialogEditar = (): void => {
+  dialogEditarReserva.value = false;
+  reservaFormulario.value = {
+    user_id: '',
+    fecha: '',
+    hora: '',
+    tipo: '',
+    precio: 0,
+    stripe_payment_intent: ''
+  };
+};
+
+const guardarReserva = async (): Promise<void> => {
+  if (!reservaFormulario.value.id) return;
+  
+  guardandoReserva.value = true;
+  try {
+    const { error } = await supabase
+      .from('reservas')
+      .update({
+        fecha: reservaFormulario.value.fecha,
+        hora: reservaFormulario.value.hora,
+        tipo: reservaFormulario.value.tipo,
+        precio: reservaFormulario.value.precio
+      })
+      .eq('id', reservaFormulario.value.id);
+
+    if (error) throw error;
+
+    $q.notify({
+      type: 'positive',
+      message: 'Reserva actualizada correctamente',
+      timeout: 2000
+    });
+
+    await cargarReservas();
+    cerrarDialogEditar();
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    $q.notify({
+      type: 'negative',
+      message: `Error al actualizar: ${errorMessage}`,
+      timeout: 3000
+    });
+  } finally {
+    guardandoReserva.value = false;
+  }
+};
+
+const eliminarReserva = (id: number): void => {
+  $q.dialog({
+    title: 'Confirmar eliminación',
+    message: '¿Estás seguro de eliminar esta reserva?',
+    persistent: true,
+    ok: {
+      label: 'Eliminar',
+      color: 'negative'
+    },
+    cancel: {
+      label: 'Cancelar',
+      flat: true
+    }
+  }).onOk(() => {
+    void (async () => {
+      try {
+        const { error } = await supabase
+          .from('reservas')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        $q.notify({
+          type: 'positive',
+          message: 'Reserva eliminada correctamente',
+          timeout: 2000
+        });
+
+        await cargarReservas();
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+        $q.notify({
+          type: 'negative',
+          message: `Error al eliminar: ${errorMessage}`,
+          timeout: 3000
+        });
+      }
+    })();
+  });
+};
+
+// Cargar reservas desde Supabase
+const cargarReservas = async (): Promise<void> => {
+  try {
+    const fechaActual = new Date().toISOString().split('T')[0];
+    
+    const { data, error } = await supabase
+      .from('reservas')
+      .select('*')
+      .gte('fecha', fechaActual)
+      .order('fecha', { ascending: true })
+      .order('hora', { ascending: true });
+
+    if (error) throw error;
+
+    reservasActivas.value = data || [];
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    $q.notify({
+      type: 'negative',
+      message: `Error al cargar reservas: ${errorMessage}`,
+      timeout: 3000
+    });
+  }
+};
+
 
 onUnmounted(() => {
   if (subscription) {
