@@ -138,7 +138,6 @@
 
 /* Móvil  pequeño */
 
-
 @media (max-width: 900) {
   .oval-btn {
     border-radius: 64px !important;
