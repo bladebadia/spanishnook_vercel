@@ -349,33 +349,62 @@
                 <q-item-section>
                   <q-item-label class="text-h6">
                     {{ curso.nombre_curso }}
-                    <q-badge :color="curso.estado_curso === 'Activo' ? 'positive' : 'grey'" class="q-ml-sm">
+                    <q-badge
+                      :color="curso.estado_curso === 'Activo' ? 'positive' : 'grey'"
+                      class="q-ml-sm"
+                    >
                       {{ curso.codigo_curso }}
                     </q-badge>
                   </q-item-label>
                   <q-item-label caption>
-                    <q-chip size="sm" :color="getColorEstado(curso.estado_curso)" text-color="white" dense>
+                    <q-chip
+                      size="sm"
+                      :color="getColorEstado(curso.estado_curso)"
+                      text-color="white"
+                      dense
+                    >
                       {{ curso.estado_curso }}
                     </q-chip>
-                    <q-chip v-if="curso.nivel" size="sm" color="primary" text-color="white" dense class="q-ml-xs">
+                    <q-chip
+                      v-if="curso.nivel"
+                      size="sm"
+                      color="primary"
+                      text-color="white"
+                      dense
+                      class="q-ml-xs"
+                    >
                       {{ curso.nivel }}
                     </q-chip>
-                    <q-chip v-if="curso.precio_curso" size="sm" color="secondary" text-color="white" dense class="q-ml-xs">
+                    <q-chip
+                      v-if="curso.precio_curso"
+                      size="sm"
+                      color="secondary"
+                      text-color="white"
+                      dense
+                      class="q-ml-xs"
+                    >
                       {{ curso.precio_curso }}
                     </q-chip>
-                    <q-chip v-if="curso.mostrar_promo" size="sm" color="red" text-color="white" dense class="q-ml-xs">
+                    <q-chip
+                      v-if="curso.mostrar_promo"
+                      size="sm"
+                      color="red"
+                      text-color="white"
+                      dense
+                      class="q-ml-xs"
+                    >
                       {{ curso.texto_promo || 'Promo' }}
                     </q-chip>
                     <q-chip size="sm" color="blue-grey" text-color="white" dense class="q-ml-xs">
                       <q-icon name="people" size="14px" class="q-mr-xs" />
-                      {{ (curso.usuarios?.length || 0) }} / {{ curso.max_estudiantes || 0 }}
+                      {{ curso.usuarios?.length || 0 }} / {{ curso.max_estudiantes || 0 }}
                     </q-chip>
-                    <q-chip 
+                    <q-chip
                       v-if="curso.lista_espera && curso.lista_espera.length > 0"
-                      size="sm" 
-                      color="orange" 
-                      text-color="white" 
-                      dense 
+                      size="sm"
+                      color="orange"
+                      text-color="white"
+                      dense
                       class="q-ml-xs"
                     >
                       <q-icon name="hourglass_empty" size="14px" class="q-mr-xs" />
@@ -440,14 +469,17 @@
                       <q-toggle
                         v-model="cursoFormulario.visibilidad"
                         color="positive"
-                        :label="cursoFormulario.visibilidad ? 'Visible en página' : 'Oculto en página'"
+                        :label="
+                          cursoFormulario.visibilidad ? 'Visible en página' : 'Oculto en página'
+                        "
                         left-label
                         dense
                       >
                         <q-tooltip>
-                          {{ cursoFormulario.visibilidad 
-                            ? 'El curso se mostrará en la página pública' 
-                            : 'El curso está oculto para los visitantes' 
+                          {{
+                            cursoFormulario.visibilidad
+                              ? 'El curso se mostrará en la página pública'
+                              : 'El curso está oculto para los visitantes'
                           }}
                         </q-tooltip>
                       </q-toggle>
@@ -595,7 +627,9 @@
 
                     <div class="col-12">
                       <q-separator class="q-my-md" />
-                      <div class="text-subtitle1 text-weight-medium q-mb-sm">Información de la tarjeta</div>
+                      <div class="text-subtitle1 text-weight-medium q-mb-sm">
+                        Información de la tarjeta
+                      </div>
                     </div>
 
                     <div class="col-12 col-md-3">
@@ -666,7 +700,11 @@
                       <q-toggle
                         v-model="cursoFormulario.mostrar_promo"
                         color="primary"
-                        :label="cursoFormulario.mostrar_promo ? 'Badge de promoción activado' : 'Sin badge de promoción'"
+                        :label="
+                          cursoFormulario.mostrar_promo
+                            ? 'Badge de promoción activado'
+                            : 'Sin badge de promoción'
+                        "
                         left-label
                         dense
                       >
@@ -699,12 +737,17 @@
                       <q-toggle
                         v-model="cursoFormulario.mostrar_precio"
                         color="secondary"
-                        :label="cursoFormulario.mostrar_precio ? 'Badge de precio activado' : 'Sin badge de precio'"
+                        :label="
+                          cursoFormulario.mostrar_precio
+                            ? 'Badge de precio activado'
+                            : 'Sin badge de precio'
+                        "
                         left-label
                         dense
                       >
                         <q-tooltip>
-                          Mostrar un badge con el precio en la esquina superior izquierda de la tarjeta
+                          Mostrar un badge con el precio en la esquina superior izquierda de la
+                          tarjeta
                         </q-tooltip>
                       </q-toggle>
                     </div>
@@ -741,74 +784,82 @@
                     </div>
 
                     <!-- Vista previa de badges -->
-                    <div v-if="cursoFormulario.mostrar_promo || cursoFormulario.mostrar_precio" class="col-12">
+                    <div
+                      v-if="cursoFormulario.mostrar_promo || cursoFormulario.mostrar_precio"
+                      class="col-12"
+                    >
                       <q-card flat bordered class="q-pa-md bg-grey-2">
-                        <div class="text-caption text-weight-bold q-mb-sm">Vista previa de badges:</div>
-                    <div class="row q-gutter-sm">
-                      <q-badge 
-                        v-if="cursoFormulario.mostrar_promo"
-                        color="red"
-                        text-color="white"
-                        class="q-pa-sm"
-                      >
-                        <q-icon name="star" size="16px" class="q-mr-xs" />
+                        <div class="text-caption text-weight-bold q-mb-sm">
+                          Vista previa de badges:
+                        </div>
+                        <div class="row q-gutter-sm">
+                          <q-badge
+                            v-if="cursoFormulario.mostrar_promo"
+                            color="red"
+                            text-color="white"
+                            class="q-pa-sm"
+                          >
+                            <q-icon name="star" size="16px" class="q-mr-xs" />
                             {{ cursoFormulario.texto_promo || '¡Prueba tu clase gratis!' }}
-                      </q-badge>
-                      <q-badge 
-                        v-if="cursoFormulario.mostrar_precio"
-                        color="primary"
-                        text-color="white"
-                        class="q-pa-sm"
-                        style="flex-direction: column;"
-                      >
-                        <span v-if="cursoFormulario.precio_original" style="font-size: 0.7rem; text-decoration: line-through; opacity: 0.8;">
+                          </q-badge>
+                          <q-badge
+                            v-if="cursoFormulario.mostrar_precio"
+                            color="primary"
+                            text-color="white"
+                            class="q-pa-sm"
+                            style="flex-direction: column"
+                          >
+                            <span
+                              v-if="cursoFormulario.precio_original"
+                              style="font-size: 0.7rem; text-decoration: line-through; opacity: 0.8"
+                            >
                               {{ cursoFormulario.precio_original }}
-                        </span>
-                        <span style="font-size: 0.9rem; font-weight: 800;">
-                          {{ cursoFormulario.precio_curso || '0€' }}
-                        </span>
-                      </q-badge>
+                            </span>
+                            <span style="font-size: 0.9rem; font-weight: 800">
+                              {{ cursoFormulario.precio_curso || '0€' }}
+                            </span>
+                          </q-badge>
+                        </div>
+                      </q-card>
                     </div>
-                  </q-card>
-                </div>
 
-                <div class="col-12">
-                  <q-select
-                    v-model="cursoFormulario.usuarios"
-                    label="Usuarios"
-                    filled
-                    dense
-                    multiple
-                    use-chips
-                    use-input
-                    new-value-mode="add-unique"
-                    input-debounce="0"
-                    hint="Escribe el email y presiona Enter"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="people" />
-                    </template>
-                  </q-select>
-                </div>
-                <div class="col-12">
-                  <q-select
-                    v-model="cursoFormulario.lista_espera"
-                    label="Lista de espera"
-                    filled
-                    dense
-                    multiple
-                    use-chips
-                    use-input
-                    new-value-mode="add-unique"
-                    input-debounce="0"
-                    hint="Lista de espera "
-                  >
-                  <template v-slot:prepend>
-                    <q-icon name="hourglass_empty" />
-                  </template>
-                </q-select>
-              </div>
-              </div>
+                    <div class="col-12">
+                      <q-select
+                        v-model="cursoFormulario.usuarios"
+                        label="Usuarios"
+                        filled
+                        dense
+                        multiple
+                        use-chips
+                        use-input
+                        new-value-mode="add-unique"
+                        input-debounce="0"
+                        hint="Escribe el email y presiona Enter"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="people" />
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="col-12">
+                      <q-select
+                        v-model="cursoFormulario.lista_espera"
+                        label="Lista de espera"
+                        filled
+                        dense
+                        multiple
+                        use-chips
+                        use-input
+                        new-value-mode="add-unique"
+                        input-debounce="0"
+                        hint="Lista de espera "
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="hourglass_empty" />
+                        </template>
+                      </q-select>
+                    </div>
+                  </div>
 
                   <!-- Botones de acción -->
                   <div class="row q-gutter-sm q-mt-md">
@@ -875,7 +926,6 @@
                     />
                   </div>
 
-                  
                   <div class="col-12 col-md-3">
                     <q-select
                       v-model="cursoFormulario.nivel"
@@ -905,7 +955,12 @@
                   </div>
 
                   <div class="col-12 col-md-3">
-                    <q-input v-model="cursoFormulario.fecha_fin" label="Fecha fin" type="date" filled />
+                    <q-input
+                      v-model="cursoFormulario.fecha_fin"
+                      label="Fecha fin"
+                      type="date"
+                      filled
+                    />
                   </div>
 
                   <!-- Días y horarios -->
@@ -962,7 +1017,7 @@
                     />
                   </div>
 
-                  <div class="col-12 ">
+                  <div class="col-12">
                     <q-input
                       v-model="cursoFormulario.descripcion"
                       label="Descripción"
@@ -973,13 +1028,17 @@
                   </div>
 
                   <!-- Fila 6: Información de la tarjeta -->
-                  <div class="col-12 ">
+                  <div class="col-12">
                     <q-separator class="q-my-md" />
                     <div class="text-subtitle1 text-weight-medium">Información de la tarjeta</div>
                   </div>
 
                   <div class="col-12 col-md-3">
-                    <q-input v-model="cursoFormulario.titulo_tarjeta" label="Título tarjeta" filled />
+                    <q-input
+                      v-model="cursoFormulario.titulo_tarjeta"
+                      label="Título tarjeta"
+                      filled
+                    />
                   </div>
 
                   <div class="col-12 col-md-3">
@@ -1013,7 +1072,11 @@
                     <q-toggle
                       v-model="cursoFormulario.mostrar_promo"
                       color="primary"
-                      :label="cursoFormulario.mostrar_promo ? 'Badge de promoción activado' : 'Sin badge de promoción'"
+                      :label="
+                        cursoFormulario.mostrar_promo
+                          ? 'Badge de promoción activado'
+                          : 'Sin badge de promoción'
+                      "
                       left-label
                       dense
                     />
@@ -1036,7 +1099,11 @@
                     <q-toggle
                       v-model="cursoFormulario.mostrar_precio"
                       color="secondary"
-                      :label="cursoFormulario.mostrar_precio ? 'Badge de precio activado' : 'Sin badge de precio'"
+                      :label="
+                        cursoFormulario.mostrar_precio
+                          ? 'Badge de precio activado'
+                          : 'Sin badge de precio'
+                      "
                       left-label
                       dense
                     />
@@ -1067,7 +1134,11 @@
                     <q-toggle
                       v-model="cursoFormulario.visibilidad"
                       color="positive"
-                      :label="cursoFormulario.visibilidad ? 'Visible en página pública' : 'Oculto en página pública'"
+                      :label="
+                        cursoFormulario.visibilidad
+                          ? 'Visible en página pública'
+                          : 'Oculto en página pública'
+                      "
                       left-label
                     >
                       <q-tooltip>
@@ -1076,11 +1147,16 @@
                     </q-toggle>
                   </div>
 
-                  <div v-if="cursoFormulario.mostrar_promo || cursoFormulario.mostrar_precio" class="col-12">
+                  <div
+                    v-if="cursoFormulario.mostrar_promo || cursoFormulario.mostrar_precio"
+                    class="col-12"
+                  >
                     <q-card flat bordered class="q-pa-md bg-grey-2">
-                      <div class="text-caption text-weight-bold q-mb-sm">Vista previa de badges:</div>
+                      <div class="text-caption text-weight-bold q-mb-sm">
+                        Vista previa de badges:
+                      </div>
                       <div class="row q-gutter-sm">
-                        <q-badge 
+                        <q-badge
                           v-if="cursoFormulario.mostrar_promo"
                           color="red"
                           text-color="white"
@@ -1089,17 +1165,20 @@
                           <q-icon name="star" size="16px" class="q-mr-xs" />
                           {{ cursoFormulario.texto_promo || '¡Prueba tu clase gratis!' }}
                         </q-badge>
-                        <q-badge 
+                        <q-badge
                           v-if="cursoFormulario.mostrar_precio"
                           color="primary"
                           text-color="white"
                           class="q-pa-sm"
-                          style="flex-direction: column;"
+                          style="flex-direction: column"
                         >
-                          <span v-if="cursoFormulario.precio_original" style="font-size: 0.7rem; text-decoration: line-through; opacity: 0.8;">
+                          <span
+                            v-if="cursoFormulario.precio_original"
+                            style="font-size: 0.7rem; text-decoration: line-through; opacity: 0.8"
+                          >
                             {{ cursoFormulario.precio_original }}
                           </span>
-                          <span style="font-size: 0.9rem; font-weight: 800;">
+                          <span style="font-size: 0.9rem; font-weight: 800">
                             {{ cursoFormulario.precio_curso || '0€' }}
                           </span>
                         </q-badge>
@@ -1210,10 +1289,23 @@
                   <q-chip size="sm" color="primary" text-color="white" dense>
                     User ID: {{ truncarUserId(reserva.user_id) }}
                   </q-chip>
-                  <q-chip size="sm" :color="getColorTipo(reserva.tipo)" text-color="white" dense class="q-ml-xs">
+                  <q-chip
+                    size="sm"
+                    :color="getColorTipo(reserva.tipo)"
+                    text-color="white"
+                    dense
+                    class="q-ml-xs"
+                  >
                     {{ reserva.tipo || 'Sin tipo' }}
                   </q-chip>
-                  <q-chip v-if="reserva.precio" size="sm" color="green" text-color="white" dense class="q-ml-xs">
+                  <q-chip
+                    v-if="reserva.precio"
+                    size="sm"
+                    color="green"
+                    text-color="white"
+                    dense
+                    class="q-ml-xs"
+                  >
                     {{ reserva.precio }}€
                   </q-chip>
                 </q-item-label>
@@ -1306,7 +1398,9 @@
                 </div>
                 <div v-if="reservaSeleccionada.stripe_payment_intent" class="row">
                   <div class="col-5 text-weight-bold">Payment Intent:</div>
-                  <div class="col-7 text-caption">{{ reservaSeleccionada.stripe_payment_intent }}</div>
+                  <div class="col-7 text-caption">
+                    {{ reservaSeleccionada.stripe_payment_intent }}
+                  </div>
                 </div>
               </div>
             </q-card-section>
@@ -1337,20 +1431,8 @@
                   dense
                   readonly
                 />
-                <q-input
-                  v-model="reservaFormulario.fecha"
-                  label="Fecha"
-                  type="date"
-                  filled
-                  dense
-                />
-                <q-input
-                  v-model="reservaFormulario.hora"
-                  label="Hora"
-                  type="time"
-                  filled
-                  dense
-                />
+                <q-input v-model="reservaFormulario.fecha" label="Fecha" type="date" filled dense />
+                <q-input v-model="reservaFormulario.hora" label="Hora" type="time" filled dense />
                 <q-select
                   v-model="reservaFormulario.tipo"
                   :options="['Individual', 'Grupal', 'Conversación']"
@@ -1388,7 +1470,7 @@
         <div v-if="seccionActual === 'tarjetas'">
           <q-card>
             <q-card-section>
-              <div class="text-h4 q-mb-md"> Tarjetas</div>
+              <div class="text-h4 q-mb-md">Tarjetas</div>
               <div class="text-body1">
                 Esta sección está en desarrollo. Aquí podrás gestionar los cursos y tarjetas del
                 sistema.
@@ -1482,7 +1564,6 @@ interface Reserva {
   created_at?: string;
 }
 
-
 const $q = useQuasar();
 
 // Estado de la aplicación
@@ -1525,13 +1606,7 @@ const cursoFormulario = ref<CursoGrupal>({
   precio_original: '',
 });
 
-const diasSemanaOpciones = [
-  'Lunes',
-  'Martes',
-  'Miércoles',
-  'Jueves',
-  'Viernes',
-];
+const diasSemanaOpciones = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
 const horariosDisponibles = [
   '09:00',
@@ -1559,7 +1634,7 @@ const itemsPorPagina = 10;
 const filtroReservas = ref({
   userId: '',
   tipo: 'Todos',
-  fechaDesde: new Date().toISOString().split('T')[0]
+  fechaDesde: new Date().toISOString().split('T')[0],
 });
 
 const reservaFormulario = ref<Reserva>({
@@ -1568,11 +1643,8 @@ const reservaFormulario = ref<Reserva>({
   hora: '',
   tipo: '',
   precio: 0,
-  stripe_payment_intent: ''
+  stripe_payment_intent: '',
 });
-
-
-
 
 // Configuración
 const configuracion = ref<Configuracion>({
@@ -1653,7 +1725,7 @@ const mesAnterior = (): void => {
 const mesSiguiente = (): void => {
   const fecha = new Date(mesActual.value + '-01');
   fecha.setMonth(fecha.getMonth() + 1);
-  
+
   const year = fecha.getFullYear();
   const month = fecha.getMonth() + 1;
   const mesStr = `${year}-${month.toString().padStart(2, '0')}`;
@@ -1663,7 +1735,7 @@ const mesSiguiente = (): void => {
     $q.notify({
       type: 'warning',
       message: 'Has alcanzado el límite máximo (Diciembre 2030)',
-      timeout: 2000
+      timeout: 2000,
     });
   }
 };
@@ -1677,7 +1749,7 @@ const cambiarMes = (nuevoMes: string | number | null): void => {
     $q.notify({
       type: 'warning',
       message: 'El mes debe estar entre Enero 2024 y Diciembre 2030',
-      timeout: 2000
+      timeout: 2000,
     });
   }
 };
@@ -1706,7 +1778,6 @@ const seleccionarDia = (fecha: Date | null): void => {
   cargarConfiguracionAutomatica();
 };
 
-
 const cargarConfiguracionAutomatica = (): void => {
   if (fechasSeleccionadas.value.length === 0) {
     limpiarSeleccion();
@@ -1734,7 +1805,8 @@ const cargarConfiguracionAutomatica = (): void => {
           } else {
             configuracion.value.horariosSeleccionados = [];
           }
-        } catch  {     //noop   
+        } catch {
+          //noop
         }
       } else {
         configuracion.value.horariosSeleccionados = [];
@@ -1756,13 +1828,13 @@ const getClasesDia = (fecha: Date | null): string => {
   if (!fecha) return 'dia-vacio';
 
   const clases = ['dia-calendario'];
-  
+
   // FIX: Mismo formato local para comparar
   const year = fecha.getFullYear();
   const month = String(fecha.getMonth() + 1).padStart(2, '0');
   const day = String(fecha.getDate()).padStart(2, '0');
   const fechaStr = `${year}-${month}-${day}`;
-  
+
   const hoy = new Date();
   const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
 
@@ -1783,7 +1855,7 @@ const getClaseTipoDia = (fecha: Date): string => {
   const month = String(fecha.getMonth() + 1).padStart(2, '0');
   const day = String(fecha.getDate()).padStart(2, '0');
   const fechaStr = `${year}-${month}-${day}`;
-  
+
   const entrada = datosCalendario.value.find((item) => item.fecha === fechaStr);
 
   if (!entrada) return '';
@@ -1799,7 +1871,6 @@ const getClaseTipoDia = (fecha: Date): string => {
       return '';
   }
 };
-
 
 // Funciones auxiliares
 const activarSeleccionMultiple = (): void => {
@@ -2028,10 +2099,10 @@ const cargarCursosGrupales = async (): Promise<void> => {
     if (error) throw error;
     cursosGrupales.value = (data || []).map((curso) => ({
       ...curso,
-      dias_semana: Array.isArray(curso.dias_semana) 
-        ? curso.dias_semana 
-        : curso.dias_semana 
-          ? [curso.dias_semana] 
+      dias_semana: Array.isArray(curso.dias_semana)
+        ? curso.dias_semana
+        : curso.dias_semana
+          ? [curso.dias_semana]
           : [],
       horarios_curso: Array.isArray(curso.horarios_curso)
         ? curso.horarios_curso
@@ -2043,7 +2114,7 @@ const cargarCursosGrupales = async (): Promise<void> => {
         : curso.usuarios
           ? [curso.usuarios]
           : [],
-      lista_espera: Array.isArray(curso.lista_espera)            // ⬅️ NUEVO
+      lista_espera: Array.isArray(curso.lista_espera) // ⬅️ NUEVO
         ? curso.lista_espera
         : curso.lista_espera
           ? [curso.lista_espera]
@@ -2065,7 +2136,7 @@ const toggleCurso = (id: number): void => {
   if (cursoExpandido.value === id) {
     const curso = cursosGrupales.value.find((c) => c.id === id);
     if (curso) {
-      const horariosArray = Array.isArray(curso.horarios_curso) 
+      const horariosArray = Array.isArray(curso.horarios_curso)
         ? JSON.parse(JSON.stringify(curso.horarios_curso))
         : [];
       const diasArray = Array.isArray(curso.dias_semana)
@@ -2075,7 +2146,8 @@ const toggleCurso = (id: number): void => {
         ? JSON.parse(JSON.stringify(curso.usuarios))
         : [];
       const esperaArray = Array.isArray(curso.lista_espera)
-       ? JSON.parse(JSON.stringify(curso.lista_espera)) : [];
+        ? JSON.parse(JSON.stringify(curso.lista_espera))
+        : [];
       cursoFormulario.value = {
         ...curso,
         dias_semana: diasArray,
@@ -2148,11 +2220,17 @@ const guardarCurso = async (): Promise<void> => {
       estado_curso: cursoFormulario.value.estado_curso,
       fecha_inicio: cursoFormulario.value.fecha_inicio || null,
       fecha_fin: cursoFormulario.value.fecha_fin || null,
-      dias_semana: Array.isArray(cursoFormulario.value.dias_semana) ? cursoFormulario.value.dias_semana : [],
-      horarios_curso: Array.isArray(cursoFormulario.value.horarios_curso) ? cursoFormulario.value.horarios_curso : [],
+      dias_semana: Array.isArray(cursoFormulario.value.dias_semana)
+        ? cursoFormulario.value.dias_semana
+        : [],
+      horarios_curso: Array.isArray(cursoFormulario.value.horarios_curso)
+        ? cursoFormulario.value.horarios_curso
+        : [],
       descripcion: cursoFormulario.value.descripcion || null,
       usuarios: Array.isArray(cursoFormulario.value.usuarios) ? cursoFormulario.value.usuarios : [],
-      lista_espera: Array.isArray(cursoFormulario.value.lista_espera) ? cursoFormulario.value.lista_espera : [],
+      lista_espera: Array.isArray(cursoFormulario.value.lista_espera)
+        ? cursoFormulario.value.lista_espera
+        : [],
       imagen_tarjeta: cursoFormulario.value.imagen_tarjeta || null,
       titulo_tarjeta: cursoFormulario.value.titulo_tarjeta || null,
       boton_tarjeta: cursoFormulario.value.boton_tarjeta || 'Más información',
@@ -2176,7 +2254,13 @@ const guardarCurso = async (): Promise<void> => {
         .eq('id', cursoFormulario.value.id)
         .select();
       //if (resultado.error) throw resultado.error;
-      if(resultado.error) console.error('Supabase UPDATE error:', resultado.error.message, resultado.error.details, resultado.error.hint);
+      if (resultado.error)
+        console.error(
+          'Supabase UPDATE error:',
+          resultado.error.message,
+          resultado.error.details,
+          resultado.error.hint,
+        );
 
       $q.notify({
         type: 'positive',
@@ -2184,10 +2268,7 @@ const guardarCurso = async (): Promise<void> => {
         timeout: 2000,
       });
     } else {
-      resultado = await supabase
-        .from('cursos_grupales')
-        .insert([datosGuardar])
-        .select();
+      resultado = await supabase.from('cursos_grupales').insert([datosGuardar]).select();
       if (resultado.error) throw resultado.error;
 
       $q.notify({
@@ -2308,20 +2389,20 @@ const reservasFiltradas = computed(() => {
 
   // Filtro por user_id
   if (filtroReservas.value.userId) {
-    resultado = resultado.filter(r => 
-      r.user_id.toLowerCase().includes(filtroReservas.value.userId.toLowerCase())
+    resultado = resultado.filter((r) =>
+      r.user_id.toLowerCase().includes(filtroReservas.value.userId.toLowerCase()),
     );
   }
 
   // Filtro por tipo
   if (filtroReservas.value.tipo && filtroReservas.value.tipo !== 'Todos') {
-    resultado = resultado.filter(r => r.tipo === filtroReservas.value.tipo);
+    resultado = resultado.filter((r) => r.tipo === filtroReservas.value.tipo);
   }
 
   // Filtro por fecha desde (con validación)
   if (filtroReservas.value.fechaDesde) {
     const fechaDesde = filtroReservas.value.fechaDesde;
-    resultado = resultado.filter(r => r.fecha >= fechaDesde);
+    resultado = resultado.filter((r) => r.fecha >= fechaDesde);
   }
 
   // Paginación
@@ -2338,10 +2419,14 @@ const totalPaginas = computed(() => {
 // Funciones auxiliares para Clases Particulares
 const getColorTipo = (tipo?: string): string => {
   switch (tipo) {
-    case 'Individual': return 'primary';
-    case 'Grupal': return 'secondary';
-    case 'Conversación': return 'accent';
-    default: return 'grey';
+    case 'Individual':
+      return 'primary';
+    case 'Grupal':
+      return 'secondary';
+    case 'Conversación':
+      return 'accent';
+    default:
+      return 'grey';
   }
 };
 
@@ -2359,7 +2444,7 @@ const formatFechaReserva = (fecha: string): string => {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 };
 
@@ -2381,13 +2466,13 @@ const cerrarDialogEditar = (): void => {
     hora: '',
     tipo: '',
     precio: 0,
-    stripe_payment_intent: ''
+    stripe_payment_intent: '',
   };
 };
 
 const guardarReserva = async (): Promise<void> => {
   if (!reservaFormulario.value.id) return;
-  
+
   guardandoReserva.value = true;
   try {
     const { error } = await supabase
@@ -2396,7 +2481,7 @@ const guardarReserva = async (): Promise<void> => {
         fecha: reservaFormulario.value.fecha,
         hora: reservaFormulario.value.hora,
         tipo: reservaFormulario.value.tipo,
-        precio: reservaFormulario.value.precio
+        precio: reservaFormulario.value.precio,
       })
       .eq('id', reservaFormulario.value.id);
 
@@ -2405,7 +2490,7 @@ const guardarReserva = async (): Promise<void> => {
     $q.notify({
       type: 'positive',
       message: 'Reserva actualizada correctamente',
-      timeout: 2000
+      timeout: 2000,
     });
 
     await cargarReservas();
@@ -2415,7 +2500,7 @@ const guardarReserva = async (): Promise<void> => {
     $q.notify({
       type: 'negative',
       message: `Error al actualizar: ${errorMessage}`,
-      timeout: 3000
+      timeout: 3000,
     });
   } finally {
     guardandoReserva.value = false;
@@ -2429,26 +2514,23 @@ const eliminarReserva = (id: number): void => {
     persistent: true,
     ok: {
       label: 'Eliminar',
-      color: 'negative'
+      color: 'negative',
     },
     cancel: {
       label: 'Cancelar',
-      flat: true
-    }
+      flat: true,
+    },
   }).onOk(() => {
     void (async () => {
       try {
-        const { error } = await supabase
-          .from('reservas')
-          .delete()
-          .eq('id', id);
+        const { error } = await supabase.from('reservas').delete().eq('id', id);
 
         if (error) throw error;
 
         $q.notify({
           type: 'positive',
           message: 'Reserva eliminada correctamente',
-          timeout: 2000
+          timeout: 2000,
         });
 
         await cargarReservas();
@@ -2457,7 +2539,7 @@ const eliminarReserva = (id: number): void => {
         $q.notify({
           type: 'negative',
           message: `Error al eliminar: ${errorMessage}`,
-          timeout: 3000
+          timeout: 3000,
         });
       }
     })();
@@ -2468,7 +2550,7 @@ const eliminarReserva = (id: number): void => {
 const cargarReservas = async (): Promise<void> => {
   try {
     const fechaActual = new Date().toISOString().split('T')[0];
-    
+
     const { data, error } = await supabase
       .from('reservas')
       .select('*')
@@ -2484,11 +2566,10 @@ const cargarReservas = async (): Promise<void> => {
     $q.notify({
       type: 'negative',
       message: `Error al cargar reservas: ${errorMessage}`,
-      timeout: 3000
+      timeout: 3000,
     });
   }
 };
-
 
 onUnmounted(() => {
   if (subscription) {
@@ -2506,7 +2587,7 @@ watch(
     } else if (nuevoTipo === 'festivo' || nuevoTipo === 'especial') {
       configuracion.value.horariosSeleccionados = [];
     }
-  }
+  },
 );
 </script>
 
