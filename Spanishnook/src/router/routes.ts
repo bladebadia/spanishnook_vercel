@@ -1,5 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { useAuth } from 'src/stores/auth';
+import { supabase } from 'src/supabaseClient';
+import { jwtDecode } from 'jwt-decode';
+
+interface SupabaseJwtPayload {
+  app_metadata?: {
+    is_admin?: boolean;
+  };
+  [key: string]: unknown;
+}
 
 const routes: RouteRecordRaw[] = [
   {
@@ -21,14 +30,30 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/Administracion',
     component: () => import('pages/PanelAdministracion.vue'),
-    beforeEnter: () => {
+    beforeEnter: async () => {
       const { user } = useAuth();
       if (!user.value) {
         return '/Acceder';
       }
-      // Verificar si el usuario tiene el rol de admin
-      if (user.value.user_metadata?.role !== 'admin') {
-        return '/Acceder'; // Redirigir si no es admin
+      
+      // Verificar si el usuario tiene el rol de admin en app_metadata
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        
+        if (!token) {
+          return '/Acceder';
+        }
+        
+        const payload = jwtDecode<SupabaseJwtPayload>(token);
+        const isAdmin = Boolean(payload.app_metadata?.is_admin);
+        
+        if (!isAdmin) {
+          return '/'; // Redirigir a home si no es admin
+        }
+      } catch (error) {
+        console.error('Error verificando rol admin:', error);
+        return '/Acceder';
       }
     },
     meta: { requiresAuth: true, layout: 'empty' },

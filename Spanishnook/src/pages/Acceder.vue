@@ -198,7 +198,7 @@ async function login() {
   credencialesError.value = false;
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const {  error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
@@ -208,8 +208,6 @@ async function login() {
       console.error('Error iniciando sesión:', error.message);
       return;
     }
-
-    console.log('Usuario logueado:', data);
     await router.push('/');
   } catch (error) {
     console.error('Error inesperado:', error);
@@ -218,4 +216,5 @@ async function login() {
     loading.value = false;
   }
 }
+
 </script>
