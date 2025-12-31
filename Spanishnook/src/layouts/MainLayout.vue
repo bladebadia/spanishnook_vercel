@@ -14,14 +14,10 @@
           >{{ $t('acceder') }}
         </q-btn>
         <!-- NUEVO: Botón Cerrar sesión -->
-        <q-btn
-          v-if="user"
-          flat
-          class="text-white btn-nav-superior"          
-          @click="cerrarSesion"
-        >
+        <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
           Cerrar sesión
         </q-btn>
+        <!-- Botón Carrito de Compra -->
         <q-btn
           to="/CarritoCompra"
           v-if="user"
@@ -35,7 +31,7 @@
         </q-btn>
 
         <!-- Selector de idioma con banderas -->
-        <div class="row items-center q-gutter-xs">
+        <div class="row items-center q-gutter-xs flag-switcher">
           <q-btn
             :class="locale === 'es-ES' ? 'flag-selected' : 'flag-unselected'"
             @click="changeLang('es-ES')"
@@ -92,7 +88,7 @@
           <q-btn
             flat
             :to="'/Clases'"
-             class="nave-btn"
+            class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
             :label="$t('clases')"
           >
@@ -724,6 +720,22 @@ const cerrarSesion = async (): Promise<void> => {
 
   @media (min-width: 1024px) {
     margin-right: 24px;
+  }
+}
+
+.flag-switcher {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+
+  @media (max-width: 599px) {
+    gap: 4px;
+
+    .flag-btn {
+      padding: 4px 6px;
+      min-width: auto;
+    }
   }
 }
 

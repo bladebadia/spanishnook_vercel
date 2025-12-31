@@ -366,6 +366,7 @@
 </template>
 
 <script setup lang="ts">
+import { jwtDecode } from 'jwt-decode';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth } from 'src/stores/auth';
 import { supabase } from 'src/supabaseClient';
@@ -537,9 +538,33 @@ const cargarDatosPersonales = async () => {
   }
 };
 
+// Computed para verificar si es admin basándose en JWT
+const sessionToken = ref<string | null>(null);
+
 const esAdmin = computed(() => {
-  return user.value?.user_metadata?.role === 'admin';
+  if (!sessionToken.value) return false;
+
+  try {
+    const payload = jwtDecode<{ app_metadata?: { is_admin?: boolean } }>(sessionToken.value);
+    console.log('Payload del token:', payload);
+    return Boolean(payload.app_metadata?.is_admin);
+  } catch (error) {
+    console.error('Error decodificando token:', error);
+    return false;
+  }
 });
+
+const cargarSesion = async () => {
+  try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    sessionToken.value = session?.access_token || null;
+  } catch (error) {
+    console.error('Error cargando sesión:', error);
+    sessionToken.value = null;
+  }
+};
 
 const cargarReservasPasadas = async () => {
   if (!user.value?.id) return;
@@ -754,6 +779,7 @@ const handleLogout = async () => {
 
 onMounted(() => {
   void cargarReservasConfirmadas();
+  void cargarSesion();
 });
 </script>
 

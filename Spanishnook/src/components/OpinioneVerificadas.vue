@@ -2,9 +2,6 @@
 <template>
   <q-card class="opinion-card">
     <q-card-section class="row items-center q-pb-none">
-      <q-avatar v-if="showAvatar" size="80px" class="q-mr-md">
-        <img :src="opinion.avatar" />
-      </q-avatar>
       <div class="col">
         <div class="text-h6 text-weight-bold">{{ opinion.name }}</div>
         <div class="text-caption text-grey-7">{{ opinion.country }}</div>
@@ -29,9 +26,6 @@
 
     <q-card-section class="q-pt-none">
       <div class="row items-center text-caption text-grey-6">
-        <q-icon name="school" size="xs" class="q-mr-xs" />
-        {{ opinion.course }}
-        <q-space />
         <span>{{ formatDate(opinion.date) }}</span>
       </div>
     </q-card-section>
@@ -42,12 +36,10 @@
 interface Opinion {
   name: string;
   country: string;
-  avatar: string;
   rating: number;
   comment: string;
   verified: boolean;
   date: string;
-  course: string;
 }
 
 interface Props {

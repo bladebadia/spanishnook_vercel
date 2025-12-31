@@ -19,15 +19,15 @@
         </div>
       </div>
       <!-- Badge de precio -->
-        <div v-if="showPrice && price" class="price-badge">
-          <div v-if="originalPrice" class="original-price">{{ originalPrice }}</div>
-          <div class="current-price">{{ price }}</div>
-        </div>
+      <div v-if="showPrice && price" class="price-badge">
+        <div v-if="originalPrice" class="original-price">{{ originalPrice }}</div>
+        <div class="current-price">{{ price }}</div>
+      </div>
       <q-card-section class="title subtitulo-responsivo">
         {{ title }}
       </q-card-section>
       <q-card-section class="description texto-responsivo">
-        {{ description }}
+        <div v-html="formattedDescription"></div>
       </q-card-section>
       <q-card-actions class="actions flex flex-center">
         <q-btn
@@ -45,10 +45,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed} from 'vue';
+import { computed } from 'vue';
 //import { useRoute } from 'vue-router';
 import '../css/pages/EstilosGenerales.css';
-
 
 interface Props {
   imageSrc: string;
@@ -61,18 +60,17 @@ interface Props {
   imageStyle?: string;
   showPromo?: boolean;
   promoText?: string;
-  showPrice?: boolean; 
-  price?: string;    
-  originalPrice?: string; 
+  showPrice?: boolean;
+  price?: string;
+  originalPrice?: string;
 }
-
 
 const props = withDefaults(defineProps<Props>(), {
   showPromo: false,
   promoText: '¡Prueba tu clase gratis!',
   showPrice: false,
   price: ' ',
-  originalPrice: ''
+  originalPrice: '',
 });
 
 const emit = defineEmits<{
@@ -88,14 +86,15 @@ const computedImageStyle = computed(() => {
   return props.imageStyle ? `${baseStyle}; ${props.imageStyle}` : baseStyle;
 });
 
+const formattedDescription = computed(() => {
+  return props.description.replace(/\n/g, '<br>');
+});
+
 const onImageError = (event: Event) => {
   const target = event.target as HTMLImageElement;
   console.warn('Error cargando imagen:', target.src);
   target.src = '/img/estudiante_1024.jpg';
 };
-
-
-
 </script>
 
 <style scoped>
@@ -134,7 +133,8 @@ const onImageError = (event: Event) => {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 4px 12px rgba(238, 90, 111, 0.4);
   }
@@ -202,13 +202,13 @@ const onImageError = (event: Event) => {
 
 /* Descripción: MOSTRAR TODO sin line-clamp */
 .description {
-  padding: 8px 12px 0;
+  padding: 12px 12px 0px;
   word-break: break-word;
   overflow-wrap: anywhere;
   hyphens: auto;
   overflow: visible;
   display: block;
-  white-space: pre-line;
+  white-space: pre-wrap;
   text-overflow: clip;
   max-width: 100%;
   margin: 0 auto;
@@ -243,22 +243,25 @@ const onImageError = (event: Event) => {
   .card.promo-card {
     min-height: 380px;
   }
-  
-  .card-img-animada { 
+
+  .card-img-animada {
     height: 140px;
     padding: 6px;
   }
-  
+
   .promo-badge {
     top: 8px;
     right: 8px;
     padding: 6px 10px;
     font-size: 0.75rem;
   }
-  
-  .oval-btn { 
-    font-size: 0.9rem; 
-    padding: 10px 12px; 
+
+  .oval-btn {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+  .description {
+    padding: 12px 12px 0px;
   }
 }
 
@@ -266,12 +269,12 @@ const onImageError = (event: Event) => {
   .card.promo-card {
     min-height: 360px;
   }
-  
-  .card-img-animada { 
+
+  .card-img-animada {
     height: 120px;
     padding: 4px;
   }
-  
+
   .promo-badge {
     font-size: 0.7rem;
     padding: 5px 8px;
