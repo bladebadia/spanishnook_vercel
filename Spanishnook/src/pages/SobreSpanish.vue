@@ -64,7 +64,7 @@
           <li>{{ t('SobreSpanish.confianza') }}</li>
         </ul>
     </div>
-    <div class="col-12 text-center q-my-md" style="width: 70%;">
+    <div class="col-12 text-center q-my-md " style="width: 70%;">
           <p class="texto-responsivo ">{{ t('SobreSpanish.ojalá') }}</p>
           <p class="texto-responsivo ">{{ t('SobreSpanish.espero') }}</p>
           <p class="texto-responsivo ">{{ t('SobreSpanish.proximo') }}</p>
@@ -72,7 +72,7 @@
     <div class="col-12 items-center text-center q-my-xl">
           <q-btn
             color="primary"
-            label="Contáctanos"
+            :label="t('indexContactanos')"
             icon="email"
             @click="$router.push('/contacto')"
           />

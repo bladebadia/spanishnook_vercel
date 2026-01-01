@@ -1,6 +1,7 @@
 // Traducciones en español
 export default {
   failed: 'Acción fallida',
+  cerrarSesion: 'Cerrar sesión',
   success: 'Acción exitosa',
   acceder: 'Acceder',
   areaPersonal: 'Área Personal',
@@ -130,12 +131,14 @@ export default {
   indexEstamosAlOtroLado: 'Estamos al otro lado: ponte en contacto con nosotros a través de alguno de nuestros canales disponibles y te responderemos lo antes posible.',
   indexContactanos: 'Contáctanos',
 
-  // Sección de Clases Individuales y Grupales
-  individuales: {
+  // Sección nuestras clases
+  NuestrasClases: {
     nuestrasClases: 'Nuestras Clases',
     textoNuestrasClases: 'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
-    botonSeleccionaClase: 'Encuentra tu clase',
+    botonClasesIndividuales: 'CLASES INDIVIDUALES',
     botonClasesConversacion: 'CLASES DE CONVERSACION',
+    recuerdaHacerTest: 'Recuerda hacer tu test',
+    testDeNivel: 'Test de nivel',
     tituloClasesA1: 'Clases Nivel A1',
     textoClasesA1: 'Ideal para principiantes. Enfócate en conocer la lengua: gramática básica, vocabulario esencial y conversaciones simples para construir una base sólida en español.',
     botonClasesA1: 'Reservar clase A1',
@@ -146,8 +149,13 @@ export default {
     carritoDeReservas: 'Carrito de reservas',
     aLas: 'a las',
     claseNormal: 'Clase normal',
-    claseConversacion: 'Clase de conversación',
+    clasesGrupalesConversacion: 'Clases grupales de conversación',
+    nuestrasClasesConversacion: 'Nuestras clases de conversación',
+    clasesIndividualesPersonalizadas: 'Clases individuales personalizadas',
+    nuestrasClasesIndividuales: 'Nuestras clases individuales',
+    aprendeEspanolATuRitmo: 'Aprende español a tu ritmo con clases personalizadas adaptadas a tus necesidades específicas. Nuestros profesores nativos crean un plan de estudios único para ti, enfocándose en tus objetivos y disponibilidad de horario.',
     botonIrAlCarrito: 'Ir al carrito',
+    pruebaTuClaseGratis: '¡Prueba tu clase gratis!',
     misReservasConfirmadas: 'Mis reservas confirmadas',
     noSePuede: 'No se puede cancelar (menos de 72 horas)',
     noSePuedeCancelar: 'No se puede cancelar con menos de 72 horas de antelación',
@@ -156,8 +164,6 @@ export default {
     tipoDeClase:'Tipo de Clase',
     precio:'Precio:',
     horariosDisponiblesPara: 'Horarios disponibles para',
-  },
-  grupales: {
     clasesGrupales: 'Clases Grupales',
     botonEmpiezaAhora: 'Empieza ahora',
     bienVenidaA: '¡Bienvenido a Spanish Nook!',
@@ -245,10 +251,30 @@ export default {
 
     },
   Contacto:{
-    contacto: 'Contacto',
+    datosContacto: 'Datos de Contacto',
+    telefono: 'Teléfono:',
+    email: 'Email:',
+    redesSociales: 'Redes Sociales:',
     tienesPreg: '¿Tienes preguntas o quieres más información?',
     rellena: 'Rellena el formulario de contacto que encontrarás a continuación o escríbenos en cualquiera de nuestras redes sociales',
     formulario: '👉 Formulario de contacto: cuéntanos qué necesitas',
+    nombre: 'Nombre',
+    hintNombre: 'Tu nombre completo',
+    errorNombre: 'El nombre es obligatorio',
+    correoElectronico: 'Correo Electrónico',
+    hintCorreo: 'Tu correo electrónico',
+    errorCorreoElectronico: 'El correo es obligatorio',
+    errorCorreoElectronicoInvalido: 'Correo inválido',
+    asunto: 'Asunto',
+    hintAsunto: 'Asunto del mensaje',
+    errorAsunto: 'El asunto es obligatorio',
+    mensaje: 'Mensaje',
+    hintMensaje: 'Escribe tu mensaje aquí',
+    errorMensaje: 'El mensaje es obligatorio',
+    enviar: 'Enviar',
+    exito: '¡Mensaje enviado! Te responderemos lo antes posible.',
+    error: 'Error al enviar el mensaje. Inténtalo de nuevo.',
+
   },
 
 

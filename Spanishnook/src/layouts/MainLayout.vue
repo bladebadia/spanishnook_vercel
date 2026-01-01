@@ -15,7 +15,7 @@
         </q-btn>
         <!-- NUEVO: Botón Cerrar sesión -->
         <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
-          Cerrar sesión
+          {{ $t('cerrarSesion') }}
         </q-btn>
         <!-- Botón Carrito de Compra -->
         <q-btn

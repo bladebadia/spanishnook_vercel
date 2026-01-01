@@ -1,30 +1,40 @@
 <template>
   <q-page class="q-pa-lg">
-    <p class="subtitulo-responsivo text-primary text-center q-mb-lg">📬 Contacta con nosotros</p>
+    <p class="subtitulo-responsivo text-primary text-center q-mb-lg">
+      📬 {{ t('Contacto.rellena') }}
+    </p>
     <q-card flat bordered class="q-pa-md">
       <q-card-section>
         <div class="row q-col-gutter-md">
           <!-- Columna de datos de contacto -->
           <div class="col-12 col-md-6">
             <div class="q-pa-md">
-              <h5 class="text-primary">Datos de Contacto</h5>
+              <h5 class="text-primary">{{ t('Contacto.datosContacto') }}</h5>
               <p class="text-body1">
-                <strong>Teléfono:</strong> +34 123 456 789
+                <strong>{{ t('Contacto.telefono') }}:</strong> +34 123 456 789
               </p>
               <p class="text-body1">
-                <strong>Email:</strong> info@spanishnook.com
+                <strong>{{ t('Contacto.email') }}:</strong> info@spanishnook.com
               </p>
               <p class="text-body1">
-                <strong>Redes Sociales:</strong>
+                <strong>{{ t('Contacto.redesSociales') }}:</strong>
               </p>
               <ul>
                 <li>
-                  <a href="https://www.youtube.com/@SpanishNook" target="_blank" class="text-primary">
+                  <a
+                    href="https://www.youtube.com/@SpanishNook"
+                    target="_blank"
+                    class="text-primary"
+                  >
                     youtube
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP" target="_blank" class="text-primary">
+                  <a
+                    href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
+                    target="_blank"
+                    class="text-primary"
+                  >
                     TikTok
                   </a>
                 </li>
@@ -40,54 +50,70 @@
           <!-- Columna del formulario -->
           <div class="col-12 col-md-6">
             <q-form @submit="onSubmit" class="q-gutter-md formulario-con-relieve">
+              <div class="text-center">
+                <h5 class="text-primary">{{ t('Contacto.formulario') }}</h5>
+              </div>
               <!-- Campo de Nombre -->
               <q-input
                 filled
                 v-model="formData.nombre"
-                label="Nombre"
-                hint="Introduce tu nombre completo"
-                :rules="[val => !!val || 'El nombre es obligatorio']"
+                :label="t('Contacto.nombre')"
+                :hint="t('Contacto.hintNombre')"
+                :rules="[(val) => !!val || t('Contacto.errorNombre')]"
               />
 
               <!-- Campo de Correo Electrónico -->
               <q-input
                 filled
                 v-model="formData.email"
-                label="Correo Electrónico"
+                :label="t('Contacto.correoElectronico')"
                 type="email"
-                hint="Introduce tu correo electrónico"
-                :rules="[val => !!val || 'El correo es obligatorio', val => /.+@.+\..+/.test(val) || 'Correo inválido']"
+                :hint="t('Contacto.hintCorreo')"
+                :rules="[
+                  (val) => !!val || t('Contacto.errorCorreoElectronico'),
+                  (val) => /.+@.+\..+/.test(val) || t('Contacto.errorCorreoElectronicoInvalido'),
+                ]"
               />
 
               <!-- Campo de Asunto -->
               <q-input
                 filled
                 v-model="formData.asunto"
-                label="Asunto"
-                hint="Introduce el asunto del mensaje"
-                :rules="[val => !!val || 'El asunto es obligatorio']"
+                :label="t('Contacto.asunto')"
+                :hint="t('Contacto.hintAsunto')"
+                :rules="[(val) => !!val || t('Contacto.errorAsunto')]"
               />
 
               <!-- Campo de Mensaje -->
               <q-input
                 filled
                 v-model="formData.mensaje"
-                label="Mensaje"
+                :label="t('Contacto.mensaje')"
                 type="textarea"
                 autogrow
-                hint="Escribe tu mensaje aquí"
-                :rules="[val => !!val || 'El mensaje es obligatorio']"
+                :hint="t('Contacto.hintMensaje')"
+                :rules="[(val) => !!val || t('Contacto.errorMensaje')]"
               />
 
               <!-- Botón de Enviar -->
               <div class="text-center q-mt-md">
                 <q-btn
-                  label="Enviar"
+                  :label="t('Contacto.enviar')"
                   color="primary"
                   type="submit"
                   :disable="isSubmitting"
                   :loading="isSubmitting"
                 />
+              </div>
+
+              <!-- Mensajes de estado -->
+              <div v-if="enviadoConExito" class="q-mt-md text-positive text-center">
+                <q-icon name="check_circle" />
+                {{ t('Contacto.exito') }}
+              </div>
+              <div v-if="errorEnvio" class="q-mt-md text-negative text-center">
+                <q-icon name="error" />
+                {{ t('Contacto.error') }}
               </div>
             </q-form>
           </div>
@@ -99,7 +125,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import '../css/pages/EstilosGenerales.css';
+import { useI18n } from 'vue-i18n';
+import { supabase } from 'src/supabaseClient';
+
+const { t } = useI18n();
 
 // Datos del formulario
 const formData = ref({
@@ -111,18 +140,32 @@ const formData = ref({
 
 // Estado de envío
 const isSubmitting = ref(false);
+const enviadoConExito = ref(false);
+const errorEnvio = ref(false);
 
 // Función para manejar el envío del formulario
-const onSubmit = () => {
+const onSubmit = async () => {
   if (isSubmitting.value) return;
 
   isSubmitting.value = true;
+  errorEnvio.value = false;
+  enviadoConExito.value = false;
 
-  // Simulación de envío (puedes reemplazarlo con una llamada a una API)
-  setTimeout(() => {
-    alert('Formulario enviado con éxito');
-    isSubmitting.value = false;
+  try {
+    const { error } = await supabase.from('mensajes_contacto').insert([
+      {
+        nombre: formData.value.nombre,
+        email: formData.value.email,
+        mensaje: formData.value.mensaje,
+      },
+    ]);
 
+    if (error) {
+      throw error;
+    }
+
+    // Éxito
+    enviadoConExito.value = true;
     // Reiniciar el formulario
     formData.value = {
       nombre: '',
@@ -130,7 +173,12 @@ const onSubmit = () => {
       asunto: '',
       mensaje: '',
     };
-  }, 2000);
+  } catch (err) {
+    console.error('Error al enviar el mensaje:', err);
+    errorEnvio.value = true;
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 

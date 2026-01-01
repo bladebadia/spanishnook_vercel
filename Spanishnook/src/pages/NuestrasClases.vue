@@ -14,11 +14,11 @@
 
       <div class="col-12 col-md-6 text-center q-pa-none q-mx-none q-pa-md-md align-self-center">
         <p class="titulo-responsivo" style="color: #851319">
-          {{ t('individuales.nuestrasClases') }}
+          {{ t('NuestrasClases.nuestrasClases') }}
         </p>
         <p
           class="texto-responsivo q-ma-none q-pa-none"
-          v-html="t('individuales.textoNuestrasClases')"
+          v-html="t('NuestrasClases.textoNuestrasClases')"
         ></p>
       </div>
     </div>
@@ -31,7 +31,7 @@
         unelevated
         @click="scrollToSection('clases-conversacion')"
       >
-        Clases de conversacion
+        {{ t('NuestrasClases.botonClasesConversacion') }}
       </q-btn>
 
       <q-btn
@@ -41,7 +41,7 @@
         unelevated
         @click="scrollToSection('clases-individuales')"
       >
-        Clases Individuales
+        {{ t('NuestrasClases.botonClasesIndividuales') }}
       </q-btn>
     </div>
 
@@ -52,19 +52,19 @@
       style="width: 100%"
       v-if="$q.screen.gt.md"
     >
-      <p class="titulo-responsivo text-center text-weight-bold">{{ $t('grupales.uneteAEllas') }}</p>
+      <p class="titulo-responsivo text-center text-weight-bold">{{ $t('NuestrasClases.uneteAEllas') }}</p>
       <div class="flex row justify-around full-width">
         <div class="numero-item">
           <div class="numero" style="color: white">{{ count1 }}</div>
-          <div style="font-size: 1.8rem; color: white">{{ $t('grupales.alumnos') }}</div>
+          <div style="font-size: 1.8rem; color: white">{{ $t('NuestrasClases.alumnos') }}</div>
         </div>
         <div class="numero-item">
           <div class="numero" style="color: white">{{ count2 }}</div>
-          <div style="font-size: 1.8rem; color: white">{{ $t('grupales.cursos') }}</div>
+          <div style="font-size: 1.8rem; color: white">{{ $t('NuestrasClases.cursos') }}</div>
         </div>
         <div class="numero-item">
           <div class="numero" style="color: white">{{ count3 }}</div>
-          <div style="font-size: 1.8rem; color: white">{{ $t('grupales.clasesImpartidas') }}</div>
+          <div style="font-size: 1.8rem; color: white">{{ $t('NuestrasClases.clasesImpartidas') }}</div>
         </div>
       </div>
     </div>
@@ -75,13 +75,13 @@
         <div v-intersect="onImgIntersect" class="animacion-banner">
           <div v-if="showAnimatedImg" class="anim-group">
             <div class="test-card">
-              <div class="test-card__text">Recuerda hacer tu test</div>
+              <div class="test-card__text">{{ $t('NuestrasClases.recuerdaHacerTest') }}</div>
               <q-btn
                 class="oval-btn q-mt-sm"
                 color="black"
                 unelevated
                 to="/TestNivel"
-                label="Test de nivel"
+                :label="$t('NuestrasClases.testDeNivel')"
               />
             </div>
             <img src="/img/animacion4.png" alt="Animación" class="anim-img" />
@@ -109,7 +109,7 @@
       <div class="col-12 col-md-6 flex justify-center">
         <div class="banner-clases-grupales">
           <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center">
-            Clases Grupales de Conversación
+            {{ $t('NuestrasClases.clasesGrupalesConversacion') }}
           </h2>
         </div>
       </div>
@@ -119,9 +119,9 @@
     <div class="row flex q-my-xl" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-center">Nuestras clases de conversación</div>
+          <div class="titulo-responsivo text-center">{{ $t('NuestrasClases.nuestrasClasesConversacion') }}</div>
           <p class="texto-responsivo">
-            {{ $t('grupales.textoNuestrosGruposFormativos') }}
+            {{ $t('NuestrasClases.textoNuestrosGruposFormativos') }}
           </p>
         </q-card>
       </div>
@@ -155,7 +155,7 @@
       <div class="col-12 col-md-6 flex justify-center">
         <div class="banner-clases-grupales">
           <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center">
-            Clases Individuales Personalizadas
+            {{ $t('NuestrasClases.clasesIndividualesPersonalizadas') }}
           </h2>
         </div>
       </div>
@@ -174,11 +174,9 @@
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-center">Nuestras clases individuales</div>
+          <div class="titulo-responsivo text-center">{{ $t('NuestrasClases.nuestrasClasesIndividuales') }}</div>
           <p class="texto-responsivo">
-            Aprende español a tu ritmo con clases personalizadas adaptadas a tus necesidades
-            específicas. Nuestros profesores nativos crean un plan de estudios único para ti,
-            enfocándose en tus objetivos y disponibilidad de horario.
+            {{ $t('NuestrasClases.aprendeEspanolATuRitmo') }}
           </p>
         </q-card>
       </div>
@@ -188,20 +186,20 @@
     <div class="promocards-container">
       <PromoCard
         image-src="img/45sintitulo.webp"
-        :title="t('individuales.tituloClasesA1')"
-        :description="t('individuales.textoClasesA1')"
-        :button-text="t('individuales.botonClasesA1')"
+        :title="t('NuestrasClases.tituloClasesA1')"
+        :description="t('NuestrasClases.textoClasesA1')"
+        :button-text="t('NuestrasClases.botonClasesA1')"
         :show-promo="true"
-        :promo-text="'¡Prueba tu clase gratis!'"
+        :promo-text="t('NuestrasClases.pruebaTuClaseGratis')"
         to="/Reservas"
       />
       <PromoCard
         image-src="img/44sintitulo.webp"
-        :title="t('individuales.tituloClasesB1')"
-        :description="t('individuales.textoClasesB1')"
-        :button-text="t('individuales.botonClasesB1')"
+        :title="t('NuestrasClases.tituloClasesB1')"
+        :description="t('NuestrasClases.textoClasesB1')"
+        :button-text="t('NuestrasClases.botonClasesB1')"
         :show-promo="true"
-        :promo-text="'¡Prueba tu clase gratis!'"
+        :promo-text="t('NuestrasClases.pruebaTuClaseGratis')"
         to="/Reservas"
       />
     </div>
