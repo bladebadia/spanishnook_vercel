@@ -514,20 +514,6 @@
                       </q-input>
                     </div>
 
-                    <div class="col-12 col-md-3">
-                      <q-input
-                        v-model="cursoFormulario.precio_curso"
-                        label="Precio (€)"
-                        filled
-                        dense
-                        placeholder="29€/mes"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="euro" />
-                        </template>
-                      </q-input>
-                    </div>
-
                     <!-- Fila 3: Fechas -->
                     <div class="col-12 col-md-2">
                       <q-input
@@ -935,16 +921,6 @@
                     />
                   </div>
 
-                  <div class="col-12 col-md-2">
-                    <q-input
-                      v-model.number="cursoFormulario.precio_curso"
-                      label="Precio (€)"
-                      type="number"
-                      filled
-                      min="0"
-                    />
-                  </div>
-
                   <div class="col-12 col-md-3">
                     <q-input
                       v-model="cursoFormulario.fecha_inicio"
@@ -1063,88 +1039,107 @@
                   <div class="col-12">
                     <q-separator class="q-my-md" />
                     <div class="text-subtitle1 text-weight-medium q-mb-sm">
-                      <q-icon name="local_offer" class="q-mr-sm" />
-                      Promoción y Precios
+                      <q-icon name="payments" class="q-mr-sm" />
+                      Configuración de Pagos y Tarifas
                     </div>
                   </div>
 
-                  <div class="col-12 col-md-3 flex items-center">
-                    <q-toggle
-                      v-model="cursoFormulario.mostrar_promo"
-                      color="primary"
-                      :label="
-                        cursoFormulario.mostrar_promo
-                          ? 'Badge de promoción activado'
-                          : 'Sin badge de promoción'
-                      "
-                      left-label
-                      dense
-                    />
-                  </div>
-
-                  <div v-if="cursoFormulario.mostrar_promo" class="col-12 col-md-3">
-                    <q-input
-                      v-model="cursoFormulario.texto_promo"
-                      label="Texto de la promoción"
+                  <div class="col-12 col-md-6">
+                    <q-select
+                      v-model="tarifaSeleccionada"
+                      :options="TARIFAS_DISPONIBLES"
+                      label="Selecciona la Tarifa *"
                       filled
                       dense
-                      placeholder="¡Prueba tu clase gratis!"
-                      hint="Máximo 30 caracteres recomendado"
-                      counter
-                      maxlength="50"
-                    />
+                      option-label="label"
+                      @update:model-value="aplicarTarifa"
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="price_change" />
+                      </template>
+                      <template v-slot:option="scope">
+                        <q-item v-bind="scope.itemProps">
+                          <q-item-section>
+                            <q-item-label>{{ scope.opt.label }}</q-item-label>
+                            <q-item-label caption>
+                              {{ scope.opt.descripcion }} -
+                              <strong>{{ scope.opt.precio_display }}€</strong>
+                            </q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
                   </div>
 
-                  <div class="col-12 col-md-6 flex items-center">
-                    <q-toggle
-                      v-model="cursoFormulario.mostrar_precio"
-                      color="secondary"
-                      :label="
-                        cursoFormulario.mostrar_precio
-                          ? 'Badge de precio activado'
-                          : 'Sin badge de precio'
-                      "
-                      left-label
-                      dense
-                    />
-                  </div>
-
-                  <div v-if="cursoFormulario.mostrar_precio" class="col-12 col-md-6">
+                  <div class="col-12 col-md-3">
                     <q-input
                       v-model="cursoFormulario.precio_curso"
-                      label="Precio para mostrar"
+                      label="Precio Visual (€)"
                       filled
                       dense
-                      placeholder="29€/mes"
-                      hint="Formato libre: 29€, 30€/mes, etc."
+                      readonly
+                      bg-color="grey-2"
                     />
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <q-input
+                      v-model="cursoFormulario.stripe_price_id"
+                      label="ID Stripe"
+                      filled
+                      dense
+                      readonly
+                      bg-color="grey-2"
+                    >
+                      <template v-slot:append>
+                        <q-icon
+                          name="check_circle"
+                          color="green"
+                          v-if="cursoFormulario.stripe_price_id"
+                        />
+                      </template>
+                    </q-input>
                   </div>
 
-                  <div v-if="cursoFormulario.mostrar_precio" class="col-12 col-md-6">
+                  <div class="col-12 row q-col-gutter-md q-mt-xs">
+                    <div class="col-12 col-md-4">
+                      <q-toggle
+                        v-model="cursoFormulario.visibilidad"
+                        color="positive"
+                        label="Visible en web"
+                      />
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <q-toggle
+                        v-model="cursoFormulario.mostrar_promo"
+                        color="red"
+                        label="Activar Promoción"
+                      />
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <q-toggle
+                        v-model="cursoFormulario.mostrar_precio"
+                        color="secondary"
+                        label="Mostrar Badge Precio"
+                      />
+                    </div>
+                  </div>
+
+                  <div v-if="cursoFormulario.mostrar_promo" class="col-12 col-md-6 q-mt-sm">
                     <q-input
-                      v-model="cursoFormulario.precio_original"
-                      label="Precio original (opcional)"
+                      v-model="cursoFormulario.texto_promo"
+                      label="Texto Promoción"
                       filled
                       dense
-                      placeholder="60€"
-                      hint="Se mostrará tachado para indicar descuento"
                     />
                   </div>
-                  <div class="col-12 col-md-3 flex items-center q-py-sm">
-                    <q-toggle
-                      v-model="cursoFormulario.visibilidad"
-                      color="positive"
-                      :label="
-                        cursoFormulario.visibilidad
-                          ? 'Visible en página pública'
-                          : 'Oculto en página pública'
-                      "
-                      left-label
-                    >
-                      <q-tooltip>
-                        Controla si el curso aparece en la página de NuestrasClases.vue
-                      </q-tooltip>
-                    </q-toggle>
+                  <div class="col-12 col-md-6 q-mt-sm">
+                    <q-input
+                      v-model="cursoFormulario.precio_original"
+                      label="Precio Original"
+                      filled
+                      dense
+                      placeholder="Ej: 80€"
+                    />
                   </div>
 
                   <div
@@ -1440,14 +1435,6 @@
                   filled
                   dense
                 />
-                <q-input
-                  v-model.number="reservaFormulario.precio"
-                  label="Precio (€)"
-                  type="number"
-                  filled
-                  dense
-                  min="0"
-                />
               </div>
             </q-card-section>
 
@@ -1545,12 +1532,12 @@ interface CursoGrupal {
   max_estudiantes?: number;
   precio_curso?: string;
   visibilidad?: boolean;
-  // nuevos campos
   mostrar_promo?: boolean;
   texto_promo?: string;
   mostrar_precio?: boolean;
   precio_original?: string;
   created_at?: string;
+  stripe_price_id?: string;
 }
 
 interface Reserva {
@@ -1604,6 +1591,7 @@ const cursoFormulario = ref<CursoGrupal>({
   texto_promo: '¡Prueba tu clase gratis!',
   mostrar_precio: false,
   precio_original: '',
+  stripe_price_id: '',
 });
 
 const diasSemanaOpciones = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
@@ -1683,6 +1671,45 @@ const nombreMesActual = computed(() => {
   return fechaActual.value.toLocaleDateString('es-ES', { month: 'long' });
 });
 const añoActual = computed(() => fechaActual.value.getFullYear());
+
+// Precios disponibles
+
+const TARIFAS_DISPONIBLES = [
+  {
+    label: 'Clases de Conversación',
+    precio_display: '65', // Lo que se ve en la tarjeta
+    stripe_id: 'price_1SXvSpLFUAzgw0DDMUPJgHzv', // El ID raro de Stripe
+    descripcion: 'Acceso a las clases de conversación',
+  },
+  {
+    label: 'Curso Niveles',
+    precio_display: '70',
+    stripe_id: 'price_1SXvZ6LFUAzgw0DDUBrvyDSQ',
+    descripcion: 'Acceso a las clases por niveles',
+  },
+  {
+    label: 'Gratuito / Solo Info',
+    precio_display: '0',
+    stripe_id: null, // Sin pago
+    descripcion: 'Curso sin pasarela de pago',
+  },
+];
+
+// 2. Variable para el modelo del select
+const tarifaSeleccionada = ref(null);
+
+// 3. Función para rellenar los datos automáticamente al elegir
+const aplicarTarifa = (tarifa: (typeof TARIFAS_DISPONIBLES)[0] | null) => {
+  if (!tarifa) return;
+
+  cursoFormulario.value.precio_curso = tarifa.precio_display;
+
+  cursoFormulario.value.stripe_price_id = tarifa.stripe_id || '';
+
+  if (tarifa.stripe_id) {
+    cursoFormulario.value.mostrar_precio = true;
+  }
+};
 
 const diasDelMes = computed(() => {
   const year = fechaActual.value.getFullYear();
@@ -2243,6 +2270,7 @@ const guardarCurso = async (): Promise<void> => {
       texto_promo: cursoFormulario.value.texto_promo || '¡Prueba tu clase gratis!',
       mostrar_precio: cursoFormulario.value.mostrar_precio ?? false,
       precio_curso: cursoFormulario.value.precio_curso || null,
+      stripe_price_id: cursoFormulario.value.stripe_price_id || null,
       precio_original: cursoFormulario.value.precio_original || null,
     };
 

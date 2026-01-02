@@ -21,7 +21,7 @@
       <!-- Badge de precio -->
       <div v-if="showPrice && price" class="price-badge">
         <div v-if="originalPrice" class="original-price">{{ originalPrice }}</div>
-        <div class="current-price">{{ price }}</div>
+        <div class="current-price">{{ price }}€/mes</div>
       </div>
       <q-card-section class="title subtitulo-responsivo">
         {{ title }}
@@ -149,16 +149,18 @@ const onImageError = (event: Event) => {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  background: linear-gradient(135deg, #851319 0%, #851319 100%);
   color: white;
-  padding: 10px 14px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+  /* Ajustamos padding: menos arriba/abajo, más a los lados para efecto ovalado */
+  padding: 8px 16px;
+  border-radius: 20px !important;
+  /* Corregimos la sombra al color rojo */
+  box-shadow: 0 4px 12px rgba(133, 19, 25, 0.4);
   z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0px; /* Reducimos el hueco si hay precio original */
 }
 
 /* Precio original tachado */

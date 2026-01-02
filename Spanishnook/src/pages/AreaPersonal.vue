@@ -202,9 +202,22 @@
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label class="text-h6">
-                      {{ obtenerNombreCurso(sub.course_id) }}
+                    <q-item-label
+                      class="text-h6 text-primary text-weight-bold cursor-pointer hover-link"
+                      @click="router.push(`/ReservasCursos?id=${sub.course_id}`)"
+                    >
+                      {{ sub.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
                     </q-item-label>
+
+                    <q-item-label
+                      v-if="sub.cursos_grupales?.horarios_curso"
+                      class="text-subtitle2 text-grey-9 q-mb-xs"
+                    >
+                      <q-icon name="schedule" size="xs" class="q-mr-xs" />
+                      {{ sub.cursos_grupales.dias_semana?.join(', ') }} a las
+                      {{ sub.cursos_grupales.horarios_curso?.join(', ') }}
+                    </q-item-label>
+
                     <q-item-label caption>
                       <q-badge :color="sub.estado === 'active' ? 'positive' : 'grey'">
                         {{ sub.estado }}
@@ -402,6 +415,11 @@ interface Suscripcion {
   current_period_end: string;
   cancel_at_period_end: boolean;
   created_at: string;
+  cursos_grupales?: {
+    nombre_curso: string;
+    dias_semana: string[];
+    horarios_curso: string[];
+  };
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
 
@@ -409,14 +427,37 @@ const misSuscripciones = ref<Suscripcion[]>([]);
 
 const cargarSuscripciones = async () => {
   if (!user.value) return;
+
   const { data, error } = await supabase
     .from('user_subscriptions')
-    .select('*')
-    .eq('user_id', user.value.id)
+    .select(
+      `
+      *,
+      cursos_grupales!course_id (
+        nombre_curso,
+        dias_semana,
+        horarios_curso
+      )
+    `,
+    )
+    .eq('user_id', user.value?.id)
     .order('created_at', { ascending: false });
 
-  if (!error && data) {
-    misSuscripciones.value = data as Suscripcion[];
+  if (error) {
+    console.error('ERROR EN SUSCRIPCIONES:', error.message);
+    return;
+  }
+
+  if (data) {
+    // IMPORTANTE: Mapear con los nombres nuevos
+    misSuscripciones.value = data.map((sub) => ({
+      ...sub,
+      cursos_grupales: sub.cursos_grupales || {
+        nombre_curso: 'Curso no encontrado',
+        dias_semana: [],
+        horarios_curso: [],
+      },
+    })) as Suscripcion[];
   }
 };
 
@@ -440,12 +481,6 @@ const confirmarCancelacion = (sub: Suscripcion) => {
 const reactivarSuscripcion = async (sub: Suscripcion) => {
   const exito = await cambiarEstadoCancelacion(sub.stripe_subscription_id, false);
   if (exito) await cargarSuscripciones();
-};
-
-const obtenerNombreCurso = (id: number) => {
-  if (id === 1) return 'Clases de Conversación';
-  if (id === 2) return 'Curso por Niveles';
-  return `Curso ID: ${id}`;
 };
 
 const formatearFechaSuscripcion = (fecha: string) => {
@@ -784,6 +819,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.hover-link:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
 .border-dashed {
   border: 2px dashed #ccc;
   border-radius: 8px;

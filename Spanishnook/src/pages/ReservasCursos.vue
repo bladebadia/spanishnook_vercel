@@ -102,16 +102,37 @@
               </div>
 
               <div v-if="autenticado" class="column items-center">
-                <q-btn
-                  color="primary"
-                  size="lg"
-                  icon="credit_card"
-                  label="Suscribirse Ahora"
-                  :loading="procesando"
-                  @click="iniciarSuscripcion"
-                  class="q-px-xl"
-                />
-                <div class="text-caption q-mt-sm text-grey">Pago seguro vía Stripe</div>
+                <template v-if="estaSuscrito">
+                  <q-banner dense class="bg-green-1 text-green-9 q-pa-md rounded-borders q-mb-md">
+                    <template v-slot:avatar>
+                      <q-icon name="check_circle" color="positive" />
+                    </template>
+                    <div class="text-weight-bold">Ya eres alumno de este curso.</div>
+                    <div>Puedes gestionar tu suscripción desde tu área personal.</div>
+                  </q-banner>
+
+                  <q-btn
+                    outline
+                    color="primary"
+                    label="Ir a mi área personal"
+                    to="/AreaPersonal"
+                    icon="account_circle"
+                    class="full-width"
+                  />
+                </template>
+
+                <template v-else>
+                  <q-btn
+                    color="primary"
+                    size="lg"
+                    icon="credit_card"
+                    label="Suscribirse Ahora"
+                    :loading="procesando"
+                    @click="iniciarSuscripcion"
+                    class="q-px-xl"
+                  />
+                  <div class="text-caption q-mt-sm text-grey">Pago seguro vía Stripe</div>
+                </template>
               </div>
 
               <div v-else>
@@ -409,6 +430,22 @@ const reservarGuest = async () => {
   }
 };
 
+const estaSuscrito = ref(false); // Para saber si ya tiene este curso
+
+// Función para verificar si el usuario ya tiene este curso activo
+const comprobarSuscripcion = async () => {
+  if (!user.value || !curso.value?.id) return;
+  const { data } = await supabase
+    .from('user_subscriptions')
+    .select('id')
+    .eq('user_id', user.value.id)
+    .eq('course_id', curso.value.id)
+    .eq('estado', 'active')
+    .maybeSingle();
+
+  if (data) estaSuscrito.value = true;
+};
+
 // Lógica de LISTA DE ESPERA (Autenticado)
 const confirmarReservaAutenticado = () => {
   if (!aceptaCondiciones.value)
@@ -439,6 +476,9 @@ const reservarAutenticado = async () => {
 onMounted(async () => {
   await cargarUsuario();
   await cargarCurso();
+  if (autenticado.value) {
+    await comprobarSuscripcion();
+  }
 });
 </script>
 

@@ -133,11 +133,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/TestNivel.vue'),
     meta: { layout: 'empty' },
   },
-   {
-    path: '/TestSubscriptions',
-    component: () => import('pages/TestSubscriptions.vue'),
-    meta: { layout: 'empty' },
-  },
   {
     path: '/Reservas',
     component: () => import('pages/ReservasClases.vue'),
