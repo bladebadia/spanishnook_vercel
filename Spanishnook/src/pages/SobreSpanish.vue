@@ -2,13 +2,13 @@
   <q-page>
     <!-- Sección introductoria -->
     <div class=" row q-my-xl flex flex-center"  >
-      <div class="col-12 text-center" style="width: 70%;">
+      <div class="col-12 text-center content-width">
         <p class="titulo-responsivo" style="color: #77b308ed;">
           {{ t('SobreSpanish.conoce') }}
         </p>
       </div>
       <!-- Descripción  -->
-      <div class="col-12  items-center text-center" style="width: 70%;">
+      <div class="col-12  items-center text-center content-width">
         <p class="texto-responsivo q-mb-md q-pb-md">
           {{ t('SobreSpanish.intro') }}
         </p>
@@ -20,7 +20,7 @@
         </p>
       </div>
 
-      <div class="col-12 q-my-md" style="width: 70%;">
+      <div class="col-12 q-my-md content-width">
         <p class="texto-responsivo">
           {{ t('SobreSpanish.aprender') }}
         </p>
@@ -30,12 +30,12 @@
       </div>
 
 
-      <div class="col-12 q-my-md" style="width: 70%;">
-        <p class="subtitulo-responsivo text-primary text-center q-pl-xl">
+      <div class="col-12 q-my-md content-width">
+        <p class="subtitulo-responsivo text-primary text-center">
           {{ t('SobreSpanish.quien') }}
         </p>
       </div>
-      <div class="col-12 q-my-md" style="width: 70%;">
+      <div class="col-12 q-my-md content-width">
         <p class="texto-responsivo  ">
            {{ t('SobreSpanish.soy') }}
         </p>
@@ -49,12 +49,12 @@
         {{ t('SobreSpanish.filosofía') }}
       </p>
     </div>
-    <div class="col-12 text-center q-my-md" style="width: 70%;">
+    <div class="col-12 text-center q-my-md content-width">
       <p class="texto-responsivo ">
         {{ t('SobreSpanish.mipropuesta') }}
       </p>
     </div>
-    <div class="col-12 text-left. q-my-md" style="width: 70%;">
+    <div class="col-12 text-left. q-my-md content-width">
       <p class="texto-responsivo ">
         {{ t('SobreSpanish.loque') }}
       </p>
@@ -64,7 +64,7 @@
           <li>{{ t('SobreSpanish.confianza') }}</li>
         </ul>
     </div>
-    <div class="col-12 text-center q-my-md " style="width: 70%;">
+            <div class="col-12 text-center q-my-md  content-width">
           <p class="texto-responsivo ">{{ t('SobreSpanish.ojalá') }}</p>
           <p class="texto-responsivo ">{{ t('SobreSpanish.espero') }}</p>
           <p class="texto-responsivo ">{{ t('SobreSpanish.proximo') }}</p>
@@ -91,5 +91,23 @@ const { t } = useI18n();
 <style scoped>
 .text-center {
   text-align: center;
+}
+
+.content-width {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 900px) {
+  .content-width {
+    width: 90%;
+  }
+}
+
+@media (max-width: 600px) {
+  .content-width {
+    width: 100%;
+  }
 }
 </style>

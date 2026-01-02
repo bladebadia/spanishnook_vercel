@@ -1,31 +1,23 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center q-pa-lg q-mb-md">
-      <div class="col-auto">
-        <q-btn color="primary" label="Nueva Reserva" icon="add" to="/Reservas" size="md" />
-      </div>
-
-      <div class="col text-center">
-        <p v-if="user?.user_metadata?.nombre" class="subtitulo-responsivo">
-          ¡{{ t('personal.hola') }} {{ user.user_metadata.nombre }}!
-          {{ t('personal.bienvenidoAreaPersonal') }}
-        </p>
-        <p v-else-if="user?.email" class="subtitulo-responsivo">
-          Bienvenido {{ user.email }} {{ t('personal.bienvenidoAreaPersonal') }}
-        </p>
-        <p v-else class="subtitulo-responsivo">{{ t('personal.holaUsuario') }}</p>
-      </div>
-
-      <div class="col-auto">
-        <q-btn
-          color="negative"
-          label="Cerrar sesión"
-          icon="logout"
-          @click="handleLogout"
-          :loading="loading"
-          size="md"
-        />
-      </div>
+    <div class="col-12 text-center">
+      <p v-if="user?.user_metadata?.nombre" class="subtitulo-responsivo">
+        ¡{{ t('personal.hola') }} {{ user.user_metadata.nombre }}!
+        {{ t('personal.bienvenidoAreaPersonal') }}
+      </p>
+      <p v-else-if="user?.email" class="subtitulo-responsivo">
+        {{ t('personal.bienvenido') }} {{ user.email }} {{ t('personal.bienvenidoAreaPersonal') }}
+      </p>
+      <p v-else class="subtitulo-responsivo">{{ t('personal.holaUsuario') }}</p>
+    </div>
+    <div class="col-12 text-center q-py-md q-py-md-lg">
+      <q-btn
+        color="primary"
+        :label="t('personal.nuevaReserva')"
+        icon="add"
+        to="/Reservas"
+        size="md"
+      />
     </div>
 
     <div class="row q-col-gutter-lg">
@@ -34,7 +26,7 @@
           <q-btn
             flat
             :icon="menuVisible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-            :label="menuVisible ? 'Ocultar menú' : 'Mostrar menú'"
+            :label="menuVisible ? t('personal.ocultarMenu') : t('personal.mostrarMenu')"
             @click="menuVisible = !menuVisible"
             color="primary"
             class="full-width"
@@ -53,7 +45,7 @@
               active-class="menu-activo"
             >
               <q-item-section avatar><q-icon name="event" color="primary" /></q-item-section>
-              <q-item-section>Clases Reservadas</q-item-section>
+              <q-item-section>{{ t('personal.clasesReservadas') }}</q-item-section>
               <q-item-section side>
                 <q-badge v-if="reservasConfirmadas.length > 0" color="positive" rounded>{{
                   reservasConfirmadas.length
@@ -69,7 +61,7 @@
               active-class="menu-activo"
             >
               <q-item-section avatar><q-icon name="school" color="primary" /></q-item-section>
-              <q-item-section>Mis Cursos</q-item-section>
+              <q-item-section>{{ t('personal.misCursos') }}</q-item-section>
               <q-item-section side>
                 <q-badge
                   v-if="
@@ -91,12 +83,14 @@
               active-class="menu-activo"
             >
               <q-item-section avatar><q-icon name="history" color="primary" /></q-item-section>
-              <q-item-section>Historial de Clases</q-item-section>
+              <q-item-section>{{ t('personal.historialClases') }}</q-item-section>
             </q-item>
 
             <q-separator />
 
-            <q-item-label header class="text-weight-bold text-primary"> Mi Cuenta </q-item-label>
+            <q-item-label header class="text-weight-bold text-primary">
+              {{ t('personal.miCuenta') }}
+            </q-item-label>
 
             <q-item
               clickable
@@ -106,7 +100,7 @@
               active-class="menu-activo"
             >
               <q-item-section avatar><q-icon name="person" color="primary" /></q-item-section>
-              <q-item-section>Datos Personales</q-item-section>
+              <q-item-section>{{ t('personal.datosPersonales') }}</q-item-section>
             </q-item>
 
             <q-item
@@ -119,7 +113,7 @@
               <q-item-section avatar
                 ><q-icon name="delete_forever" color="negative"
               /></q-item-section>
-              <q-item-section>Eliminar Cuenta</q-item-section>
+              <q-item-section>{{ t('personal.eliminarCuenta') }}</q-item-section>
             </q-item>
 
             <q-item
@@ -147,7 +141,7 @@
         <div v-if="menuActivo === 'reservadas' || menuActivo === ''">
           <q-card class="q-mb-md">
             <q-card-section>
-              <div class="text-h6">Mis Reservas Confirmadas</div>
+              <div class="text-h6">{{ t('personal.misReservasConfirmadas') }}</div>
             </q-card-section>
 
             <q-card-section>
@@ -161,7 +155,7 @@
                       {{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€
                     </q-item-label>
                     <q-item-label caption v-if="!puedeCancelar(reserva)" class="text-negative">
-                      No se puede cancelar (menos de 72 horas)
+                      {{ t('personal.noSePuedeCancelar') }}
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side>
@@ -171,21 +165,26 @@
                       @click="cancelarReserva(reserva)"
                       size="sm"
                       :disable="!puedeCancelar(reserva)"
-                      :label="!puedeCancelar(reserva) ? 'Bloqueado' : 'Cancelar'"
+                      :label="
+                        !puedeCancelar(reserva)
+                          ? t('personal.bloqueado')
+                          : t('personal.cancelarReserva')
+                      "
                     />
                   </q-item-section>
                 </q-item>
               </q-list>
-              <p v-else class="text-grey">No tienes reservas confirmadas.</p>
+              <p v-else class="text-grey">{{ t('personal.noTienesReservas') }}</p>
             </q-card-section>
           </q-card>
         </div>
 
         <div v-if="menuActivo === 'cursos'">
+          <!-- =================== GESTIÓN DE SUSCRIPCIONES A CURSOS GRUPALES =================== -->
           <q-card class="q-mb-lg">
             <q-card-section>
               <div class="row items-center justify-between">
-                <div class="text-h6">Mis Suscripciones Activas</div>
+                <div class="text-h6">{{ t('personal.misSuscripcionesActivas') }}</div>
                 <q-btn flat icon="refresh" round color="primary" @click="cargarSuscripciones" />
               </div>
             </q-card-section>
@@ -202,20 +201,21 @@
                   </q-item-section>
 
                   <q-item-section>
+                    <!-- nombre curso -->
                     <q-item-label
                       class="text-h6 text-primary text-weight-bold cursor-pointer hover-link"
                       @click="router.push(`/ReservasCursos?id=${sub.course_id}`)"
                     >
                       {{ sub.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
                     </q-item-label>
-
+                    <!-- horario curso -->
                     <q-item-label
                       v-if="sub.cursos_grupales?.horarios_curso"
                       class="text-subtitle2 text-grey-9 q-mb-xs"
                     >
                       <q-icon name="schedule" size="xs" class="q-mr-xs" />
-                      {{ sub.cursos_grupales.dias_semana?.join(', ') }} a las
-                      {{ sub.cursos_grupales.horarios_curso?.join(', ') }}
+                      {{ traducirDiasSemana(sub.cursos_grupales.dias_semana) }} a las
+                      {{ formatHorarios(sub.cursos_grupales.horarios_curso) }}
                     </q-item-label>
 
                     <q-item-label caption>
@@ -223,12 +223,14 @@
                         {{ sub.estado }}
                       </q-badge>
                       <q-badge v-if="sub.cancel_at_period_end" color="orange" class="q-ml-sm">
-                        Cancelación programada
+                        {{ t('personal.cancelacionProgramada') }}
                       </q-badge>
                     </q-item-label>
                     <q-item-label caption class="text-grey-8 q-mt-xs">
                       {{
-                        sub.cancel_at_period_end ? 'Acceso válido hasta:' : 'Próxima renovación:'
+                        sub.cancel_at_period_end
+                          ? t('personal.accesoValidoHasta')
+                          : t('personal.proximaRenovacion')
                       }}
                       <strong>{{ formatearFechaSuscripcion(sub.current_period_end) }}</strong>
                     </q-item-label>
@@ -240,7 +242,7 @@
                         v-if="!sub.cancel_at_period_end && sub.estado === 'active'"
                         outline
                         color="negative"
-                        label="Cancelar"
+                        :label="t('personal.cancelar')"
                         size="sm"
                         @click="confirmarCancelacion(sub)"
                         :loading="procesando"
@@ -261,7 +263,7 @@
 
               <div v-else class="text-center text-grey q-pa-lg border-dashed">
                 <q-icon name="school" size="50px" color="grey-4" />
-                <p class="q-mt-sm">No tienes ninguna suscripción activa actualmente.</p>
+                <p class="q-mt-sm">{{ t('personal.noTienesSuscripciones') }}</p>
               </div>
             </q-card-section>
           </q-card>
@@ -269,40 +271,40 @@
 
         <q-card v-if="menuActivo === 'datos'">
           <q-card-section>
-            <div class="text-h6 q-mb-md">Datos Personales</div>
+            <div class="text-h6 q-mb-md">{{ t('personal.datosPersonales') }}</div>
             <q-form @submit="enviarDatosPersonales" class="q-gutter-md">
               <div class="row q-col-gutter-md">
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="formDatos.nombre"
-                    label="Nombre *"
+                    :label="t('personal.nombre') + ' *'"
                     outlined
-                    :rules="[(val) => !!val || 'El nombre es obligatorio']"
+                    :rules="[(val) => !!val || t('personal.elnombreEs')]"
                   />
-                  <q-input v-model="formDatos.apellido1" label="Primer Apellido" outlined />
-                  <q-input v-model="formDatos.apellido2" label="Segundo Apellido" outlined />
-                  <q-input v-model="formDatos.direccion" label="Dirección" outlined />
+                  <q-input v-model="formDatos.apellido1" :label="t('personal.primerApellido')" outlined />
+                  <q-input v-model="formDatos.apellido2" :label="t('personal.segundoApellido')" outlined />
+                  <q-input v-model="formDatos.direccion" :label="t('personal.direccion')" outlined />
                   <q-input
                     v-model="formDatos.codigoPostal"
-                    label="Código Postal"
+                    :label="t('personal.codigoPostal')"
                     outlined
                     mask="#####"
                   />
                 </div>
                 <div class="col-12 col-md-6">
-                  <q-input v-model="formDatos.ciudad" label="Ciudad" outlined />
-                  <q-select v-model="formDatos.pais" :options="paises" label="País" outlined />
-                  <q-input v-model="formDatos.nif" label="NIF/NIE" outlined mask="XXXXXXXXX" />
+                  <q-input v-model="formDatos.ciudad" :label="t('personal.ciudad')" outlined />
+                  <q-select v-model="formDatos.pais" :options="paises" :label="t('personal.pais')" outlined />
+                  <q-input v-model="formDatos.nif" :label="t('personal.nif')" outlined mask="XXXXXXXXX" />
                   <q-input
                     v-model="formDatos.email"
-                    label="Correo Electrónico *"
+                    :label="t('personal.email') + ' *'"
                     type="email"
                     outlined
-                    :rules="[(val) => (!!val && /.+@.+\..+/.test(val)) || 'Email debe ser válido']"
+                    :rules="[(val) => (!!val && /.+@.+\..+/.test(val)) || t('personal.emailDebeSerValido')]"
                   />
                   <q-input
                     v-model="formDatos.telefono"
-                    label="Teléfono"
+                    :label="t('personal.telefono')"
                     outlined
                     mask="### ### ###"
                   />
@@ -310,20 +312,20 @@
               </div>
               <q-input
                 v-model="formDatos.observaciones"
-                label="Observaciones"
+                :label="t('personal.observaciones')"
                 outlined
                 type="textarea"
                 rows="3"
               />
               <div class="row q-gutter-md q-mt-lg">
                 <q-btn
-                  label="Validar Datos"
+                  :label="t('personal.validarDatos')"
                   color="info"
                   @click="validarDatos"
                   icon="check_circle"
                 />
-                <q-btn label="Guardar Cambios" type="submit" color="primary" icon="save" />
-                <q-btn label="Limpiar" color="grey" @click="limpiarFormulario" icon="clear" />
+                <q-btn :label="t('personal.guardarCambios')" type="submit" color="primary" icon="save" />
+                <q-btn :label="t('personal.limpiar')" color="grey" @click="limpiarFormulario" icon="clear" />
               </div>
             </q-form>
           </q-card-section>
@@ -331,7 +333,7 @@
 
         <q-card v-if="menuActivo === 'historial'">
           <q-card-section>
-            <div class="text-h6">Tu historial de Clases</div>
+            <div class="text-h6">{{ t('personal.tuHistorialDeClases') }}</div>
           </q-card-section>
           <q-card-section>
             <q-list bordered v-if="reservasPasadas.length > 0">
@@ -346,18 +348,18 @@
                 </q-item-section>
               </q-item>
             </q-list>
-            <p v-else class="text-grey">No tienes clases en tu historial.</p>
+            <p v-else class="text-grey">{{ t('personal.noTienesClases') }}</p>
           </q-card-section>
         </q-card>
 
         <q-card v-if="menuActivo === 'eliminar'">
           <q-card-section>
-            <div class="text-h6 q-mb-md">Eliminar Cuenta</div>
+            <div class="text-h6 q-mb-md">{{ t('personal.eliminarCuenta') }}</div>
             <q-form @submit="eliminarCuenta" class="q-gutter-md">
               <q-input
                 v-model="passwordConfirm"
                 type="password"
-                label="Confirma tu contraseña"
+                :label="t('personal.confirmaTuContrasena')"
                 outlined
                 required
               />
@@ -393,13 +395,12 @@ import { useSuscripciones } from 'src/composables/useSuscripciones';
 const $q = useQuasar();
 const { user, logout } = useAuth();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 // COMPOSABLE SUSCRIPCIONES (Solo para cancelar/reactivar, no para comprar)
 const { procesando, cambiarEstadoCancelacion } = useSuscripciones();
 
 // --- ESTADOS ---
-const loading = ref(false);
 const reservasConfirmadas = ref<Reserva[]>([]);
 const reservasPasadas = ref<Reserva[]>([]);
 const menuVisible = ref($q.screen.gt.sm);
@@ -464,11 +465,11 @@ const cargarSuscripciones = async () => {
 const confirmarCancelacion = (sub: Suscripcion) => {
   const fechaFin = formatearFechaSuscripcion(sub.current_period_end);
   $q.dialog({
-    title: '¿Cancelar Suscripción?',
-    message: `Seguirás teniendo acceso al curso hasta el <b>${fechaFin}</b>, pero no se te volverá a cobrar.`,
+    title: `¿${t('personal.cancelarSuscripcion')}?`,
+    message: `${t('personal.seguirasTeniendoAcceso')} <b>${fechaFin}</b> ${t('personal.peroNoSeTeVolvera')}`,
     html: true,
     persistent: true,
-    ok: { label: 'Sí, cancelar', color: 'negative', flat: true },
+    ok: { label: `{${t('personal.siCancelar')}}`, color: 'negative', flat: true },
     cancel: { label: 'Volver', color: 'primary' },
   }).onOk(() => {
     void (async () => {
@@ -487,7 +488,11 @@ const formatearFechaSuscripcion = (fecha: string) => {
   if (!fecha) return '---';
   const date = new Date(fecha);
   if (isNaN(date.getTime())) return 'Fecha inválida';
-  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  return date.toLocaleDateString(locale.value, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 };
 
 // =================== LÓGICA DE USUARIO Y RESERVAS ===================
@@ -734,8 +739,47 @@ interface Reserva {
   stripe_payment_intent?: string;
 }
 
+const diasSemanaMap: Record<string, Record<string, string>> = {
+  lunes: {
+    'es-ES': 'lunes',
+    'en-US': 'Monday',
+  },
+  martes: {
+    'es-ES': 'martes',
+    'en-US': 'Tuesday',
+  },
+  miercoles: {
+    'es-ES': 'miércoles',
+    'en-US': 'Wednesday',
+  },
+  miércoles: {
+    'es-ES': 'miércoles',
+    'en-US': 'Wednesday',
+  },
+  jueves: {
+    'es-ES': 'jueves',
+    'en-US': 'Thursday',
+  },
+  viernes: {
+    'es-ES': 'viernes',
+    'en-US': 'Friday',
+  },
+  sabado: {
+    'es-ES': 'sábado',
+    'en-US': 'Saturday',
+  },
+  sábado: {
+    'es-ES': 'sábado',
+    'en-US': 'Saturday',
+  },
+  domingo: {
+    'es-ES': 'domingo',
+    'en-US': 'Sunday',
+  },
+};
+
 const formatFecha = (fecha: string) => {
-  return new Date(fecha).toLocaleDateString('es-ES', {
+  return new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -743,8 +787,34 @@ const formatFecha = (fecha: string) => {
   });
 };
 
+const traducirDiasSemana = (dias?: string[]) => {
+  if (!dias || dias.length === 0) return '';
+  return dias
+    .map((dia) => {
+      const key = dia.toLowerCase();
+      const traducciones = diasSemanaMap[key] || diasSemanaMap[dia];
+      return traducciones?.[locale.value] ?? traducciones?.['es-ES'] ?? dia;
+    })
+    .join(', ');
+};
+
+const formatHorarios = (horarios?: string[]) => {
+  if (!horarios || horarios.length === 0) return '';
+  return horarios
+    .map((hora) => {
+      const [h, m] = hora.split(':').map((v) => Number(v));
+      if (Number.isFinite(h) && Number.isFinite(m)) {
+        const d = new Date();
+        d.setHours(h, m, 0, 0);
+        return d.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' });
+      }
+      return hora;
+    })
+    .join(', ');
+};
+
 const getTipoClaseTexto = (reserva: Reserva): string =>
-  reserva.tipo === 'normal' ? 'Clase Normal' : 'Clase Conversación';
+  reserva.tipo === 'normal' ? t('personal.claseNormal') : t('personal.claseConversacion');
 const getPrecioClase = (reserva: Reserva): number => (reserva.tipo === 'normal' ? 32 : 20);
 
 const puedeCancelar = (reserva: Reserva): boolean => {
@@ -798,18 +868,6 @@ const cancelarReserva = (reserva: Reserva) => {
       }
     })();
   });
-};
-
-const handleLogout = async () => {
-  loading.value = true;
-  try {
-    await logout();
-    await router.push('/');
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
 };
 
 onMounted(() => {

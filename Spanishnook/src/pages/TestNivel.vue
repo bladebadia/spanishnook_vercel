@@ -197,7 +197,75 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useMeta } from 'quasar';
 const { t } = useI18n();
+
+const pageTitle = 'Test de nivel de español online | SpanishNook';
+const pageDescription =
+  'Haz el test de nivel gratuito de SpanishNook (A1-C1) y obtén tu resultado al instante con recomendaciones de siguiente paso.';
+const pageUrl = 'https://spanishnook.com/TestNivel';
+const pageImage = 'https://spanishnook.com/img/Home/banner_1920.webp';
+
+useMeta(() => ({
+  title: pageTitle,
+  meta: {
+    description: {
+      name: 'description',
+      content: pageDescription,
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'test de nivel español, examen nivel español online, prueba A1 A2 B1 B2 C1, evaluar nivel español',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: pageTitle,
+    },
+    ogDescription: {
+      property: 'og:description',
+      content: pageDescription,
+    },
+    ogImage: {
+      property: 'og:image',
+      content: pageImage,
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: pageUrl,
+    },
+    ogType: {
+      property: 'og:type',
+      content: 'website',
+    },
+    twitterCard: {
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    },
+    twitterTitle: {
+      name: 'twitter:title',
+      content: pageTitle,
+    },
+    twitterDescription: {
+      name: 'twitter:description',
+      content: pageDescription,
+    },
+    twitterImage: {
+      name: 'twitter:image',
+      content: pageImage,
+    },
+    robots: {
+      name: 'robots',
+      content: 'noindex,nofollow',
+    },
+  },
+  link: {
+    canonical: {
+      rel: 'canonical',
+      href: pageUrl,
+    },
+  },
+}));
 //import { useQuasar } from 'quasar';
 
 //const $q = useQuasar();

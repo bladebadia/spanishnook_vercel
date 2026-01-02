@@ -300,6 +300,7 @@ import { supabase } from 'src/supabaseClient';
 const { user } = useAuth();
 const { locale, t } = useI18n();
 const router = useRouter();
+const { logout } = useAuth();
 
 // Banner de cookies
 const showCookiesBanner = ref(false);
@@ -415,11 +416,11 @@ function toggleLeftDrawer() {
 
 const cerrarSesion = async (): Promise<void> => {
   try {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: 'global' }); // o al menos maneja error
+    await logout(); // asegura user = null
     localStorage.removeItem('carritoReservas');
     carritoCount.value = 0;
-    // Redirigir
-    await router.push('/').catch(() => {});
+    await router.replace('/').catch(() => {});
   } catch (e) {
     console.error('Error al cerrar sesión:', e);
   }
