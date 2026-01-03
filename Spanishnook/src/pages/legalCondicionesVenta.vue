@@ -246,7 +246,7 @@
 
 <style scoped>
 .legal-page {
-  max-width: 65%;
+  max-width: 85%;
   margin: 0 auto;
 }
 
