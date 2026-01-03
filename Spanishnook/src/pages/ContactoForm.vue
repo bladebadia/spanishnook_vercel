@@ -11,7 +11,7 @@
             <div class="q-pa-md">
               <h5 class="text-primary">{{ t('Contacto.datosContacto') }}</h5>
               <p class="text-body1">
-                <strong>{{ t('Contacto.telefono') }}:</strong> +34 123 456 789
+                <strong>{{ t('Contacto.telefono') }}:</strong> +34 694280178
               </p>
               <p class="text-body1">
                 <strong>{{ t('Contacto.email') }}:</strong> info@spanishnook.com
@@ -26,7 +26,7 @@
                     target="_blank"
                     class="text-primary"
                   >
-                    youtube
+                    YouTube
                   </a>
                 </li>
                 <li>

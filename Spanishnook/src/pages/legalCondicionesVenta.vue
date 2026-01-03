@@ -4,11 +4,12 @@
       Términos y Condiciones
     </p>
 
-    <p class="text-h6 text-bold text-left text-black texto-responsivo">
+    <p class="text-h6 text-bold text-center text-black texto-responsivo">
       Fecha de última actualización: 02 de enero de 2026
     </p>
 
-    <p class="text-h5 text-primary q-mt-md subtitulo-responsivo">Información general</p>
+    <p class="text-h5 text-primary text-center subtitulo-responsivo">Información general</p>
+    <br />
     <p class="text-h6 text-justify text-black texto-responsivo">
       El presente documento regula los términos y condiciones de contratación de los servicios
       ofrecidos a través de www.spanishnook.com (en adelante, el “Sitio Web”), titularidad de
@@ -29,11 +30,11 @@
       Las presentes condiciones regulan la contratación de servicios educativos online ofrecidos por
       SpanishNook, que incluyen, entre otros, los siguientes:
       <br />
-      &#8226; Clases privadas o individuales online
+      &#8226; Clases privadas o individuales online.
       <br />
-      &#8226; Clases de conversación
+      &#8226; Clases de conversación.
       <br />
-      &#8226; Cursos o programas formativos online
+      &#8226; Cursos o programas formativos online.
     </p>
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Requisitos del usuario</p>
     <p class="text-h6 text-justify text-black texto-responsivo">
@@ -99,26 +100,26 @@
     </p>
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Derecho de desistimiento</p>
     <p class="text-h6 text-justify text-black texto-responsivo">
-      Con carácter general, el Usuario dispone de un plazo de
-      <strong>14 días naturales</strong> para ejercer su derecho de desistimiento desde la
-      contratación del servicio, siempre y <strong> cuando el servicio no haya comenzado </strong> a
-      prestarse.
-      <br />
-      De conformidad con la normativa vigente, el derecho de desistimiento no será aplicable en los
-      siguientes casos:
-      <br />
-      &#8226; Clases privadas o servicios personalizados con fecha y hora confirmadas
-      <br />
-      &#8226; Servicios que hayan comenzado a prestarse con el consentimiento expreso del Usuario
-      <br />
-      &#8226; Servicios de suscripción una vez iniciado el período contratado
+      De conformidad con la normativa vigente en materia de consumidores y usuarios, el Usuario
+      dispone de un plazo de 14 días naturales para ejercer su derecho de desistimiento desde la
+      contratación del servicio,
+      <strong
+        >únicamente en aquellos casos en los que el servicio no haya comenzado a prestarse y no esté
+        vinculado a una fecha, hora o período determinado</strong
+      >. El derecho de desistimiento <strong>no será aplicable en los siguientes supuestos:</strong>
       <br />
       <br />
-      En el proceso de contratación, el Usuario acepta expresamente la pérdida del derecho de
-      desistimiento cuando resulte legalmente aplicable.
+      &#8226; Clases privadas o servicios personalizados con fecha y hora confirmadas.
       <br />
-      En el caso de clases privadas o servicios personalizados, el Usuario reconoce y acepta que, al
-      confirmar la reserva, el servicio se considera iniciado a efectos legales.
+      &#8226; Servicios que hayan comenzado a prestarse con el consentimiento expreso del Usuario.
+      <br />
+      &#8226; Servicios de suscripción una vez iniciado el período contratado.
+      <br />
+      <br />
+      En el caso de clases privadas o servicios personalizados, el Usuario reconoce y acepta que,
+      <strong>al confirmar la reserva de una fecha y hora</strong>, el servicio se considera
+      iniciado a efectos legales, por lo que
+      <strong>no resulta aplicable el derecho de desistimiento</strong>.
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
@@ -131,8 +132,8 @@
     <p class="text-h6 text-justify text-black texto-responsivo">
       &#8226; No se realizan reembolsos por períodos de suscripción ya iniciados.
       <br />
-      &#8226; El Usuario puede cancelar la renovación automática en cualquier momento desde su
-      cuenta o contactando con SpanishNook.
+      &#8226; El Usuario puede cancelar la renovación automática de la suscripción en cualquier
+      momento.
       <br />
       &#8226; La cancelación surtirá efecto al finalizar el período en curso.
     </p>
@@ -141,16 +142,18 @@
       <br />
     </p>
     <p class="text-h6 text-justify text-black texto-responsivo">
-      &#8226; El Usuario podrá cancelar una clase con al menos 72 horas de antelación respecto a la
-      fecha y hora programadas.
+      Las clases privadas son servicios personalizados reservados para un Usuario concreto, por lo
+      que se aplican las siguientes condiciones de cancelación:
       <br />
-      &#8226; Las cancelaciones realizadas fuera de ese plazo no darán derecho a reembolso.
       <br />
-      &#8226; En cancelaciones realizadas entre 72 y 24 horas antes, SpanishNook podrá ofrecer, a su
-      criterio, un cambio de fecha.
+      &#8226; Si el Usuario cancela la clase con al menos 72 horas de antelación, podrá optar a un
+      crédito equivalente, utilizable en futuras clases o servicios o bien, a realizar un cambio de
+      fecha.
       <br />
-      &#8226; Las cancelaciones realizadas con menos de 24 horas de antelación se considerarán como
-      una clase impartida.
+      &#8226; Las cancelaciones realizadas con menos de 24 horas de antelación, así como la no
+      asistencia a la clase, se considerarán como clase impartida, sin derecho a crédito ni
+      compensación.
+      <br />
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Créditos y excepciones</p>
@@ -159,7 +162,7 @@
       vez iniciado el servicio. En determinados casos justificados (fuerza mayor, incidencias
       técnicas graves u otras circunstancias debidamente acreditadas), SpanishNook podrá:
       <br />
-      &#8226; Conceder un crédito por el importe correspondiente, utilizable en otros servicios
+      &#8226; Conceder un crédito por el importe correspondiente, utilizable en otros servicios.
       <br />
       &#8226; Realizar un reembolso total o parcial, gestionado manualmente.
       <br />
@@ -195,11 +198,11 @@
       de:
       <br />
       &#8226; Fallos técnicos ajenos (plataformas externas, conexión a internet, software de
-      terceros)
+      terceros).
       <br />
-      &#8226; Incidencias derivadas de causas de fuerza mayor
+      &#8226; Incidencias derivadas de causas de fuerza mayor.
       <br />
-      &#8226; Uso indebido de los contenidos por parte del Usuario
+      &#8226; Uso indebido de los contenidos por parte del Usuario.
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Propiedad intelectual</p>

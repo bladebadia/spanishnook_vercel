@@ -33,9 +33,9 @@
       <br />
       Sus datos de contacto son los siguientes:
       <br />
-      Dirección: Av. Cantábrico 33
+      Dirección: Barcelona, España
       <br />
-      Teléfono de contacto:
+      Teléfono de contacto: +34 694280178
       <br />
       Email de contacto: paulaf@spanishnook.com
     </p>
