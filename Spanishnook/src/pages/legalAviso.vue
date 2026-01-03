@@ -52,7 +52,7 @@ import '../css/pages/EstilosGenerales.css';
 
 <style scoped>
 .legal-page {
-  max-width: 1200px;
+  max-width: 85%;
   margin: 0 auto;
 }
 
@@ -119,4 +119,4 @@ import '../css/pages/EstilosGenerales.css';
 }
 </style>
 <style scoped></style>
-<style scoped></style>
+>>>>>>> 97c1df76c594901bec37b9994dd63cb077d50c03

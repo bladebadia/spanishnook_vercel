@@ -340,9 +340,9 @@ export default {
     },
   Contacto:{
     datosContacto: 'Datos de Contacto',
-    telefono: 'Teléfono:',
-    email: 'Email:',
-    redesSociales: 'Redes Sociales:',
+    telefono: 'Teléfono',
+    email: 'Email',
+    redesSociales: 'Redes Sociales',
     tienesPreg: '¿Tienes preguntas o quieres más información?',
     rellena: 'Rellena el formulario de contacto que encontrarás a continuación o escríbenos en cualquiera de nuestras redes sociales',
     formulario: '👉 Formulario de contacto: cuéntanos qué necesitas',
