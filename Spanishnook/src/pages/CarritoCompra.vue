@@ -248,8 +248,9 @@ const confirmarReservas = async () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          reservas: reservasMetadata, // Solo enviamos la lista de lo que quiere
+          reservas: reservasMetadata,
           user_id: user.value!.id,
+          user_email: user.value?.email, // <--- ¡AQUÍ ES DONDE TIENE QUE IR!
         }),
       },
     );

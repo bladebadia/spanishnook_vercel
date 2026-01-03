@@ -418,11 +418,9 @@
                 </q-item-section>
               </template>
 
-              <!-- Formulario expandido -->
               <q-card flat>
                 <q-card-section>
                   <div class="row q-col-gutter-md">
-                    <!-- Fila 1: Información básica -->
                     <div class="col-12 col-md-3">
                       <q-input
                         v-model="cursoFormulario.codigo_curso"
@@ -484,7 +482,6 @@
                         </q-tooltip>
                       </q-toggle>
                     </div>
-                    <!-- Fila 2: Nivel y capacidad -->
                     <div class="col-12 col-md-2">
                       <q-select
                         v-model="cursoFormulario.nivel"
@@ -514,7 +511,6 @@
                       </q-input>
                     </div>
 
-                    <!-- Fila 3: Fechas -->
                     <div class="col-12 col-md-2">
                       <q-input
                         v-model="cursoFormulario.fecha_inicio"
@@ -543,7 +539,6 @@
                       </q-input>
                     </div>
 
-                    <!-- Fila 4: Días de la semana y Horarios -->
                     <div class="col-12 col-md-3">
                       <q-select
                         v-model="cursoFormulario.dias_semana"
@@ -681,7 +676,6 @@
                       </div>
                     </div>
 
-                    <!-- Toggle mostrar promoción -->
                     <div class="col-12 col-md-3 flex items-center">
                       <q-toggle
                         v-model="cursoFormulario.mostrar_promo"
@@ -700,7 +694,6 @@
                       </q-toggle>
                     </div>
 
-                    <!-- Texto de promoción (solo si mostrar_promo está activado) -->
                     <div v-if="cursoFormulario.mostrar_promo" class="col-12 col-md-3">
                       <q-input
                         v-model="cursoFormulario.texto_promo"
@@ -718,7 +711,6 @@
                       </q-input>
                     </div>
 
-                    <!-- Toggle mostrar precio -->
                     <div class="col-12 col-md-3 flex items-center">
                       <q-toggle
                         v-model="cursoFormulario.mostrar_precio"
@@ -738,7 +730,6 @@
                       </q-toggle>
                     </div>
 
-                    <!-- Campos de precio (solo si mostrar_precio está activado) -->
                     <div v-if="cursoFormulario.mostrar_precio" class="col-12 col-md-3">
                       <q-input
                         v-model="cursoFormulario.precio_curso"
@@ -769,7 +760,6 @@
                       </q-input>
                     </div>
 
-                    <!-- Vista previa de badges -->
                     <div
                       v-if="cursoFormulario.mostrar_promo || cursoFormulario.mostrar_precio"
                       class="col-12"
@@ -808,25 +798,6 @@
                         </div>
                       </q-card>
                     </div>
-
-                    <div class="col-12">
-                      <q-select
-                        v-model="cursoFormulario.usuarios"
-                        label="Usuarios"
-                        filled
-                        dense
-                        multiple
-                        use-chips
-                        use-input
-                        new-value-mode="add-unique"
-                        input-debounce="0"
-                        hint="Escribe el email y presiona Enter"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="people" />
-                        </template>
-                      </q-select>
-                    </div>
                     <div class="col-12">
                       <q-select
                         v-model="cursoFormulario.lista_espera"
@@ -847,8 +818,15 @@
                     </div>
                   </div>
 
-                  <!-- Botones de acción -->
                   <div class="row q-gutter-sm q-mt-md">
+                    <q-btn
+                      label="Ver Alumnos"
+                      icon="group"
+                      color="info"
+                      outline
+                      @click="verAlumnosCurso(curso.id!, curso.nombre_curso)"
+                      :loading="cargandoAlumnos"
+                    />
                     <q-btn
                       label="Guardar cambios"
                       color="primary"
@@ -1489,6 +1467,17 @@ import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 
 // Interfaces
+interface SubscripcionRow {
+  user_id: string;
+}
+
+interface PerfilUsuario {
+  user_id: string;
+  nombre: string;
+  apellido1: string;
+  email: string;
+}
+
 interface EntradaCalendario {
   id?: number;
   tipo_dia: string;
@@ -1538,6 +1527,7 @@ interface CursoGrupal {
   precio_original?: string;
   created_at?: string;
   stripe_price_id?: string;
+  meet_link?: string;
 }
 
 interface Reserva {
@@ -2118,35 +2108,37 @@ let subscription: ReturnType<typeof supabase.channel> | null = null;
 // Funciones para gestionar cursos grupales
 const cargarCursosGrupales = async (): Promise<void> => {
   try {
-    const { data, error } = await supabase
+    // 1. Pedimos los cursos
+    const { data: cursos, error } = await supabase
       .from('cursos_grupales')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    cursosGrupales.value = (data || []).map((curso) => ({
-      ...curso,
-      dias_semana: Array.isArray(curso.dias_semana)
-        ? curso.dias_semana
-        : curso.dias_semana
-          ? [curso.dias_semana]
-          : [],
-      horarios_curso: Array.isArray(curso.horarios_curso)
-        ? curso.horarios_curso
-        : curso.horarios_curso
-          ? [curso.horarios_curso]
-          : [],
-      usuarios: Array.isArray(curso.usuarios)
-        ? curso.usuarios
-        : curso.usuarios
-          ? [curso.usuarios]
-          : [],
-      lista_espera: Array.isArray(curso.lista_espera) // ⬅️ NUEVO
-        ? curso.lista_espera
-        : curso.lista_espera
-          ? [curso.lista_espera]
-          : [],
-    }));
+
+    // 2. Pedimos el CONTEO real de suscripciones activas para cada curso
+    const cursosConConteo = await Promise.all(
+      (cursos || []).map(async (curso) => {
+        // Consultamos cuántos están suscritos y activos/trialing a este curso
+        const { count } = await supabase
+          .from('user_subscriptions')
+          .select('*', { count: 'exact', head: true }) // head:true significa "solo dame el número, no los datos"
+          .eq('course_id', curso.id)
+          .in('estado', ['active', 'trialing']); // Solo contamos activos
+
+        return {
+          ...curso,
+          usuarios: new Array(count || 0).fill('alumno'),
+
+          // Mantenemos el resto de tus mapeos de arrays...
+          dias_semana: Array.isArray(curso.dias_semana) ? curso.dias_semana : [],
+          horarios_curso: Array.isArray(curso.horarios_curso) ? curso.horarios_curso : [],
+          lista_espera: Array.isArray(curso.lista_espera) ? curso.lista_espera : [],
+        };
+      }),
+    );
+
+    cursosGrupales.value = cursosConConteo;
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
     $q.notify({
@@ -2228,6 +2220,67 @@ const cerrarDialogNuevoCurso = (): void => {
   dialogNuevoCurso.value = false;
 };
 
+// --- 1. NUEVA FUNCIÓN AUXILIAR  ---
+const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) => {
+  // Solo generamos si está ACTIVO y NO tiene link todavía (o si queremos forzarlo)
+  // Nota: Si ya tiene link, no hacemos nada para no romper el acceso a alumnos antiguos
+  if (datosCurso.estado_curso !== 'Activo' || datosCurso.meet_link) {
+    return;
+  }
+
+  try {
+    // Notificación discreta de que estamos trabajando en segundo plano
+    $q.notify({
+      type: 'ongoing',
+      message: 'Generando Sala de Google Meet para el curso...',
+      timeout: 2000,
+    });
+
+    // Preparamos datos. Si no hay fecha/hora, inventamos una futura segura
+    const fechaInicio =
+      datosCurso.fecha_inicio || new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    const horaInicio =
+      datosCurso.horarios_curso && datosCurso.horarios_curso.length > 0
+        ? datosCurso.horarios_curso[0]
+        : '10:00';
+
+    // Llamamos a la Edge Function
+    const { data, error } = await supabase.functions.invoke('crear-meet', {
+      body: {
+        fecha: fechaInicio,
+        hora: horaInicio,
+        nombreCurso: datosCurso.nombre_curso,
+        esCurso: true, // <--- CLAVE: Activa modo recurrente
+        duracionMinutos: 90, // 1h 30m
+      },
+    });
+
+    if (error) throw error;
+
+    if (data && data.meetLink) {
+      console.log('✨ Meet generado:', data.meetLink);
+
+      // Guardamos el link en la base de datos silenciosamente
+      const { error: dbError } = await supabase
+        .from('cursos_grupales')
+        .update({ meet_link: data.meetLink })
+        .eq('id', cursoId);
+
+      if (dbError) throw dbError;
+
+      $q.notify({ type: 'positive', message: '¡Sala de Meet creada y vinculada!' });
+    }
+  } catch (e) {
+    console.error('Error generando Meet:', e);
+    // No bloqueamos el guardado del curso, solo avisamos
+    $q.notify({
+      type: 'warning',
+      message: 'El curso se guardó, pero falló la creación de Google Calendar',
+    });
+  }
+};
+
+// --- 2. FUNCIÓN
 const guardarCurso = async (): Promise<void> => {
   if (!cursoFormulario.value.codigo_curso || !cursoFormulario.value.nombre_curso) {
     $q.notify({
@@ -2265,7 +2318,6 @@ const guardarCurso = async (): Promise<void> => {
       nivel: cursoFormulario.value.nivel || null,
       max_estudiantes: cursoFormulario.value.max_estudiantes || null,
       visibilidad: cursoFormulario.value.visibilidad ?? true,
-      // nuevos campos
       mostrar_promo: cursoFormulario.value.mostrar_promo ?? false,
       texto_promo: cursoFormulario.value.texto_promo || '¡Prueba tu clase gratis!',
       mostrar_precio: cursoFormulario.value.mostrar_precio ?? false,
@@ -2275,20 +2327,23 @@ const guardarCurso = async (): Promise<void> => {
     };
 
     let resultado;
+    let cursoIdParaMeet: number | undefined; // <--- VARIABLE IMPORTANTE
+
     if (editandoCurso.value && cursoFormulario.value.id) {
+      // UPDATE
       resultado = await supabase
         .from('cursos_grupales')
         .update(datosGuardar)
         .eq('id', cursoFormulario.value.id)
         .select();
-      //if (resultado.error) throw resultado.error;
-      if (resultado.error)
-        console.error(
-          'Supabase UPDATE error:',
-          resultado.error.message,
-          resultado.error.details,
-          resultado.error.hint,
-        );
+
+      if (resultado.error) {
+        console.error('Supabase UPDATE error:', resultado.error.message);
+        throw resultado.error;
+      }
+
+      // Capturamos el ID del curso que estamos editando
+      cursoIdParaMeet = cursoFormulario.value.id;
 
       $q.notify({
         type: 'positive',
@@ -2296,8 +2351,14 @@ const guardarCurso = async (): Promise<void> => {
         timeout: 2000,
       });
     } else {
+      // INSERT
       resultado = await supabase.from('cursos_grupales').insert([datosGuardar]).select();
       if (resultado.error) throw resultado.error;
+
+      // Capturamos el ID del curso nuevo que nos devuelve la base de datos
+      if (resultado.data && resultado.data.length > 0) {
+        cursoIdParaMeet = resultado.data[0].id;
+      }
 
       $q.notify({
         type: 'positive',
@@ -2306,6 +2367,10 @@ const guardarCurso = async (): Promise<void> => {
       });
 
       dialogNuevoCurso.value = false;
+    }
+
+    if (cursoIdParaMeet) {
+      await verificarYGenerarMeet(cursoIdParaMeet, cursoFormulario.value);
     }
 
     await cargarCursosGrupales();
@@ -2320,6 +2385,70 @@ const guardarCurso = async (): Promise<void> => {
     });
   } finally {
     guardandoCurso.value = false;
+  }
+};
+
+const cargandoAlumnos = ref(false);
+
+// --- FUNCIÓN CORREGIDA (SIN JOIN SQL Y SIN LOADING GLOBAL) ---
+const verAlumnosCurso = async (id: number, nombre: string) => {
+  cargandoAlumnos.value = true; // Activamos el spinner del botón
+  try {
+    // PASO 1: Obtener los user_id de las suscripciones
+    const { data: subs, error: errorSubs } = await supabase
+      .from('user_subscriptions')
+      .select('user_id')
+      .eq('course_id', id)
+      .in('estado', ['active', 'trialing']);
+
+    if (errorSubs) throw errorSubs;
+
+    if (!subs || subs.length === 0) {
+      $q.dialog({
+        title: `Alumnos: ${nombre}`,
+        message: 'No hay alumnos activos actualmente.',
+      });
+      return;
+    }
+
+    // Extraemos los IDs en un array limpio
+    // Convertimos a 'unknown' primero para evitar líos de tipos con Supabase
+    const listaIds = (subs as SubscripcionRow[]).map((s) => s.user_id);
+
+    // PASO 2: Buscar los datos personales de esos IDs
+    const { data: perfiles, error: errorPerfiles } = await supabase
+      .from('datos_usuarios')
+      .select('user_id, nombre, apellido1, email')
+      .in('user_id', listaIds);
+
+    if (errorPerfiles) throw errorPerfiles;
+
+    // PASO 3: Cruzar los datos en Javascript (Más seguro que SQL Join)
+    const listaHTML = listaIds
+      .map((userId) => {
+        // Casteamos 'perfiles' a nuestro tipo definido
+        const perfil = (perfiles as PerfilUsuario[] | null)?.find((p) => p.user_id === userId);
+
+        if (perfil) {
+          return `• <b>${perfil.nombre} ${perfil.apellido1 || ''}</b> <br><span class="text-grey-7" style="font-size:0.85em">(${perfil.email})</span>`;
+        } else {
+          return `• <span class="text-orange">Usuario sin perfil</span> <br><span class="text-grey-7" style="font-size:0.85em">ID: ${userId}</span>`;
+        }
+      })
+      .join('<br><br>');
+
+    // Mostrar el resultado
+    $q.dialog({
+      title: `<div class="text-primary text-weight-bold">👨‍🎓 Alumnos: ${nombre}</div>`,
+      message: listaHTML,
+      html: true,
+      ok: { label: 'Cerrar', flat: true, color: 'primary' },
+    });
+  } catch (error) {
+    console.error('Error cargando alumnos:', error);
+    $q.notify({ type: 'negative', message: 'Error al recuperar la lista de alumnos' });
+  } finally {
+    cargandoAlumnos.value = false; // Apagamos el spinner
   }
 };
 

@@ -47,9 +47,9 @@
               <q-item-section avatar><q-icon name="event" color="primary" /></q-item-section>
               <q-item-section>{{ t('personal.clasesReservadas') }}</q-item-section>
               <q-item-section side>
-                <q-badge v-if="reservasConfirmadas.length > 0" color="positive" rounded>{{
-                  reservasConfirmadas.length
-                }}</q-badge>
+                <q-badge v-if="reservasConfirmadas.length > 0" color="positive" rounded>
+                  {{ reservasConfirmadas.length }}
+                </q-badge>
               </q-item-section>
             </q-item>
 
@@ -127,11 +127,9 @@
               <q-item-section avatar
                 ><q-icon name="admin_panel_settings" color="red"
               /></q-item-section>
-              <q-item-section
-                ><span class="text-weight-bold text-red"
-                  >Panel de Administración</span
-                ></q-item-section
-              >
+              <q-item-section>
+                <span class="text-weight-bold text-red">Panel de Administración</span>
+              </q-item-section>
             </q-item>
           </q-list>
         </q-card>
@@ -145,42 +143,74 @@
             </q-card-section>
 
             <q-card-section>
-              <q-list bordered v-if="reservasConfirmadas.length > 0">
-                <q-item v-for="reserva in reservasConfirmadas" :key="reserva.id" class="q-mb-sm">
+              <q-list
+                bordered
+                separator
+                v-if="reservasConfirmadas.length > 0"
+                class="rounded-borders"
+              >
+                <q-item v-for="reserva in reservasConfirmadas" :key="reserva.id" class="q-py-md">
                   <q-item-section>
-                    <q-item-label class="text-weight-bold">
-                      {{ formatFecha(reserva.fecha) }} a las {{ reserva.hora.slice(0, 5) }}
+                    <q-item-label class="text-weight-bold text-h6">
+                      {{ formatFecha(reserva.fecha) }}
+                    </q-item-label>
+                    <q-item-label class="text-subtitle1 text-primary q-mb-xs">
+                      A las {{ reserva.hora.slice(0, 5) }}
                     </q-item-label>
                     <q-item-label caption>
                       {{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€
                     </q-item-label>
-                    <q-item-label caption v-if="!puedeCancelar(reserva)" class="text-negative">
-                      {{ t('personal.noSePuedeCancelar') }}
+
+                    <q-item-label
+                      caption
+                      v-if="!puedeCancelar(reserva)"
+                      class="text-negative q-mt-xs"
+                    >
+                      <q-icon name="lock" size="xs" /> {{ t('personal.noSePuedeCancelar') }}
                     </q-item-label>
                   </q-item-section>
+
                   <q-item-section side>
-                    <q-btn
-                      color="negative"
-                      icon="delete"
-                      @click="cancelarReserva(reserva)"
-                      size="sm"
-                      :disable="!puedeCancelar(reserva)"
-                      :label="
-                        !puedeCancelar(reserva)
-                          ? t('personal.bloqueado')
-                          : t('personal.cancelarReserva')
-                      "
-                    />
+                    <div class="column q-gutter-sm items-end">
+                      <q-btn
+                        v-if="reserva.meet_link"
+                        type="a"
+                        :href="reserva.meet_link"
+                        target="_blank"
+                        color="primary"
+                        icon="video_camera_front"
+                        label="Entrar a clase"
+                        size="sm"
+                        unelevated
+                      />
+                      <q-badge v-else color="grey-3" text-color="grey-8" label="Enlace pendiente" />
+
+                      <q-btn
+                        outline
+                        color="negative"
+                        icon="event_busy"
+                        size="sm"
+                        @click="cancelarReserva(reserva)"
+                        :disable="!puedeCancelar(reserva)"
+                        :label="
+                          !puedeCancelar(reserva)
+                            ? t('personal.bloqueado')
+                            : t('personal.cancelarReserva')
+                        "
+                      />
+                    </div>
                   </q-item-section>
                 </q-item>
               </q-list>
-              <p v-else class="text-grey">{{ t('personal.noTienesReservas') }}</p>
+              <p v-else class="text-grey q-pa-md text-center">
+                <q-icon name="event_busy" size="md" /> <br />
+                {{ t('personal.noTienesReservas') }}
+              </p>
             </q-card-section>
           </q-card>
         </div>
 
         <div v-if="menuActivo === 'cursos'">
-          <!-- =================== GESTIÓN DE SUSCRIPCIONES A CURSOS GRUPALES =================== -->
           <q-card class="q-mb-lg">
             <q-card-section>
               <div class="row items-center justify-between">
@@ -191,7 +221,7 @@
 
             <q-card-section>
               <q-list bordered separator v-if="misSuscripciones.length > 0" class="rounded-borders">
-                <q-item v-for="sub in misSuscripciones" :key="sub.id">
+                <q-item v-for="sub in misSuscripciones" :key="sub.id" class="q-py-md">
                   <q-item-section avatar>
                     <q-icon
                       :name="sub.cancel_at_period_end ? 'event_busy' : 'check_circle'"
@@ -201,14 +231,13 @@
                   </q-item-section>
 
                   <q-item-section>
-                    <!-- nombre curso -->
                     <q-item-label
                       class="text-h6 text-primary text-weight-bold cursor-pointer hover-link"
                       @click="router.push(`/ReservasCursos?id=${sub.course_id}`)"
                     >
                       {{ sub.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
                     </q-item-label>
-                    <!-- horario curso -->
+
                     <q-item-label
                       v-if="sub.cursos_grupales?.horarios_curso"
                       class="text-subtitle2 text-grey-9 q-mb-xs"
@@ -219,25 +248,39 @@
                     </q-item-label>
 
                     <q-item-label caption>
-                      <q-badge :color="sub.estado === 'active' ? 'positive' : 'grey'">
-                        {{ sub.estado }}
-                      </q-badge>
-                      <q-badge v-if="sub.cancel_at_period_end" color="orange" class="q-ml-sm">
+                      <q-badge v-if="sub.cancel_at_period_end" color="orange">
                         {{ t('personal.cancelacionProgramada') }}
                       </q-badge>
+                      <q-badge v-else :color="sub.estado === 'active' ? 'positive' : 'grey'">
+                        {{ sub.estado === 'active' ? 'Suscripción Activa' : sub.estado }}
+                      </q-badge>
                     </q-item-label>
+
                     <q-item-label caption class="text-grey-8 q-mt-xs">
                       {{
                         sub.cancel_at_period_end
                           ? t('personal.accesoValidoHasta')
                           : t('personal.proximaRenovacion')
-                      }}
+                      }}:
                       <strong>{{ formatearFechaSuscripcion(sub.current_period_end) }}</strong>
                     </q-item-label>
                   </q-item-section>
 
                   <q-item-section side>
-                    <div class="row q-gutter-sm">
+                    <div class="column q-gutter-sm items-end">
+                      <q-btn
+                        v-if="sub.cursos_grupales?.meet_link"
+                        type="a"
+                        :href="sub.cursos_grupales.meet_link"
+                        target="_blank"
+                        color="primary"
+                        icon="video_camera_front"
+                        label="Entrar al Aula"
+                        size="sm"
+                        unelevated
+                      />
+                      <q-badge v-else color="grey-3" text-color="grey-8" label="Enlace pendiente" />
+
                       <q-btn
                         v-if="!sub.cancel_at_period_end && sub.estado === 'active'"
                         outline
@@ -247,6 +290,7 @@
                         @click="confirmarCancelacion(sub)"
                         :loading="procesando"
                       />
+
                       <q-btn
                         v-if="sub.cancel_at_period_end && sub.estado === 'active'"
                         outline
@@ -281,9 +325,21 @@
                     outlined
                     :rules="[(val) => !!val || t('personal.elnombreEs')]"
                   />
-                  <q-input v-model="formDatos.apellido1" :label="t('personal.primerApellido')" outlined />
-                  <q-input v-model="formDatos.apellido2" :label="t('personal.segundoApellido')" outlined />
-                  <q-input v-model="formDatos.direccion" :label="t('personal.direccion')" outlined />
+                  <q-input
+                    v-model="formDatos.apellido1"
+                    :label="t('personal.primerApellido')"
+                    outlined
+                  />
+                  <q-input
+                    v-model="formDatos.apellido2"
+                    :label="t('personal.segundoApellido')"
+                    outlined
+                  />
+                  <q-input
+                    v-model="formDatos.direccion"
+                    :label="t('personal.direccion')"
+                    outlined
+                  />
                   <q-input
                     v-model="formDatos.codigoPostal"
                     :label="t('personal.codigoPostal')"
@@ -293,14 +349,26 @@
                 </div>
                 <div class="col-12 col-md-6">
                   <q-input v-model="formDatos.ciudad" :label="t('personal.ciudad')" outlined />
-                  <q-select v-model="formDatos.pais" :options="paises" :label="t('personal.pais')" outlined />
-                  <q-input v-model="formDatos.nif" :label="t('personal.nif')" outlined mask="XXXXXXXXX" />
+                  <q-select
+                    v-model="formDatos.pais"
+                    :options="paises"
+                    :label="t('personal.pais')"
+                    outlined
+                  />
+                  <q-input
+                    v-model="formDatos.nif"
+                    :label="t('personal.nif')"
+                    outlined
+                    mask="XXXXXXXXX"
+                  />
                   <q-input
                     v-model="formDatos.email"
                     :label="t('personal.email') + ' *'"
                     type="email"
                     outlined
-                    :rules="[(val) => (!!val && /.+@.+\..+/.test(val)) || t('personal.emailDebeSerValido')]"
+                    :rules="[
+                      (val) => (!!val && /.+@.+\..+/.test(val)) || t('personal.emailDebeSerValido'),
+                    ]"
                   />
                   <q-input
                     v-model="formDatos.telefono"
@@ -324,8 +392,18 @@
                   @click="validarDatos"
                   icon="check_circle"
                 />
-                <q-btn :label="t('personal.guardarCambios')" type="submit" color="primary" icon="save" />
-                <q-btn :label="t('personal.limpiar')" color="grey" @click="limpiarFormulario" icon="clear" />
+                <q-btn
+                  :label="t('personal.guardarCambios')"
+                  type="submit"
+                  color="primary"
+                  icon="save"
+                />
+                <q-btn
+                  :label="t('personal.limpiar')"
+                  color="grey"
+                  @click="limpiarFormulario"
+                  icon="clear"
+                />
               </div>
             </q-form>
           </q-card-section>
@@ -420,6 +498,7 @@ interface Suscripcion {
     nombre_curso: string;
     dias_semana: string[];
     horarios_curso: string[];
+    meet_link?: string;
   };
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
@@ -437,7 +516,8 @@ const cargarSuscripciones = async () => {
       cursos_grupales!course_id (
         nombre_curso,
         dias_semana,
-        horarios_curso
+        horarios_curso,
+        meet_link
       )
     `,
     )
@@ -737,6 +817,7 @@ interface Reserva {
   tipo?: 'normal' | 'conversacion';
   precio?: number;
   stripe_payment_intent?: string;
+  meet_link?: string;
 }
 
 const diasSemanaMap: Record<string, Record<string, string>> = {
@@ -805,7 +886,7 @@ const formatHorarios = (horarios?: string[]) => {
       const [h, m] = hora.split(':').map((v) => Number(v));
       if (Number.isFinite(h) && Number.isFinite(m)) {
         const d = new Date();
-        d.setHours(h, m, 0, 0);
+        d.setHours(h as number, m as number, 0, 0);
         return d.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' });
       }
       return hora;
