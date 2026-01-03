@@ -52,7 +52,9 @@
       style="width: 100%"
       v-if="$q.screen.gt.md"
     >
-      <p class="titulo-responsivo text-center text-weight-bold">{{ $t('NuestrasClases.uneteAEllas') }}</p>
+      <p class="titulo-responsivo text-center text-weight-bold">
+        {{ $t('NuestrasClases.uneteAEllas') }}
+      </p>
       <div class="flex row justify-around full-width">
         <div class="numero-item">
           <div class="numero" style="color: white">{{ count1 }}</div>
@@ -64,7 +66,9 @@
         </div>
         <div class="numero-item">
           <div class="numero" style="color: white">{{ count3 }}</div>
-          <div style="font-size: 1.8rem; color: white">{{ $t('NuestrasClases.clasesImpartidas') }}</div>
+          <div style="font-size: 1.8rem; color: white">
+            {{ $t('NuestrasClases.clasesImpartidas') }}
+          </div>
         </div>
       </div>
     </div>
@@ -119,7 +123,9 @@
     <div class="row flex q-my-xl" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-center">{{ $t('NuestrasClases.nuestrasClasesConversacion') }}</div>
+          <div class="titulo-responsivo text-center">
+            {{ $t('NuestrasClases.nuestrasClasesConversacion') }}
+          </div>
           <p class="texto-responsivo">
             {{ $t('NuestrasClases.textoNuestrosGruposFormativos') }}
           </p>
@@ -174,7 +180,9 @@
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-center">{{ $t('NuestrasClases.nuestrasClasesIndividuales') }}</div>
+          <div class="titulo-responsivo text-center">
+            {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
+          </div>
           <p class="texto-responsivo">
             {{ $t('NuestrasClases.aprendeEspanolATuRitmo') }}
           </p>
@@ -215,11 +223,38 @@ import { useI18n } from 'vue-i18n';
 import '../css/pages/ClasesGrupales.css';
 import { supabase } from 'src/supabaseClient';
 import { useRoute } from 'vue-router';
-import { scroll } from 'quasar';
+import { scroll, useMeta } from 'quasar';
 
 const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 const { t } = useI18n();
+
+const pageTitle = 'Clases particulares y grupales de español online | SpanishNook';
+const pageDescription =
+  'Reserva clases particulares 1:1 y grupales de conversación en vivo con SpanishNook. Profesores nativos, grupos reducidos y horarios flexibles para avanzar en tu español.';
+const pageUrl = 'https://spanishnook.com/NuestrasClases';
+const pageImage = 'https://spanishnook.com/img/estudiante_1024.jpg';
+
+useMeta(() => ({
+  title: pageTitle,
+  meta: {
+    description: { name: 'description', content: pageDescription },
+    keywords: {
+      name: 'keywords',
+      content:
+        'clases particulares español online, clases grupales español, clases conversación, profesor nativo español, grupos reducidos, clases 1 a 1',
+    },
+    ogTitle: { property: 'og:title', content: pageTitle },
+    ogDescription: { property: 'og:description', content: pageDescription },
+    ogImage: { property: 'og:image', content: pageImage },
+    ogUrl: { property: 'og:url', content: pageUrl },
+    ogType: { property: 'og:type', content: 'website' },
+    twitterCard: { name: 'twitter:card', content: 'summary_large_image' },
+    twitterTitle: { name: 'twitter:title', content: pageTitle },
+    twitterDescription: { name: 'twitter:description', content: pageDescription },
+    twitterImage: { name: 'twitter:image', content: pageImage },
+  },
+}));
 const showAnimatedImg = ref(false);
 
 function scrollDirecto(hash: string, offset = 80) {

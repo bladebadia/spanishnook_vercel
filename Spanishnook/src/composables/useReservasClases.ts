@@ -53,8 +53,8 @@ export function useReservasClases() {
 
   // --- COMPUTED ---
   const opcionesTipoClase = computed(() => [
-    { label: `${t('individuales.claseNormal')} (32€)`, value: 'normal' },
-    { label: `${t('individuales.claseConversacion')} (20€)`, value: 'conversacion' },
+    { label: `${t('reservasClases.claseNormal')} (32€)`, value: 'normal' },
+    { label: `${t('reservasClases.claseConversacion')} (20€)`, value: 'conversacion' },
   ]);
 
 const fechaMinima = computed<string>(() => {

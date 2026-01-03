@@ -1,16 +1,11 @@
 <template>
   <q-page class="q-pa-lg">
-    <h4>🛒 Carrito de Reservas</h4>
+    <h4>🛒 {{ t('carrito.carritoDeReservas') }}</h4>
 
     <div v-if="carrito.length === 0" class="text-center q-mt-xl">
       <q-icon name="shopping_cart" size="100px" color="grey-4" />
-      <p class="text-grey q-mt-md">Tu carrito está vacío</p>
-      <q-btn
-        color="primary"
-        label="Ir a Clases individuales"
-        to="/ClasesIndividuales"
-        class="q-mt-md"
-      />
+      <p class="text-grey q-mt-md">{{ t('carrito.tuCarritoEstaVacio') }}</p>
+      <q-btn color="primary" :label="t('carrito.reservarClases')" to="/Reservas" class="q-mt-md" />
     </div>
 
     <div v-else>
@@ -23,14 +18,19 @@
         >
           <q-item-section>
             <q-item-label class="text-h6" :class="{ 'text-white': esReservaConflictiva(reserva) }">
-              {{ formatFecha(reserva.fecha) }} a las {{ reserva.hora }}
+              {{ formatFecha(reserva.fecha) }} {{ t('carrito.aLas') }} {{ reserva.hora }}
             </q-item-label>
             <q-item-label caption :class="{ 'text-white': esReservaConflictiva(reserva) }">
-              {{ reserva.tipo === 'normal' ? 'Clase Normal' : 'Clase Conversación' }} -
+              {{
+                reserva.tipo === 'normal'
+                  ? t('carrito.claseNormal')
+                  : t('carrito.claseConversacion')
+              }}
+              -
               {{ reserva.tipo === 'normal' ? '32€' : '20€' }}
             </q-item-label>
             <q-item-label v-if="esReservaConflictiva(reserva)" class="text-white">
-              ⚠️ Esta hora ya está ocupada
+              ⚠️ {{ t('carrito.horaOcupada') }}
             </q-item-label>
           </q-item-section>
 
@@ -48,24 +48,24 @@
       </q-list>
 
       <div class="bg-yellow-2 q-pa-md rounded-borders q-mb-lg">
-        <h6>Resumen del Pedido</h6>
+        <h6>{{ t('carrito.resumenDelPedido') }}</h6>
         <div class="row justify-between items-center">
-          <span>{{ carrito.length }} reserva(s)</span>
-          <span class="text-h6 text-primary">Total estimado: {{ total }}€</span>
+          <span>{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span>
+          <span class="text-h6 text-primary">{{ t('carrito.totalEstimado') }} {{ total }}€</span>
         </div>
         <div class="text-caption text-grey-7 q-mt-xs">
-          {{ totalNormal }} clase(s) normal(es) + {{ totalConversacion }} clase(s) conversación
+          {{ totalNormal }} {{ t('carrito.claseNormal', { count: totalNormal }) }} + {{ totalConversacion }} {{ t('carrito.claseConversacion', { count: totalConversacion }) }}
         </div>
         <div v-if="reservasConflictivas.length > 0" class="text-negative q-mt-sm">
-          ⚠️ {{ reservasConflictivas.length }} reserva(s) no disponible(s)
+          ⚠️ {{ reservasConflictivas.length }} {{ t('carrito.reservaNoDisponible', { count: reservasConflictivas.length }) }}
         </div>
       </div>
 
       <div class="row q-gutter-md justify-end">
-        <q-btn color="grey" label="Seguir Reservando" to="/ClasesIndividuales" outline />
+        <q-btn color="grey" label="Seguir Reservando" to="/Reservas" outline />
         <q-btn
           color="primary"
-          label="Pagar y Confirmar Reservas"
+          :label="t('carrito.pagarYConfirmarReservas')"
           @click="confirmarReservas"
           :disable="!usuarioLogueado || reservasConflictivas.length > 0"
           :loading="confirmando"
@@ -73,14 +73,13 @@
       </div>
 
       <q-banner v-if="!usuarioLogueado" class="bg-warning text-dark q-mt-md">
-        ⚠️ Debes iniciar sesión para confirmar reservas
+        ⚠️{{t('carrito.debesIniciarSesion')}}
       </q-banner>
 
       <q-banner v-if="reservasConflictivas.length > 0" class="bg-negative text-white q-mt-md">
         <template v-if="reservasConflictivas.length === 1 && reservasConflictivas[0]">
           ⚠️ La hora {{ reservasConflictivas[0].hora }} del
-          {{ formatFecha(reservasConflictivas[0].fecha) }} ya está ocupada. Por favor, elimínala de
-          tu carrito.
+          {{ formatFecha(reservasConflictivas[0].fecha) }} {{t('carrito.horaOcupada')}}
         </template>
         <template v-else-if="reservasConflictivas.length > 1">
           ⚠️ Las siguientes horas ya están ocupadas:
@@ -100,7 +99,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
-
+import { useI18n } from 'vue-i18n';
+const { t, locale } = useI18n();
 const { user } = useAuth();
 
 interface ReservaCarrito {
@@ -159,7 +159,7 @@ const guardarCarrito = () => {
 
 // Formatear fecha
 const formatFecha = (fecha: string) => {
-  return new Date(fecha).toLocaleDateString('es-ES', {
+  return new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',

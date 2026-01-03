@@ -581,7 +581,7 @@ const eliminarCuenta = async () => {
   if (!user.value?.email || !user.value?.id) {
     $q.notify({
       type: 'negative',
-      message: 'No se encontró el usuario autenticado.',
+      message: t('personal.noSeEncontroUsuarioAutenticado'),
       timeout: 3000,
     });
     return;
@@ -589,7 +589,7 @@ const eliminarCuenta = async () => {
   if (!passwordConfirm.value) {
     $q.notify({
       type: 'warning',
-      message: 'Introduce tu contraseña para confirmar.',
+      message: t('personal.introduceTuContrasenaParaConfirmar'),
       timeout: 3000,
     });
     return;
@@ -601,23 +601,23 @@ const eliminarCuenta = async () => {
       password: passwordConfirm.value,
     });
     if (signInError) {
-      $q.notify({ type: 'negative', message: 'Contraseña incorrecta.', timeout: 3000 });
+      $q.notify({ type: 'negative', message: t('personal.contrasenaIncorrecta'), timeout: 3000 });
       return;
     }
     const { error } = await supabase.functions.invoke('delete-account', { body: {} });
     if (error) {
       $q.notify({
         type: 'negative',
-        message: error.message || 'Error eliminando la cuenta',
+        message: error.message || t('personal.errorEliminandoCuenta'),
         timeout: 4000,
       });
       return;
     }
-    $q.notify({ type: 'positive', message: 'Tu cuenta ha sido eliminada.', timeout: 3000 });
+    $q.notify({ type: 'positive', message: t('personal.cuentaEliminada'), timeout: 3000 });
     await logout();
     await router.push('/');
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Error inesperado';
+    const message = err instanceof Error ? err.message : t('personal.errorInesperado');
     $q.notify({ type: 'negative', message, timeout: 4000 });
   } finally {
     deleting.value = false;
@@ -752,9 +752,9 @@ const irAPanelAdmin = async () => {
 
 const validarDatos = () => {
   if (!formDatos.value.nombre || !formDatos.value.email) {
-    $q.notify({ type: 'warning', message: 'Faltan campos obligatorios', timeout: 3000 });
+    $q.notify({ type: 'warning', message: t('personal.faltanCamposObligatorios'), timeout: 3000 });
   } else {
-    $q.notify({ type: 'positive', message: 'Datos válidos', timeout: 3000 });
+    $q.notify({ type: 'positive', message: t('personal.datosValidos'), timeout: 3000 });
   }
 };
 
@@ -781,10 +781,10 @@ const enviarDatosPersonales = async () => {
 
     if (error) throw error;
 
-    $q.notify({ type: 'positive', message: 'Datos guardados correctamente', timeout: 3000 });
+    $q.notify({ type: 'positive', message: t('personal.datosGuardadosCorrectamente'), timeout: 3000 });
   } catch (error) {
     console.error('Error al guardar:', error);
-    $q.notify({ type: 'negative', message: 'Error al guardar los datos', timeout: 3000 });
+    $q.notify({ type: 'negative', message: t('personal.errorGuardandoDatos'), timeout: 3000 });
   }
 };
 
@@ -883,7 +883,9 @@ const formatHorarios = (horarios?: string[]) => {
   if (!horarios || horarios.length === 0) return '';
   return horarios
     .map((hora) => {
-      const [h, m] = hora.split(':').map((v) => Number(v));
+      const parts = hora.split(':');
+      const h = Number(parts[0]);
+      const m = Number(parts[1]);
       if (Number.isFinite(h) && Number.isFinite(m)) {
         const d = new Date();
         d.setHours(h as number, m as number, 0, 0);
@@ -923,8 +925,8 @@ const cargarReservasConfirmadas = async () => {
 
 const cancelarReserva = (reserva: Reserva) => {
   $q.dialog({
-    title: 'Cancelar reserva',
-    message: `¿Estás seguro de que quieres cancelar la reserva del ${formatFecha(reserva.fecha)} a las ${reserva.hora.slice(0, 5)}? Se procesará un reembolso.`,
+    title: t('personal.cancelarReserva'),
+    message: `${t('personal.confirmarCancelarReserva')} ${formatFecha(reserva.fecha)} a las ${reserva.hora.slice(0, 5)}? ${t('personal.seProcesaraReembolso')}`,
     cancel: true,
     persistent: true,
   }).onOk(() => {

@@ -2,21 +2,21 @@
   <q-page class="q-pa-lg">
     <div class="row q-col-gutter-lg">
       <p class="titulo-responsivo text-center q-my-xl" style="width: 100%; color: #851319">
-        {{ t('individuales.reservaTuClase') }}
+        {{ t('reservasClases.reservaTuClase') }}
       </p>
 
       <div class="col-12 col-md-5">
         <div v-if="carrito.length > 0" class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2">
-          <h5>🛒 {{ t('individuales.carritoDeReservas') }}</h5>
+          <h5>🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
           <q-list>
             <q-item v-for="(reserva, index) in carrito" :key="index">
               <q-item-section>
                 <q-item-label
-                  >{{ formatFecha(reserva.fecha) }} {{ t('individuales.aLas') }}
+                  >{{ formatFecha(reserva.fecha) }} {{ t('reservasClases.aLas') }}
                   {{ reserva.hora }}</q-item-label
                 >
                 <q-item-label caption>
-                  {{ reserva.tipo === 'normal' ? 'Clase Normal' : 'Conversación' }} ({{
+                  {{ reserva.tipo === 'normal' ? t('reservasClases.claseNormal') : t('reservasClases.conversacion') }} ({{
                     reserva.tipo === 'normal' ? '32€' : '20€'
                   }})
                 </q-item-label>
@@ -34,7 +34,7 @@
             <div class="q-mt-md text-center">
               <q-btn
                 color="primary"
-                :label="t('individuales.botonIrAlCarrito')"
+                :label="t('reservasClases.botonIrAlCarrito')"
                 to="/CarritoCompra"
               />
             </div>
@@ -42,19 +42,19 @@
         </div>
 
         <div class="q-mt-lg">
-          <h5>{{ t('individuales.misReservasConfirmadas') }}</h5>
+          <h5>{{ t('reservasClases.misReservasConfirmadas') }}</h5>
           <q-list bordered v-if="misReservas.length > 0">
             <q-item v-for="reserva in misReservas" :key="reserva.id" class="q-mb-sm">
               <q-item-section>
                 <q-item-label
-                  >{{ formatFecha(reserva.fecha) }} {{ t('individuales.aLas') }}
+                  >{{ formatFecha(reserva.fecha) }} {{ t('reservasClases.aLas') }}
                   {{ reserva.hora.slice(0, 5) }}</q-item-label
                 >
                 <q-item-label caption
                   >{{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€</q-item-label
                 >
                 <q-item-label caption v-if="!puedeCancelar(reserva)" class="text-negative">
-                  {{ t('individuales.noSePuede') }}
+                  {{ t('reservasClases.noSePuede') }}
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
@@ -66,14 +66,14 @@
                   :disable="!puedeCancelar(reserva)"
                   :title="
                     !puedeCancelar(reserva)
-                      ? t('individuales.noSePuedeCancelar')
-                      : t('individuales.cancelarReserva')
+                      ? t('reservasClases.noSePuedeCancelar')
+                      : t('reservasClases.cancelarReserva')
                   "
                 />
               </q-item-section>
             </q-item>
           </q-list>
-          <p v-else class="text-grey q-mt-sm">{{ t('individuales.noTienesReservas') }}</p>
+          <p v-else class="text-grey q-mt-sm">{{ t('reservasClases.noTienesReservas') }}</p>
         </div>
       </div>
 
@@ -81,7 +81,7 @@
         <div class="q-mb-md">
           <q-card class="q-pa-md shadow-1 rounded-borders">
             <q-card-section class="q-pa-sm">
-              <div class="text-h6 text-center q-mb-md">{{ t('individuales.tipoDeClase') }}</div>
+              <div class="text-h6 text-center q-mb-md">{{ t('reservasClases.tipoDeClase') }}</div>
               <q-option-group
                 v-model="tipoClase"
                 :options="opcionesTipoClase"
@@ -96,7 +96,7 @@
         <div class="q-mb-xl">
           <div v-if="cargando" class="text-center q-pa-xl">
             <q-spinner color="primary" size="3em" />
-            <div class="text-grey q-mt-md">Cargando disponibilidad...</div>
+            <div class="text-grey q-mt-md">{{ t('reservasClases.cargandoDisponibilidad') }}</div>
           </div>
 
           <q-date
@@ -119,7 +119,7 @@
 
         <div v-if="fechaSeleccionada" class="q-mt-lg">
           <h5>
-            {{ t('individuales.horariosDisponiblesPara') }} {{ formatFecha(fechaSeleccionada) }}
+            {{ t('reservasClases.horariosDisponiblesPara') }} {{ formatFecha(fechaSeleccionada) }}
           </h5>
           <div v-if="horariosDisponiblesFiltrados.length > 0" class="row q-gutter-sm q-mt-md">
             <q-btn
@@ -133,8 +133,7 @@
             />
           </div>
           <div v-else class="text-grey q-mt-md">
-            <q-icon name="event_busy" /> No hay huecos libres (revisa si hay un curso grupal ese
-            día).
+            <q-icon name="event_busy" /> {{ t('reservasClases.noHayHuecosLibres') }}
           </div>
         </div>
       </div>
