@@ -10,6 +10,7 @@
       </p>
       <p v-else class="subtitulo-responsivo">{{ t('personal.holaUsuario') }}</p>
     </div>
+
     <div class="col-12 text-center q-py-md q-py-md-lg">
       <q-btn
         color="primary"
@@ -22,6 +23,12 @@
 
     <div class="row q-col-gutter-lg">
       <div :class="['menu-lateral', $q.screen.lt.md ? 'col-12' : 'col-3']">
+        <SaldoWallet
+          :saldo-normal="formDatos.saldo_normal"
+          :saldo-conversacion="formDatos.saldo_conversacion"
+          :loading="cargandoSaldo"
+        />
+
         <div v-if="$q.screen.lt.md" class="flex justify-center q-mb-md">
           <q-btn
             flat
@@ -47,9 +54,9 @@
               <q-item-section avatar><q-icon name="event" color="primary" /></q-item-section>
               <q-item-section>{{ t('personal.clasesReservadas') }}</q-item-section>
               <q-item-section side>
-                <q-badge v-if="reservasConfirmadas.length > 0" color="positive" rounded>
-                  {{ reservasConfirmadas.length }}
-                </q-badge>
+                <q-badge v-if="reservasConfirmadas.length > 0" color="positive" rounded>{{
+                  reservasConfirmadas.length
+                }}</q-badge>
               </q-item-section>
             </q-item>
 
@@ -64,10 +71,7 @@
               <q-item-section>{{ t('personal.misCursos') }}</q-item-section>
               <q-item-section side>
                 <q-badge
-                  v-if="
-                    misSuscripciones.length > 0 &&
-                    misSuscripciones.some((s) => s.estado === 'active')
-                  "
+                  v-if="misSuscripciones.some((s) => s.estado === 'active')"
                   color="positive"
                   rounded
                   >Active</q-badge
@@ -87,7 +91,6 @@
             </q-item>
 
             <q-separator />
-
             <q-item-label header class="text-weight-bold text-primary">
               {{ t('personal.miCuenta') }}
             </q-item-label>
@@ -127,9 +130,9 @@
               <q-item-section avatar
                 ><q-icon name="admin_panel_settings" color="red"
               /></q-item-section>
-              <q-item-section>
-                <span class="text-weight-bold text-red">Panel de Administración</span>
-              </q-item-section>
+              <q-item-section
+                ><span class="text-weight-bold text-red">Panel Admin</span></q-item-section
+              >
             </q-item>
           </q-list>
         </q-card>
@@ -139,7 +142,42 @@
         <div v-if="menuActivo === 'reservadas' || menuActivo === ''">
           <q-card class="q-mb-md">
             <q-card-section>
-              <div class="text-h6">{{ t('personal.misReservasConfirmadas') }}</div>
+              <div class="row items-center justify-between">
+                <div class="text-h6">{{ t('personal.misReservasConfirmadas') }}</div>
+
+                <div v-if="reservasConfirmadas.length > 0">
+                  <q-btn
+                    v-if="!modoSeleccion"
+                    flat
+                    dense
+                    color="primary"
+                    icon="checklist"
+                    :label="t('personal.seleccionar') || 'Seleccionar'"
+                    @click="modoSeleccion = true"
+                  />
+                  <div v-else class="row q-gutter-sm">
+                    <q-btn
+                      flat
+                      dense
+                      color="grey"
+                      label="Cancelar"
+                      @click="
+                        modoSeleccion = false;
+                        seleccionadas = [];
+                      "
+                    />
+                    <q-btn
+                      color="negative"
+                      :label="`Borrar (${seleccionadas.length})`"
+                      :disable="seleccionadas.length === 0"
+                      :loading="cargandoOperacion"
+                      @click="cancelarSeleccionadas"
+                      dense
+                      icon="delete"
+                    />
+                  </div>
+                </div>
+              </div>
             </q-card-section>
 
             <q-card-section>
@@ -150,6 +188,26 @@
                 class="rounded-borders"
               >
                 <q-item v-for="reserva in reservasConfirmadas" :key="reserva.id" class="q-py-md">
+                  <q-item-section avatar v-if="modoSeleccion">
+                    <q-checkbox
+                      v-model="seleccionadas"
+                      :val="reserva.id"
+                      :disable="!puedeCancelar(reserva)"
+                    >
+                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative">
+                        Menos de 24h
+                      </q-tooltip>
+                    </q-checkbox>
+                  </q-item-section>
+
+                  <q-item-section avatar v-else>
+                    <q-avatar
+                      :color="reserva.tipo === 'conversacion' ? 'purple-1' : 'blue-1'"
+                      :text-color="reserva.tipo === 'conversacion' ? 'purple-8' : 'blue-8'"
+                      icon="videocam"
+                    />
+                  </q-item-section>
+
                   <q-item-section>
                     <q-item-label class="text-weight-bold text-h6">
                       {{ formatFecha(reserva.fecha) }}
@@ -158,50 +216,36 @@
                       A las {{ reserva.hora.slice(0, 5) }}
                     </q-item-label>
                     <q-item-label caption>
-                      {{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€
+                      {{ getTipoClaseTexto(reserva) }}
                     </q-item-label>
 
                     <q-item-label
                       caption
                       v-if="!puedeCancelar(reserva)"
-                      class="text-negative q-mt-xs"
+                      class="text-negative q-mt-xs text-weight-bold"
                     >
-                      <q-icon name="lock" size="xs" /> {{ t('personal.noSePuedeCancelar') }}
+                      <q-icon name="lock" size="xs" />
+                      {{ t('personal.noSePuedeCancelar') || 'Menos de 24h' }}
                     </q-item-label>
                   </q-item-section>
 
-                  <q-item-section side>
-                    <div class="column q-gutter-sm items-end">
-                      <q-btn
-                        v-if="reserva.meet_link"
-                        type="a"
-                        :href="reserva.meet_link"
-                        target="_blank"
-                        color="primary"
-                        icon="video_camera_front"
-                        label="Entrar a clase"
-                        size="sm"
-                        unelevated
-                      />
-                      <q-badge v-else color="grey-3" text-color="grey-8" label="Enlace pendiente" />
-
-                      <q-btn
-                        outline
-                        color="negative"
-                        icon="event_busy"
-                        size="sm"
-                        @click="cancelarReserva(reserva)"
-                        :disable="!puedeCancelar(reserva)"
-                        :label="
-                          !puedeCancelar(reserva)
-                            ? t('personal.bloqueado')
-                            : t('personal.cancelarReserva')
-                        "
-                      />
-                    </div>
+                  <q-item-section side v-if="!modoSeleccion">
+                    <q-btn
+                      v-if="reserva.meet_link"
+                      type="a"
+                      :href="reserva.meet_link"
+                      target="_blank"
+                      color="primary"
+                      icon="video_camera_front"
+                      label="ENTRAR"
+                      class="text-weight-bold q-px-md"
+                      unelevated
+                    />
+                    <q-badge v-else color="grey-3" text-color="grey-8" label="Pendiente" />
                   </q-item-section>
                 </q-item>
               </q-list>
+
               <p v-else class="text-grey q-pa-md text-center">
                 <q-icon name="event_busy" size="md" /> <br />
                 {{ t('personal.noTienesReservas') }}
@@ -237,7 +281,6 @@
                     >
                       {{ sub.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
                     </q-item-label>
-
                     <q-item-label
                       v-if="sub.cursos_grupales?.horarios_curso"
                       class="text-subtitle2 text-grey-9 q-mb-xs"
@@ -246,16 +289,14 @@
                       {{ traducirDiasSemana(sub.cursos_grupales.dias_semana) }} a las
                       {{ formatHorarios(sub.cursos_grupales.horarios_curso) }}
                     </q-item-label>
-
                     <q-item-label caption>
-                      <q-badge v-if="sub.cancel_at_period_end" color="orange">
-                        {{ t('personal.cancelacionProgramada') }}
-                      </q-badge>
-                      <q-badge v-else :color="sub.estado === 'active' ? 'positive' : 'grey'">
-                        {{ sub.estado === 'active' ? 'Suscripción Activa' : sub.estado }}
-                      </q-badge>
+                      <q-badge v-if="sub.cancel_at_period_end" color="orange">{{
+                        t('personal.cancelacionProgramada')
+                      }}</q-badge>
+                      <q-badge v-else :color="sub.estado === 'active' ? 'positive' : 'grey'">{{
+                        sub.estado === 'active' ? 'Activa' : sub.estado
+                      }}</q-badge>
                     </q-item-label>
-
                     <q-item-label caption class="text-grey-8 q-mt-xs">
                       {{
                         sub.cancel_at_period_end
@@ -275,18 +316,18 @@
                         target="_blank"
                         color="primary"
                         icon="video_camera_front"
-                        label="Entrar al Aula"
-                        size="sm"
+                        label="ENTRAR"
+                        class="text-weight-bold q-px-md"
                         unelevated
                       />
-                      <q-badge v-else color="grey-3" text-color="grey-8" label="Enlace pendiente" />
+                      <q-badge v-else color="grey-3" text-color="grey-8" label="Pendiente" />
 
                       <q-btn
                         v-if="!sub.cancel_at_period_end && sub.estado === 'active'"
                         outline
                         color="negative"
                         :label="t('personal.cancelar')"
-                        size="sm"
+                        class="q-px-md"
                         @click="confirmarCancelacion(sub)"
                         :loading="procesando"
                       />
@@ -296,7 +337,7 @@
                         outline
                         color="positive"
                         label="Reactivar"
-                        size="sm"
+                        class="q-px-md"
                         @click="reactivarSuscripcion(sub)"
                         :loading="procesando"
                       />
@@ -304,7 +345,6 @@
                   </q-item-section>
                 </q-item>
               </q-list>
-
               <div v-else class="text-center text-grey q-pa-lg border-dashed">
                 <q-icon name="school" size="50px" color="grey-4" />
                 <p class="q-mt-sm">{{ t('personal.noTienesSuscripciones') }}</p>
@@ -410,19 +450,18 @@
         </q-card>
 
         <q-card v-if="menuActivo === 'historial'">
-          <q-card-section>
-            <div class="text-h6">{{ t('personal.tuHistorialDeClases') }}</div>
-          </q-card-section>
+          <q-card-section
+            ><div class="text-h6">{{ t('personal.tuHistorialDeClases') }}</div></q-card-section
+          >
           <q-card-section>
             <q-list bordered v-if="reservasPasadas.length > 0">
               <q-item v-for="reserva in reservasPasadas" :key="reserva.id" class="q-mb-sm">
                 <q-item-section>
-                  <q-item-label class="text-weight-bold">
-                    {{ formatFecha(reserva.fecha) }} a las {{ reserva.hora.slice(0, 5) }}
-                  </q-item-label>
-                  <q-item-label caption>
-                    {{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€
-                  </q-item-label>
+                  <q-item-label class="text-weight-bold"
+                    >{{ formatFecha(reserva.fecha) }} a las
+                    {{ reserva.hora.slice(0, 5) }}</q-item-label
+                  >
+                  <q-item-label caption>{{ getTipoClaseTexto(reserva) }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -467,15 +506,13 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import '../css/pages/EstilosGenerales.css';
 import { useI18n } from 'vue-i18n';
-// ✨ IMPORTAMOS EL COMPOSABLE DE SUSCRIPCIONES
 import { useSuscripciones } from 'src/composables/useSuscripciones';
+import SaldoWallet from 'components/SaldoWallet.vue';
 
 const $q = useQuasar();
 const { user, logout } = useAuth();
 const router = useRouter();
 const { t, locale } = useI18n();
-
-// COMPOSABLE SUSCRIPCIONES (Solo para cancelar/reactivar, no para comprar)
 const { procesando, cambiarEstadoCancelacion } = useSuscripciones();
 
 // --- ESTADOS ---
@@ -485,6 +522,27 @@ const menuVisible = ref($q.screen.gt.sm);
 const menuActivo = ref('reservadas');
 const passwordConfirm = ref('');
 const deleting = ref(false);
+const cargandoSaldo = ref(true);
+const sessionToken = ref<string | null>(null);
+
+// Múltiple selección
+const modoSeleccion = ref(false);
+const seleccionadas = ref<string[]>([]);
+const cargandoOperacion = ref(false); // Estado local de carga
+
+// Interfaces
+interface Reserva {
+  id: string;
+  user_id: string;
+  fecha: string;
+  hora: string;
+  estado: string;
+  created_at?: string;
+  tipo?: 'normal' | 'conversacion';
+  precio?: number;
+  stripe_payment_intent?: string;
+  meet_link?: string;
+}
 
 interface Suscripcion {
   id: string;
@@ -503,34 +561,112 @@ interface Suscripcion {
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
 
-// =================== LÓGICA DE SUSCRIPCIONES ===================
+interface DatosUsuario {
+  nombre: string;
+  apellido1: string;
+  apellido2: string;
+  direccion: string;
+  codigoPostal: string;
+  ciudad: string;
+  pais: string | null;
+  nif: string;
+  email: string;
+  telefono: string;
+  observaciones: string;
+  saldo_normal: number;
+  saldo_conversacion: number;
+  [key: string]: string | number | null;
+}
 
+const formDatos = ref<DatosUsuario>({
+  nombre: '',
+  apellido1: '',
+  apellido2: '',
+  direccion: '',
+  codigoPostal: '',
+  ciudad: '',
+  pais: null,
+  nif: '',
+  email: '',
+  telefono: '',
+  observaciones: '',
+  saldo_normal: 0,
+  saldo_conversacion: 0,
+});
+
+const paises = [
+  'España',
+  'Portugal',
+  'Francia',
+  'Italia',
+  'Alemania',
+  'Reino Unido',
+  'Estados Unidos',
+  'México',
+  'Argentina',
+  'Colombia',
+  'Chile',
+  'Perú',
+];
+
+// --- FUNCIONES SELECCIÓN ---
+const puedeCancelar = (reserva: Reserva): boolean => {
+  const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
+  const ahora = new Date();
+  return (fechaReserva.getTime() - ahora.getTime()) / (1000 * 60 * 60) >= 24;
+};
+
+// Cancelación Masiva (Corregido error de loading)
+const cancelarSeleccionadas = () => {
+  if (seleccionadas.value.length === 0) return;
+
+  $q.dialog({
+    title: t('personal.cancelarReserva') || 'Cancelar Clases',
+    message: `Vas a cancelar ${seleccionadas.value.length} clase(s). <br>Se devolverán los créditos si faltan más de 24h.`,
+    html: true,
+    cancel: true,
+    persistent: true,
+    ok: { label: 'Confirmar', color: 'negative' },
+  }).onOk(() => {
+    void (async () => {
+      cargandoOperacion.value = true;
+      try {
+        const { data, error } = await supabase.functions.invoke('cancel-reserva', {
+          body: { reservaIds: seleccionadas.value },
+        });
+
+        if (error) throw error;
+
+        const mensaje = `Hecho: ${data.canceladas} canceladas.`;
+        $q.notify({ type: data.canceladas > 0 ? 'positive' : 'warning', message: mensaje });
+
+        seleccionadas.value = [];
+        modoSeleccion.value = false;
+        await Promise.all([cargarDatosPersonales(), cargarReservasConfirmadas()]);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Error desconocido';
+        $q.notify({ type: 'negative', message: msg });
+      } finally {
+        cargandoOperacion.value = false;
+      }
+    })();
+  });
+};
+
+// --- RESTO DE FUNCIONES ---
 const cargarSuscripciones = async () => {
   if (!user.value) return;
-
   const { data, error } = await supabase
     .from('user_subscriptions')
-    .select(
-      `
-      *,
-      cursos_grupales!course_id (
-        nombre_curso,
-        dias_semana,
-        horarios_curso,
-        meet_link
-      )
-    `,
-    )
+    .select(`*, cursos_grupales!course_id (nombre_curso, dias_semana, horarios_curso, meet_link)`)
     .eq('user_id', user.value?.id)
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('ERROR EN SUSCRIPCIONES:', error.message);
+    console.error(error.message);
     return;
   }
-
   if (data) {
-    // IMPORTANTE: Mapear con los nombres nuevos
     misSuscripciones.value = data.map((sub) => ({
       ...sub,
       cursos_grupales: sub.cursos_grupales || {
@@ -546,10 +682,10 @@ const confirmarCancelacion = (sub: Suscripcion) => {
   const fechaFin = formatearFechaSuscripcion(sub.current_period_end);
   $q.dialog({
     title: `¿${t('personal.cancelarSuscripcion')}?`,
-    message: `${t('personal.seguirasTeniendoAcceso')} <b>${fechaFin}</b> ${t('personal.peroNoSeTeVolvera')}`,
+    message: `${t('personal.seguirasTeniendoAcceso')} <b>${fechaFin}</b>.`,
     html: true,
     persistent: true,
-    ok: { label: `{${t('personal.siCancelar')}}`, color: 'negative', flat: true },
+    ok: { label: 'Sí, cancelar', color: 'negative', flat: true },
     cancel: { label: 'Volver', color: 'primary' },
   }).onOk(() => {
     void (async () => {
@@ -568,57 +704,27 @@ const formatearFechaSuscripcion = (fecha: string) => {
   if (!fecha) return '---';
   const date = new Date(fecha);
   if (isNaN(date.getTime())) return 'Fecha inválida';
-  return date.toLocaleDateString(locale.value, {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  return date.toLocaleDateString(locale.value, { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
-// =================== LÓGICA DE USUARIO Y RESERVAS ===================
-
 const eliminarCuenta = async () => {
-  if (!user.value?.email || !user.value?.id) {
-    $q.notify({
-      type: 'negative',
-      message: t('personal.noSeEncontroUsuarioAutenticado'),
-      timeout: 3000,
-    });
-    return;
-  }
-  if (!passwordConfirm.value) {
-    $q.notify({
-      type: 'warning',
-      message: t('personal.introduceTuContrasenaParaConfirmar'),
-      timeout: 3000,
-    });
-    return;
-  }
+  if (!user.value?.email || !user.value?.id) return;
+  if (!passwordConfirm.value) return;
   deleting.value = true;
   try {
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: user.value.email,
       password: passwordConfirm.value,
     });
-    if (signInError) {
-      $q.notify({ type: 'negative', message: t('personal.contrasenaIncorrecta'), timeout: 3000 });
-      return;
-    }
+    if (signInError) throw new Error(t('personal.contrasenaIncorrecta'));
     const { error } = await supabase.functions.invoke('delete-account', { body: {} });
-    if (error) {
-      $q.notify({
-        type: 'negative',
-        message: error.message || t('personal.errorEliminandoCuenta'),
-        timeout: 4000,
-      });
-      return;
-    }
-    $q.notify({ type: 'positive', message: t('personal.cuentaEliminada'), timeout: 3000 });
+    if (error) throw error;
+    $q.notify({ type: 'positive', message: t('personal.cuentaEliminada') });
     await logout();
     await router.push('/');
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : t('personal.errorInesperado');
-    $q.notify({ type: 'negative', message, timeout: 4000 });
+    const msg = err instanceof Error ? err.message : 'Error';
+    $q.notify({ type: 'negative', message: msg });
   } finally {
     deleting.value = false;
   }
@@ -626,16 +732,14 @@ const eliminarCuenta = async () => {
 
 const cargarDatosPersonales = async () => {
   if (!user.value?.id) return;
-
+  cargandoSaldo.value = true;
   try {
     const { data, error } = await supabase
       .from('datos_usuarios')
       .select('*')
       .eq('user_id', user.value.id)
       .single();
-
     if (error && error.code !== 'PGRST116') return;
-
     if (data) {
       formDatos.value = {
         nombre: data.nombre || '',
@@ -649,44 +753,74 @@ const cargarDatosPersonales = async () => {
         email: data.email || '',
         telefono: data.telefono || '',
         observaciones: data.observaciones || '',
+        saldo_normal: data.saldo_normal || 0,
+        saldo_conversacion: data.saldo_conversacion || 0,
       };
     } else {
       formDatos.value.email = user.value.email || '';
     }
   } catch (error) {
-    console.error('Error cargando datos personales:', error);
+    console.error(error);
+  } finally {
+    cargandoSaldo.value = false;
   }
 };
 
-// Computed para verificar si es admin basándose en JWT
-const sessionToken = ref<string | null>(null);
-
 const esAdmin = computed(() => {
   if (!sessionToken.value) return false;
-
   try {
     const payload = jwtDecode<{ app_metadata?: { is_admin?: boolean } }>(sessionToken.value);
-    console.log('Payload del token:', payload);
     return Boolean(payload.app_metadata?.is_admin);
-  } catch (error) {
-    console.error('Error decodificando token:', error);
+  } catch {
     return false;
   }
 });
 
 const cargarSesion = async () => {
-  try {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    sessionToken.value = session?.access_token || null;
-  } catch (error) {
-    console.error('Error cargando sesión:', error);
-    sessionToken.value = null;
-  }
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  sessionToken.value = session?.access_token || null;
 };
 
 const cargarReservasPasadas = async () => {
+  if (!user.value?.id) return;
+  try {
+    const { data: antiguas } = await supabase
+      .from('reservas')
+      .select('*')
+      .eq('user_id', user.value.id)
+      .eq('estado', 'confirmada')
+      .lt('fecha', new Date().toISOString().split('T')[0])
+      .order('fecha', { ascending: false });
+
+    const { data: hoy } = await supabase
+      .from('reservas')
+      .select('*')
+      .eq('user_id', user.value.id)
+      .eq('estado', 'confirmada')
+      .eq('fecha', new Date().toISOString().split('T')[0]);
+
+    let pasadasHoy: Reserva[] = [];
+    if (hoy) {
+      const ahora = new Date();
+      pasadasHoy = hoy.filter((r) => {
+        const fechaClase = new Date(`${r.fecha}T${r.hora}`);
+        return fechaClase <= ahora;
+      });
+    }
+    const total = [...(antiguas || []), ...pasadasHoy];
+    reservasPasadas.value = total.sort((a, b) => {
+      return (
+        new Date(`${b.fecha}T${b.hora}`).getTime() - new Date(`${a.fecha}T${a.hora}`).getTime()
+      );
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const cargarReservasConfirmadas = async () => {
   if (!user.value?.id) return;
   try {
     const { data } = await supabase
@@ -694,73 +828,35 @@ const cargarReservasPasadas = async () => {
       .select('*')
       .eq('user_id', user.value.id)
       .eq('estado', 'confirmada')
-      .lt('fecha', new Date().toISOString().split('T')[0])
-      .order('fecha', { ascending: false })
-      .order('hora', { ascending: false });
-    reservasPasadas.value = data || [];
+      .gte('fecha', new Date().toISOString().split('T')[0]) // >= Hoy
+      .order('fecha', { ascending: true })
+      .order('hora', { ascending: true });
+
+    if (data) {
+      const ahora = new Date();
+      reservasConfirmadas.value = data.filter((r) => {
+        const fechaClase = new Date(`${r.fecha}T${r.hora}`);
+        return fechaClase > ahora; // Solo si es en el futuro
+      });
+    }
   } catch (error) {
     console.error(error);
   }
 };
-
-interface DatosUsuario {
-  nombre: string;
-  apellido1: string;
-  apellido2: string;
-  direccion: string;
-  codigoPostal: string;
-  ciudad: string;
-  pais: string | null;
-  nif: string;
-  email: string;
-  telefono: string;
-  observaciones: string;
-  [key: string]: string | null;
-}
-
-const formDatos = ref<DatosUsuario>({
-  nombre: '',
-  apellido1: '',
-  apellido2: '',
-  direccion: '',
-  codigoPostal: '',
-  ciudad: '',
-  pais: null,
-  nif: '',
-  email: '',
-  telefono: '',
-  observaciones: '',
-});
-const paises = [
-  'España',
-  'Portugal',
-  'Francia',
-  'Italia',
-  'Alemania',
-  'Reino Unido',
-  'Estados Unidos',
-  'México',
-  'Argentina',
-  'Colombia',
-  'Chile',
-  'Perú',
-];
 
 const irAPanelAdmin = async () => {
   await router.push('/Administracion');
 };
 
 const validarDatos = () => {
-  if (!formDatos.value.nombre || !formDatos.value.email) {
-    $q.notify({ type: 'warning', message: t('personal.faltanCamposObligatorios'), timeout: 3000 });
-  } else {
-    $q.notify({ type: 'positive', message: t('personal.datosValidos'), timeout: 3000 });
-  }
+  if (!formDatos.value.nombre || !formDatos.value.email)
+    $q.notify({ type: 'warning', message: t('personal.faltanCamposObligatorios') });
+  else $q.notify({ type: 'positive', message: t('personal.datosValidos') });
 };
 
 const enviarDatosPersonales = async () => {
   try {
-    const datosAEnviar = {
+    const datos = {
       user_id: user.value?.id,
       nombre: formDatos.value.nombre,
       apellido1: formDatos.value.apellido1,
@@ -774,17 +870,13 @@ const enviarDatosPersonales = async () => {
       telefono: formDatos.value.telefono,
       observaciones: formDatos.value.observaciones,
     };
-
     const { error } = await supabase
       .from('datos_usuarios')
-      .upsert([datosAEnviar], { onConflict: 'email' });
-
+      .upsert([datos], { onConflict: 'email' });
     if (error) throw error;
-
-    $q.notify({ type: 'positive', message: t('personal.datosGuardadosCorrectamente'), timeout: 3000 });
-  } catch (error) {
-    console.error('Error al guardar:', error);
-    $q.notify({ type: 'negative', message: t('personal.errorGuardandoDatos'), timeout: 3000 });
+    $q.notify({ type: 'positive', message: t('personal.datosGuardadosCorrectamente') });
+  } catch {
+    $q.notify({ type: 'negative', message: t('personal.errorGuardandoDatos') });
   }
 };
 
@@ -795,78 +887,31 @@ const limpiarFormulario = () => {
   formDatos.value.pais = null;
 };
 
-// Función para seleccionar menú
 const seleccionarMenu = (menu: string) => {
   menuActivo.value = menu;
   if (menu === 'historial') void cargarReservasPasadas();
   else if (menu === 'datos') void cargarDatosPersonales();
-  else if (menu === 'cursos') {
-    void cargarSuscripciones();
-  }
+  else if (menu === 'cursos') void cargarSuscripciones();
   if ($q.screen.lt.md) menuVisible.value = false;
 };
 
-// Resto de interfaces y funciones de reservas
-interface Reserva {
-  id: string;
-  user_id: string;
-  fecha: string;
-  hora: string;
-  estado: string;
-  created_at?: string;
-  tipo?: 'normal' | 'conversacion';
-  precio?: number;
-  stripe_payment_intent?: string;
-  meet_link?: string;
-}
-
 const diasSemanaMap: Record<string, Record<string, string>> = {
-  lunes: {
-    'es-ES': 'lunes',
-    'en-US': 'Monday',
-  },
-  martes: {
-    'es-ES': 'martes',
-    'en-US': 'Tuesday',
-  },
-  miercoles: {
-    'es-ES': 'miércoles',
-    'en-US': 'Wednesday',
-  },
-  miércoles: {
-    'es-ES': 'miércoles',
-    'en-US': 'Wednesday',
-  },
-  jueves: {
-    'es-ES': 'jueves',
-    'en-US': 'Thursday',
-  },
-  viernes: {
-    'es-ES': 'viernes',
-    'en-US': 'Friday',
-  },
-  sabado: {
-    'es-ES': 'sábado',
-    'en-US': 'Saturday',
-  },
-  sábado: {
-    'es-ES': 'sábado',
-    'en-US': 'Saturday',
-  },
-  domingo: {
-    'es-ES': 'domingo',
-    'en-US': 'Sunday',
-  },
+  lunes: { 'es-ES': 'lunes', 'en-US': 'Monday' },
+  martes: { 'es-ES': 'martes', 'en-US': 'Tuesday' },
+  miercoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
+  jueves: { 'es-ES': 'jueves', 'en-US': 'Thursday' },
+  viernes: { 'es-ES': 'viernes', 'en-US': 'Friday' },
+  sabado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
+  domingo: { 'es-ES': 'domingo', 'en-US': 'Sunday' },
 };
 
-const formatFecha = (fecha: string) => {
-  return new Date(fecha).toLocaleDateString(locale.value, {
+const formatFecha = (fecha: string) =>
+  new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
-};
 
 const traducirDiasSemana = (dias?: string[]) => {
   if (!dias || dias.length === 0) return '';
@@ -888,7 +933,7 @@ const formatHorarios = (horarios?: string[]) => {
       const m = Number(parts[1]);
       if (Number.isFinite(h) && Number.isFinite(m)) {
         const d = new Date();
-        d.setHours(h as number, m as number, 0, 0);
+        d.setHours(h, m, 0, 0);
         return d.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' });
       }
       return hora;
@@ -898,64 +943,11 @@ const formatHorarios = (horarios?: string[]) => {
 
 const getTipoClaseTexto = (reserva: Reserva): string =>
   reserva.tipo === 'normal' ? t('personal.claseNormal') : t('personal.claseConversacion');
-const getPrecioClase = (reserva: Reserva): number => (reserva.tipo === 'normal' ? 32 : 20);
-
-const puedeCancelar = (reserva: Reserva): boolean => {
-  const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
-  const ahora = new Date();
-  return (fechaReserva.getTime() - ahora.getTime()) / (1000 * 60 * 60) >= 72;
-};
-
-const cargarReservasConfirmadas = async () => {
-  if (!user.value?.id) return;
-  try {
-    const { data } = await supabase
-      .from('reservas')
-      .select('*')
-      .eq('user_id', user.value.id)
-      .eq('estado', 'confirmada')
-      .gte('fecha', new Date().toISOString().split('T')[0])
-      .order('fecha', { ascending: true })
-      .order('hora', { ascending: true });
-    reservasConfirmadas.value = data || [];
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const cancelarReserva = (reserva: Reserva) => {
-  $q.dialog({
-    title: t('personal.cancelarReserva'),
-    message: `${t('personal.confirmarCancelarReserva')} ${formatFecha(reserva.fecha)} a las ${reserva.hora.slice(0, 5)}? ${t('personal.seProcesaraReembolso')}`,
-    cancel: true,
-    persistent: true,
-  }).onOk(() => {
-    void (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke('cancel-reserva', {
-          body: { reservaId: reserva.id },
-        });
-        if (error || data?.error) throw new Error(error?.message || data?.error);
-        reservasConfirmadas.value = reservasConfirmadas.value.filter((r) => r.id !== reserva.id);
-        $q.notify({
-          type: 'positive',
-          message: data?.message || 'Reserva cancelada',
-          timeout: 5000,
-        });
-      } catch (err: unknown) {
-        $q.notify({
-          type: 'negative',
-          message: err instanceof Error ? err.message : 'Error al cancelar',
-          timeout: 6000,
-        });
-      }
-    })();
-  });
-};
 
 onMounted(() => {
   void cargarReservasConfirmadas();
   void cargarSesion();
+  void cargarDatosPersonales();
 });
 </script>
 
@@ -969,7 +961,7 @@ onMounted(() => {
   border-radius: 8px;
 }
 .menu-activo {
-  background-color: #fce4ec; /* Un tono suave de tu color primario */
+  background-color: #fce4ec;
   color: #851319;
   border-right: 3px solid #851319;
 }

@@ -6,19 +6,29 @@
       </p>
 
       <div class="col-12 col-md-5">
+        <div v-if="user" class="q-mb-lg">
+          <SaldoWallet
+            :saldo-normal="saldoNormal"
+            :saldo-conversacion="saldoConversacion"
+            :loading="cargandoSaldo"
+          />
+        </div>
+
         <div v-if="carrito.length > 0" class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2">
           <h5>🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
           <q-list>
             <q-item v-for="(reserva, index) in carrito" :key="index">
               <q-item-section>
-                <q-item-label
-                  >{{ formatFecha(reserva.fecha) }} {{ t('reservasClases.aLas') }}
-                  {{ reserva.hora }}</q-item-label
-                >
+                <q-item-label>
+                  {{ formatFecha(reserva.fecha) }} {{ t('reservasClases.aLas') }} {{ reserva.hora }}
+                </q-item-label>
                 <q-item-label caption>
-                  {{ reserva.tipo === 'normal' ? t('reservasClases.claseNormal') : t('reservasClases.conversacion') }} ({{
-                    reserva.tipo === 'normal' ? '32€' : '20€'
-                  }})
+                  {{
+                    reserva.tipo === 'normal'
+                      ? t('reservasClases.claseNormal')
+                      : t('reservasClases.conversacion')
+                  }}
+                  ({{ reserva.tipo === 'normal' ? '32€' : '20€' }})
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
@@ -28,6 +38,7 @@
                   @click="quitarDelCarrito(index)"
                   size="sm"
                   round
+                  flat
                 />
               </q-item-section>
             </q-item>
@@ -43,37 +54,41 @@
 
         <div class="q-mt-lg">
           <h5>{{ t('reservasClases.misReservasConfirmadas') }}</h5>
-          <q-list bordered v-if="misReservas.length > 0">
-            <q-item v-for="reserva in misReservas" :key="reserva.id" class="q-mb-sm">
+
+          <q-list bordered separator v-if="misReservas.length > 0" class="rounded-borders bg-white">
+            <q-item v-for="reserva in misReservas" :key="reserva.id" class="q-py-md">
+              <q-item-section avatar>
+                <q-avatar
+                  :color="reserva.tipo === 'conversacion' ? 'purple-1' : 'blue-1'"
+                  :text-color="reserva.tipo === 'conversacion' ? 'purple-8' : 'blue-8'"
+                  icon="event"
+                  size="md"
+                />
+              </q-item-section>
+
               <q-item-section>
-                <q-item-label
-                  >{{ formatFecha(reserva.fecha) }} {{ t('reservasClases.aLas') }}
-                  {{ reserva.hora.slice(0, 5) }}</q-item-label
-                >
-                <q-item-label caption
-                  >{{ getTipoClaseTexto(reserva) }} - {{ getPrecioClase(reserva) }}€</q-item-label
-                >
-                <q-item-label caption v-if="!puedeCancelar(reserva)" class="text-negative">
-                  {{ t('reservasClases.noSePuede') }}
+                <q-item-label class="text-weight-bold">
+                  {{ formatFecha(reserva.fecha) }}
+                </q-item-label>
+                <q-item-label caption class="text-grey-8">
+                  A las {{ reserva.hora.slice(0, 5) }} | {{ getTipoClaseTexto(reserva) }}
                 </q-item-label>
               </q-item-section>
+
               <q-item-section side>
-                <q-btn
-                  color="negative"
-                  icon="delete"
-                  @click="cancelarReserva(reserva)"
-                  size="sm"
-                  :disable="!puedeCancelar(reserva)"
-                  :title="
-                    !puedeCancelar(reserva)
-                      ? t('reservasClases.noSePuedeCancelar')
-                      : t('reservasClases.cancelarReserva')
-                  "
-                />
+                <q-badge color="positive" outline label="Reservada" />
               </q-item-section>
             </q-item>
           </q-list>
-          <p v-else class="text-grey q-mt-sm">{{ t('reservasClases.noTienesReservas') }}</p>
+
+          <div v-else class="text-grey q-mt-sm q-pa-md text-center border-dashed">
+            {{ t('reservasClases.noTienesReservas') }}
+          </div>
+
+          <div class="text-center q-mt-md text-caption text-grey">
+            * Para cancelar reservas, ve a tu
+            <router-link to="/AreaPersonal" class="text-primary">Área Personal</router-link>.
+          </div>
         </div>
       </div>
 
@@ -145,11 +160,21 @@
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useReservasClases } from 'src/composables/useReservasClases';
+import { supabase } from 'src/supabaseClient';
+import { useAuth } from 'src/stores/auth';
+import SaldoWallet from 'components/SaldoWallet.vue';
+
 import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
 
 const { t } = useI18n();
+const { user } = useAuth();
 const cargando = ref(true);
+
+// Variables saldo local
+const saldoNormal = ref(0);
+const saldoConversacion = ref(0);
+const cargandoSaldo = ref(false);
 
 const {
   fechaSeleccionada,
@@ -163,24 +188,50 @@ const {
   horariosDisponiblesFiltrados,
   opcionesFechasComputed,
   getTipoClaseTexto,
-  getPrecioClase,
   formatFecha,
   estaEnCarrito,
   agregarAlCarrito,
   quitarDelCarrito,
-  puedeCancelar,
-  cancelarReserva,
   inicializar,
 } = useReservasClases();
 
+const cargarSaldoUsuario = async () => {
+  if (!user.value?.id) return;
+  cargandoSaldo.value = true;
+  try {
+    const { data } = await supabase
+      .from('datos_usuarios')
+      .select('saldo_normal, saldo_conversacion')
+      .eq('user_id', user.value.id)
+      .single();
+
+    if (data) {
+      saldoNormal.value = data.saldo_normal || 0;
+      saldoConversacion.value = data.saldo_conversacion || 0;
+    }
+  } catch (e) {
+    console.error('Error cargando saldo:', e);
+  } finally {
+    cargandoSaldo.value = false;
+  }
+};
+
 onMounted(async () => {
   try {
-    await inicializar();
+    const promesas = [inicializar()];
+    if (user.value) promesas.push(cargarSaldoUsuario());
+    await Promise.all(promesas);
   } catch (e) {
     console.error('Error inicializando:', e);
   } finally {
-    // Quitamos el spinner tras intentar cargar
     cargando.value = false;
   }
 });
 </script>
+
+<style scoped>
+.border-dashed {
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+}
+</style>

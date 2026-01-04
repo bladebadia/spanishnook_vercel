@@ -2250,8 +2250,10 @@ const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) =
         fecha: fechaInicio,
         hora: horaInicio,
         nombreCurso: datosCurso.nombre_curso,
-        esCurso: true, // <--- CLAVE: Activa modo recurrente
-        duracionMinutos: 90, // 1h 30m
+        esCurso: true,
+        duracionMinutos: 90,
+        diasSemana: datosCurso.dias_semana,
+        fechaFin: datosCurso.fecha_fin || null,
       },
     });
 

@@ -1,6 +1,27 @@
 <template>
   <q-page class="q-pa-lg">
-    <h4>🛒 {{ t('carrito.carritoDeReservas') }}</h4>
+    <div class="row items-center justify-between q-mb-md">
+      <h4>🛒 {{ t('carrito.carritoDeReservas') }}</h4>
+
+      <div style="min-width: 250px" v-if="usuarioLogueado">
+        <SaldoWallet
+          :saldo-normal="saldoNormal"
+          :saldo-conversacion="saldoConversacion"
+          :loading="cargandoSaldo"
+        />
+
+        <div class="q-mt-sm text-right">
+          <q-checkbox
+            v-model="usarCreditosGlobal"
+            label="Utilizar créditos disponibles"
+            color="green"
+            dense
+            @update:model-value="recalcularAplicacionCreditos"
+            :disable="saldoNormal === 0 && saldoConversacion === 0"
+          />
+        </div>
+      </div>
+    </div>
 
     <div v-if="carrito.length === 0" class="text-center q-mt-xl">
       <q-icon name="shopping_cart" size="100px" color="grey-4" />
@@ -9,41 +30,57 @@
     </div>
 
     <div v-else>
-      <q-list bordered class="q-mb-lg">
+      <q-list bordered class="q-mb-lg separator">
         <q-item
           v-for="(reserva, index) in carrito"
           :key="index"
-          class="q-mb-sm"
+          class="q-py-md"
           :class="{ 'bg-negative-1': esReservaConflictiva(reserva) }"
         >
-          <q-item-section>
-            <q-item-label class="text-h6" :class="{ 'text-white': esReservaConflictiva(reserva) }">
-              {{ formatFecha(reserva.fecha) }} {{ t('carrito.aLas') }} {{ reserva.hora }}
-            </q-item-label>
-            <q-item-label caption :class="{ 'text-white': esReservaConflictiva(reserva) }">
-              {{
-                reserva.tipo === 'normal'
-                  ? t('carrito.claseNormal')
-                  : t('carrito.claseConversacion')
-              }}
-              -
-              {{ reserva.tipo === 'normal' ? '32€' : '20€' }}
-            </q-item-label>
-            <q-item-label v-if="esReservaConflictiva(reserva)" class="text-white">
-              ⚠️ {{ t('carrito.horaOcupada') }}
-            </q-item-label>
-          </q-item-section>
+          <div class="row full-width items-center justify-between">
+            <div class="col-grow">
+              <div class="text-h6" :class="{ 'text-white': esReservaConflictiva(reserva) }">
+                {{ formatFecha(reserva.fecha) }} - {{ reserva.hora }}
+              </div>
+              <div class="text-caption" :class="{ 'text-white': esReservaConflictiva(reserva) }">
+                {{
+                  reserva.tipo === 'normal'
+                    ? t('carrito.claseNormal')
+                    : t('carrito.claseConversacion')
+                }}
+                <span
+                  v-if="esReservaConflictiva(reserva)"
+                  class="text-white text-weight-bold q-ml-sm"
+                >
+                  ⚠️ {{ t('carrito.horaOcupada') }}
+                </span>
+              </div>
+            </div>
 
-          <q-item-section side>
-            <q-btn
-              color="negative"
-              icon="delete"
-              @click="quitarDelCarrito(index)"
-              round
-              flat
-              :class="{ 'text-white': esReservaConflictiva(reserva) }"
-            />
-          </q-item-section>
+            <div class="col-auto text-right flex items-center q-gutter-x-md">
+              <div v-if="!esReservaConflictiva(reserva)">
+                <div v-if="reserva.usarCredito" class="text-green text-weight-bold text-h6">
+                  0€
+                  <span class="text-caption text-grey strike-through">{{
+                    reserva.tipo === 'normal' ? '32€' : '20€'
+                  }}</span>
+                  <q-badge color="green" floating transparent rounded>CREDIT</q-badge>
+                </div>
+                <div v-else class="text-h6 text-primary">
+                  {{ reserva.tipo === 'normal' ? '32€' : '20€' }}
+                </div>
+              </div>
+
+              <q-btn
+                color="negative"
+                icon="delete"
+                @click="quitarDelCarrito(index)"
+                flat
+                round
+                :class="{ 'text-white': esReservaConflictiva(reserva) }"
+              />
+            </div>
+          </div>
         </q-item>
       </q-list>
 
@@ -51,45 +88,36 @@
         <h6>{{ t('carrito.resumenDelPedido') }}</h6>
         <div class="row justify-between items-center">
           <span>{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span>
-          <span class="text-h6 text-primary">{{ t('carrito.totalEstimado') }} {{ total }}€</span>
+
+          <div class="text-right">
+            <div class="text-h5 text-primary text-weight-bold">Total: {{ totalPagarDinero }}€</div>
+            <div v-if="totalGastarCreditos > 0" class="text-caption text-green">
+              (Se canjearán {{ totalGastarCreditos }} créditos)
+            </div>
+          </div>
         </div>
-        <div class="text-caption text-grey-7 q-mt-xs">
-          {{ totalNormal }} {{ t('carrito.claseNormal', { count: totalNormal }) }} + {{ totalConversacion }} {{ t('carrito.claseConversacion', { count: totalConversacion }) }}
-        </div>
+
         <div v-if="reservasConflictivas.length > 0" class="text-negative q-mt-sm">
-          ⚠️ {{ reservasConflictivas.length }} {{ t('carrito.reservaNoDisponible', { count: reservasConflictivas.length }) }}
+          ⚠️ {{ reservasConflictivas.length }}
+          {{ t('carrito.reservaNoDisponible', { count: reservasConflictivas.length }) }}
         </div>
       </div>
 
       <div class="row q-gutter-md justify-end">
         <q-btn color="grey" label="Seguir Reservando" to="/Reservas" outline />
+
         <q-btn
           color="primary"
-          :label="t('carrito.pagarYConfirmarReservas')"
-          @click="confirmarReservas"
+          :label="totalPagarDinero === 0 ? 'Confirmar Canje' : t('carrito.pagarYConfirmarReservas')"
+          @click="confirmarReservasHibridas"
           :disable="!usuarioLogueado || reservasConflictivas.length > 0"
           :loading="confirmando"
+          :icon="totalPagarDinero === 0 ? 'check_circle' : 'credit_card'"
         />
       </div>
 
       <q-banner v-if="!usuarioLogueado" class="bg-warning text-dark q-mt-md">
-        ⚠️{{t('carrito.debesIniciarSesion')}}
-      </q-banner>
-
-      <q-banner v-if="reservasConflictivas.length > 0" class="bg-negative text-white q-mt-md">
-        <template v-if="reservasConflictivas.length === 1 && reservasConflictivas[0]">
-          ⚠️ La hora {{ reservasConflictivas[0].hora }} del
-          {{ formatFecha(reservasConflictivas[0].fecha) }} {{t('carrito.horaOcupada')}}
-        </template>
-        <template v-else-if="reservasConflictivas.length > 1">
-          ⚠️ Las siguientes horas ya están ocupadas:
-          <ul class="q-mt-sm">
-            <li v-for="(reserva, index) in reservasConflictivas" :key="index">
-              {{ reserva.hora }} del {{ formatFecha(reserva.fecha) }}
-            </li>
-          </ul>
-          Por favor, elimínalas de tu carrito.
-        </template>
+        ⚠️ {{ t('carrito.debesIniciarSesion') }}
       </q-banner>
     </div>
   </q-page>
@@ -100,64 +128,223 @@ import { ref, computed, onMounted } from 'vue';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
+import SaldoWallet from 'components/SaldoWallet.vue';
+
 const { t, locale } = useI18n();
 const { user } = useAuth();
+const $q = useQuasar();
 
 interface ReservaCarrito {
   fecha: string;
   hora: string;
   tipo: 'normal' | 'conversacion';
+  usarCredito?: boolean;
+}
+
+interface OcupacionAnonima {
+  fecha: string;
+  hora: string;
 }
 
 const carrito = ref<ReservaCarrito[]>([]);
 const confirmando = ref(false);
 const reservasConflictivas = ref<ReservaCarrito[]>([]);
 
-// Computed properties
+// Saldos
+const saldoNormal = ref(0);
+const saldoConversacion = ref(0);
+const cargandoSaldo = ref(false);
+const usarCreditosGlobal = ref(false); // Checkbox único
+
 const usuarioLogueado = computed(() => !!user.value?.id);
 
-// Calcular total (Solo visual, el cobro real lo hace el backend)
-const total = computed(() => {
+// --- 1. CARGA INICIAL ---
+onMounted(async () => {
+  cargarCarrito();
+  if (user.value?.id) {
+    cargandoSaldo.value = true;
+    try {
+      const { data } = await supabase
+        .from('datos_usuarios')
+        .select('saldo_normal, saldo_conversacion')
+        .eq('user_id', user.value.id)
+        .single();
+
+      if (data) {
+        saldoNormal.value = data.saldo_normal || 0;
+        saldoConversacion.value = data.saldo_conversacion || 0;
+      }
+    } catch (e) {
+      console.error('Error cargando saldo', e);
+    } finally {
+      cargandoSaldo.value = false;
+    }
+  }
+  void verificarDisponibilidad();
+});
+
+// --- 2. LÓGICA DE DISTRIBUCIÓN AUTOMÁTICA ---
+const recalcularAplicacionCreditos = () => {
+  // 1. Limpiamos todo primero
+  carrito.value.forEach((item) => (item.usarCredito = false));
+
+  // Si el check está apagado, nos vamos (todo queda en false)
+  if (!usarCreditosGlobal.value) {
+    guardarCarrito();
+    return;
+  }
+
+  // 2. Contadores temporales para simular el gasto
+  let disponiblesNormal = saldoNormal.value;
+  let disponiblesConv = saldoConversacion.value;
+
+  // 3. Asignar créditos inteligentemente
+  carrito.value.forEach((item) => {
+    if (item.tipo === 'normal') {
+      if (disponiblesNormal > 0) {
+        item.usarCredito = true;
+        disponiblesNormal--;
+      }
+    } else if (item.tipo === 'conversacion') {
+      if (disponiblesConv > 0) {
+        item.usarCredito = true;
+        disponiblesConv--;
+      }
+    }
+  });
+
+  guardarCarrito();
+};
+
+// --- 3. TOTALES ---
+const totalPagarDinero = computed(() => {
   return carrito.value.reduce((sum, reserva) => {
+    if (reserva.usarCredito) return sum;
     return sum + (reserva.tipo === 'normal' ? 32 : 20);
   }, 0);
 });
 
-// Contadores por tipo
-const totalNormal = computed(() => {
-  return carrito.value.filter((reserva) => reserva.tipo === 'normal').length;
-});
+const totalGastarCreditos = computed(() => carrito.value.filter((c) => c.usarCredito).length);
 
-const totalConversacion = computed(() => {
-  return carrito.value.filter((reserva) => reserva.tipo === 'conversacion').length;
-});
+// --- 4. PAGO Y BASE DE DATOS ---
+const confirmarReservasHibridas = async () => {
+  if (!usuarioLogueado.value || reservasConflictivas.value.length > 0) return;
+  confirmando.value = true;
 
-// Verificar si una reserva es conflictiva
-const esReservaConflictiva = (reserva: ReservaCarrito) => {
-  return reservasConflictivas.value.some(
-    (conflictiva) => conflictiva?.fecha === reserva.fecha && conflictiva?.hora === reserva.hora,
-  );
+  try {
+    const itemsConCredito = carrito.value.filter((i) => i.usarCredito);
+    const itemsConTarjeta = carrito.value.filter((i) => !i.usarCredito);
+
+    // A. PAGAR CON CRÉDITOS
+    if (itemsConCredito.length > 0) {
+      for (const item of itemsConCredito) {
+        // SQL Directo
+        const { data, error } = await supabase.rpc('reservar_con_credito', {
+          p_user_id: user.value!.id,
+          p_tipo_clase: item.tipo,
+          p_fecha: item.fecha,
+          p_hora: item.hora,
+          p_precio: item.tipo === 'normal' ? 32 : 20,
+          p_meet_link: null,
+        });
+
+        if (error || !data.success) {
+          // Si el error es controlado (ej: "Ya reservado"), viene en data.message
+          throw new Error(data?.message || error?.message || 'Error desconocido');
+        }
+
+        // Generar Meet en segundo plano
+        const nuevaReservaId = data.reserva_id;
+        if (nuevaReservaId) {
+          await supabase.functions.invoke('crear-meet', {
+            body: { reservaId: nuevaReservaId },
+          });
+        }
+      }
+    }
+
+    // B. PAGAR CON TARJETA
+    if (itemsConTarjeta.length > 0) {
+      await irAStripe(itemsConTarjeta);
+    } else {
+      $q.notify({ type: 'positive', message: '¡Reservas confirmadas!' });
+      carrito.value = [];
+      guardarCarrito();
+      window.location.href = '/AreaPersonal';
+    }
+  } catch (err: unknown) {
+    console.error('Error pago:', err);
+    const mensaje = err instanceof Error ? err.message : 'Error procesando la reserva';
+    $q.notify({ type: 'negative', message: mensaje });
+  } finally {
+    confirmando.value = false;
+  }
 };
 
-// Cargar carrito desde localStorage
+const irAStripe = async (items: ReservaCarrito[]) => {
+  // IMPORTANTE: Aquí NO cambiamos nada del código anterior de Stripe
+  // Se usa la misma lógica: Metadata + Redirección
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const token = session?.access_token;
+
+  const reservasMetadata = items.map((r) => ({
+    fecha: r.fecha,
+    hora: r.hora,
+    tipo: r.tipo,
+  }));
+
+  const res = await fetch('https://zleqsdfpjepdangitcxv.supabase.co/functions/v1/stripe-webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({
+      reservas: reservasMetadata,
+      user_id: user.value!.id,
+      user_email: user.value?.email,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || 'Error conectando con Stripe');
+  }
+
+  const responseData = await res.json();
+  if (!responseData.url) throw new Error('No se obtuvo URL de Stripe');
+
+  window.location.href = responseData.url;
+};
+
+// --- UTILIDADES ---
 const cargarCarrito = () => {
   const carritoGuardado = localStorage.getItem('carritoReservas');
   if (carritoGuardado) {
     try {
       carrito.value = JSON.parse(carritoGuardado);
-    } catch (error) {
-      console.error('Error parsing carrito:', error);
+    } catch {
       carrito.value = [];
     }
   }
 };
 
-// Guardar carrito en localStorage
 const guardarCarrito = () => {
   localStorage.setItem('carritoReservas', JSON.stringify(carrito.value));
 };
 
-// Formatear fecha
+const quitarDelCarrito = (index: number) => {
+  const reservaEliminada = carrito.value[index];
+  carrito.value.splice(index, 1);
+  recalcularAplicacionCreditos(); // IMPORTANTE: Recalcular si borran algo
+
+  if (reservaEliminada) {
+    reservasConflictivas.value = reservasConflictivas.value.filter(
+      (c) => c && !(c.fecha === reservaEliminada.fecha && c.hora === reservaEliminada.hora),
+    );
+  }
+};
+
 const formatFecha = (fecha: string) => {
   return new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
@@ -167,25 +354,7 @@ const formatFecha = (fecha: string) => {
   });
 };
 
-// Quitar reserva del carrito
-const quitarDelCarrito = (index: number) => {
-  if (index < 0 || index >= carrito.value.length) return;
-
-  const reservaEliminada = carrito.value[index];
-  if (!reservaEliminada) return;
-
-  carrito.value.splice(index, 1);
-  guardarCarrito();
-
-  // Eliminar también de las conflictivas si estaba ahí
-  reservasConflictivas.value = reservasConflictivas.value.filter(
-    (conflictiva) =>
-      conflictiva &&
-      !(conflictiva.fecha === reservaEliminada.fecha && conflictiva.hora === reservaEliminada.hora),
-  );
-};
-
-// Verificar disponibilidad de TODAS las reservas
+// RPC Segura para ver ocupación
 const verificarDisponibilidad = async () => {
   try {
     if (carrito.value.length === 0) {
@@ -193,104 +362,43 @@ const verificarDisponibilidad = async () => {
       return;
     }
 
-    const horasParaVerificar = carrito.value.map((reserva) => ({
-      fecha: reserva.fecha,
-      hora: reserva.hora + ':00',
-    }));
-
-    const { data: reservasOcupadas, error } = await supabase
-      .from('reservas')
-      .select('fecha, hora')
-      .eq('estado', 'confirmada')
-      .in('fecha', [...new Set(horasParaVerificar.map((h) => h.fecha))])
-      .in('hora', [...new Set(horasParaVerificar.map((h) => h.hora))]);
-
+    const { data: todasOcupadas, error } = await supabase.rpc('obtener_ocupacion');
     if (error) throw error;
 
-    reservasConflictivas.value =
-      carrito.value.filter((reserva) => {
-        const horaBD = reserva.hora + ':00';
-        return reservasOcupadas?.some(
-          (ocupada) => ocupada?.fecha === reserva.fecha && ocupada?.hora === horaBD,
-        );
-      }) || [];
+    const ocupacionReal = (todasOcupadas || []) as OcupacionAnonima[];
+    reservasConflictivas.value = carrito.value.filter((itemCarrito) => {
+      return ocupacionReal.some((ocupada) => {
+        const horaOcupada = ocupada.hora.substring(0, 5);
+        return ocupada.fecha === itemCarrito.fecha && horaOcupada === itemCarrito.hora;
+      });
+    });
   } catch (error) {
     console.error('Error verificando disponibilidad:', error);
-    alert('Error al verificar disponibilidad. Por favor, intenta nuevamente.');
   }
 };
 
-// --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
-// Confirmar reservas y crear sesión de Stripe (Seguro)
-const confirmarReservas = async () => {
-  if (!usuarioLogueado.value || reservasConflictivas.value.length > 0) return;
-  confirmando.value = true;
-
-  try {
-    // 1. Preparamos solo los metadatos necesarios
-    // Ya NO enviamos precios ni line_items desde aquí por seguridad
-    const reservasMetadata = carrito.value.map((r) => ({
-      fecha: r.fecha,
-      hora: r.hora,
-      tipo: r.tipo,
-    }));
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    if (!token) throw new Error('Usuario no autenticado');
-
-    // 2. Llamamos a la Edge Function
-    const res = await fetch(
-      'https://zleqsdfpjepdangitcxv.supabase.co/functions/v1/stripe-webhook',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          reservas: reservasMetadata,
-          user_id: user.value!.id,
-          user_email: user.value?.email, // <--- ¡AQUÍ ES DONDE TIENE QUE IR!
-        }),
-      },
-    );
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.error || 'Error al crear la sesión de pago');
-    }
-
-    const responseData = await res.json();
-    if (!responseData.url) throw new Error('No se pudo obtener la URL de Stripe Checkout');
-
-    // 3. Redirigimos a Stripe
-    window.location.href = responseData.url;
-  } catch (err: unknown) {
-    let mensaje = 'Error al confirmar reservas';
-    if (err instanceof Error) mensaje = err.message;
-    console.error('❌ Error:', err);
-    alert(mensaje);
-  } finally {
-    confirmando.value = false;
-  }
+const esReservaConflictiva = (reserva: ReservaCarrito) => {
+  return reservasConflictivas.value.some(
+    (c) => c.fecha === reserva.fecha && c.hora === reserva.hora,
+  );
 };
-
-onMounted(() => {
-  cargarCarrito();
-  void verificarDisponibilidad();
-});
 </script>
 
 <style scoped>
 .bg-negative-1 {
   background-color: #851319;
 }
-
 .text-h6 {
   font-weight: 500;
 }
-
 .text-white {
   color: white !important;
+}
+.strike-through {
+  text-decoration: line-through;
+}
+/* Separador sutil entre items */
+.separator > div:not(:last-child) {
+  border-bottom: 1px solid #eeeeee;
 }
 </style>

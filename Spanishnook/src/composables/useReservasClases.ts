@@ -12,6 +12,11 @@ export interface ReservaCarrito {
   tipo: 'normal' | 'conversacion';
 }
 
+interface OcupacionAnonima {
+  fecha: string;
+  hora: string;
+}
+
 export interface ReservaConfirmada {
   id: string;
   user_id: string;
@@ -143,11 +148,31 @@ const fechaMaxima = computed<string>(() => {
     } catch (e) { console.error(e); }
   };
 
-  const cargarReservasExistentes = async () => {
+const cargarReservasExistentes = async () => {
     try {
-      const { data } = await supabase.from('reservas').select('*').eq('estado', 'confirmada');
-      reservasExistentes.value = data || [];
-    } catch (e) { console.error(e); }
+      const { data, error } = await supabase.rpc('obtener_ocupacion');
+      
+      if (error) throw error;
+
+      if (data) {
+        const ocupacion = data as OcupacionAnonima[];
+
+        reservasExistentes.value = ocupacion.map((item) => ({
+          id: 'anonimo',       
+          user_id: 'oculto',  
+          estado: 'confirmada',
+          fecha: item.fecha,
+          hora: item.hora,
+          tipo: 'normal', 
+          precio: 0
+        }));
+      } else {
+        reservasExistentes.value = [];
+      }
+      
+    } catch (e) { 
+      console.error('Error cargando ocupación:', e); 
+    }
   };
 
   const cargarCursosGrupales = async () => {
