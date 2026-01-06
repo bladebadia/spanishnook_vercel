@@ -123,12 +123,66 @@
     <div class="row flex q-my-xl" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-center">
+          <div class="titulo-responsivo text-justify-center">
             {{ $t('NuestrasClases.nuestrasClasesConversacion') }}
           </div>
-          <p class="texto-responsivo">
-            {{ $t('NuestrasClases.textoNuestrosGruposFormativos') }}
-          </p>
+          <div>
+            <p class="texto-responsivo text-justify">
+              {{ $t('NuestrasClases.tePasaQue') }}
+            </p>
+            <p class="texto-responsivo text-justify">
+              {{ $t('NuestrasClases.esteCursoEsParaTi') }}
+            </p>
+            <p class="texto-responsivo text-justify">
+              {{ $t('NuestrasClases.cadaSemanaNos') }}
+            </p>
+            <p class="texto-responsivo text-justify">
+              {{ $t('NuestrasClases.aquiHablamos') }}
+            </p>
+            <p class="texto-responsivo text-justify">
+              {{ $t('NuestrasClases.esUnPrograma') }}
+            </p>
+            <p class="texto-responsivo text-justify">
+              {{ $t('NuestrasClases.uneteALa') }}
+            </p>
+          </div>
+
+          <q-expansion-item
+            :label="$t('NuestrasClases.TextoNuestrosCursosGrupo1')"
+            header-class="bg-primary text-white subtitulo-responsivo"
+            class="q-my-xl"
+          >
+            <q-card>
+              <q-card-section class="texto-responsivo text-justify">
+                <ul class="q-pl-md text-justify">
+                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos1')"></li>
+                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos2')"></li>
+                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos3')"></li>
+                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos4')"></li>
+                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos5')"></li>
+                </ul>
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+
+          <q-expansion-item
+            :label="$t('NuestrasClases.queLograras')"
+            header-class="bg-primary text-white subtitulo-responsivo"
+            class="q-my-lg"
+          >
+            <q-card>
+              <q-card-section class="texto-responsivo text-justify">
+                <ul class="q-pl-md">
+                  <li v-html="$t('NuestrasClases.Logro1Grupales')"></li>
+                  <li v-html="$t('NuestrasClases.Logro2Grupales')"></li>
+                  <li v-html="$t('NuestrasClases.Logro3Grupales')"></li>
+                  <li v-html="$t('NuestrasClases.Logro4Grupales')"></li>
+                  <li v-html="$t('NuestrasClases.Logro5Grupales')"></li>
+                  <li v-html="$t('NuestrasClases.Logro6Grupales')"></li>
+                </ul>
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
         </q-card>
       </div>
     </div>
@@ -148,6 +202,7 @@
         :price="curso.price"
         :original-price="curso.originalPrice"
         :button-link="curso.buttonLink"
+        :fecha-inicio="curso.fechaInicio"
       />
     </div>
 
@@ -180,12 +235,59 @@
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-center">
-            {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
-          </div>
-          <p class="texto-responsivo">
-            {{ $t('NuestrasClases.aprendeEspanolATuRitmo') }}
-          </p>
+          <q-card-section class="q-pt-lg">
+            <div class="titulo-responsivo text-center">
+              {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
+            </div>
+            <p class="texto-responsivo text-justify q-mb-none">
+              {{ $t('NuestrasClases.IntroIndividuales') }}
+            </p>
+          </q-card-section>
+
+          <q-separator spaced />
+
+          <q-card-section>
+            <div class="subtitulo-responsivo text-left q-mb-md">
+              {{ $t('NuestrasClases.Modalidades') }}
+            </div>
+            <div class="row q-col-gutter-md">
+              <div class="col-12 col-md-6">
+                <div class="modalidad-card">
+                  <div class="subtitulo-responsivo text-center q-mb-sm">
+                    {{ $t('NuestrasClases.Modalidad1') }}
+                  </div>
+                  <p class="texto-responsivo text-justify q-mb-none">
+                    {{ $t('NuestrasClases.TextoModalidad1') }}
+                  </p>
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="modalidad-card">
+                  <div class="subtitulo-responsivo text-center q-mb-sm">
+                    {{ $t('NuestrasClases.Modalidad2') }}
+                  </div>
+                  <p class="texto-responsivo text-justify q-mb-none">
+                    {{ $t('NuestrasClases.TextoModalidad2') }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </q-card-section>
+
+          <q-separator spaced />
+
+          <q-card-section>
+            <div class="subtitulo-responsivo text-left q-mb-md">
+              {{ $t('NuestrasClases.TextoComoFuncionanIndividuales') }}
+            </div>
+            <ul class="texto-responsivo text-justify q-pl-md lista-funcionamiento">
+              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd1') }}</li>
+              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd2') }}</li>
+              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd3') }}</li>
+              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd4') }}</li>
+              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd5') }}</li>
+            </ul>
+          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -279,6 +381,7 @@ const cursosPromo = ref<
     price: string;
     originalPrice: string;
     buttonLink: string;
+    fechaInicio: string;
   }>
 >([]);
 
@@ -352,7 +455,8 @@ async function cargarCursosPromo(): Promise<void> {
       precio_curso,
       precio_original,
       usuarios,
-      max_estudiantes
+      max_estudiantes,
+      fecha_inicio
     `,
     )
     .eq('visibilidad', true)
@@ -365,7 +469,7 @@ async function cargarCursosPromo(): Promise<void> {
 
   // Filtrar además por estados activos
   const visibles = (data ?? []).filter((c) =>
-    ['Activo', 'En reserva', 'Completo'].includes(c.estado_curso ?? 'Activo'),
+    ['Activo', 'Completo', 'Lista de espera'].includes(c.estado_curso ?? 'Activo'),
   );
 
   cursosPromo.value = visibles.map((c) => {
@@ -375,7 +479,7 @@ async function cargarCursosPromo(): Promise<void> {
 
     let buttonLink = '';
 
-    if (estadoCurso === 'En reserva' || estadoCurso === 'Completo') {
+    if (estadoCurso === 'Completo' || estadoCurso === 'Lista de espera') {
       buttonLink = `/ReservasCursos?id=${c.id}`;
     } else if (estadoCurso === 'Activo') {
       if (numUsuarios >= maxEstudiantes) {
@@ -400,6 +504,7 @@ async function cargarCursosPromo(): Promise<void> {
       price: c.precio_curso ?? '',
       originalPrice: c.precio_original ?? '',
       buttonLink,
+      fechaInicio: c.fecha_inicio ?? '',
     };
   });
 }
@@ -473,5 +578,21 @@ watch(
     text-align: center;
     min-width: 140px;
   }
+}
+
+.modalidad-card {
+  background: #f7f7f7;
+  border-radius: 12px;
+  padding: 16px;
+  height: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.lista-funcionamiento {
+  line-height: 1.6;
+}
+
+.lista-funcionamiento li + li {
+  margin-top: 6px;
 }
 </style>

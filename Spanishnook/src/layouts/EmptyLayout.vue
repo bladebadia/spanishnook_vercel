@@ -190,9 +190,17 @@
       />
     </q-page-sticky>
     <q-footer class="bg-black text-white">
-      <q-bar class="q-pa-none q-ma-none">
-        <div class="foot-link q-mr-lg q-mb-xs">{{ $t('footerDerechosReservados') }}</div>
-      </q-bar>
+      <div class="footer-legal-bar">
+        <div class="footer-legal-text">{{ $t('footerDerechosReservados') }}</div>
+        <div class="footer-legal-links">
+          <router-link to="/Aviso" class="foot-link">{{ $t('footerAvisoLegal') }}</router-link>
+          <router-link to="/Privacidad" class="foot-link">{{ $t('footerPrivacidad') }}</router-link>
+          <router-link to="/Cookies" class="foot-link">{{ $t('footerCookies') }}</router-link>
+          <router-link to="/Condiciones" class="foot-link">{{
+            $t('footerCondiciones')
+          }}</router-link>
+        </div>
+      </div>
     </q-footer>
   </q-layout>
 </template>
@@ -204,7 +212,6 @@ import { useI18n } from 'vue-i18n';
 import { useAuth } from 'src/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
-
 
 const { user } = useAuth();
 const { locale, t } = useI18n();
@@ -712,6 +719,57 @@ const cerrarSesion = async () => {
     &:hover {
       transform: scale(1.05); /* En móvil, solo escalar en lugar de mover */
     }
+  }
+}
+
+.footer-legal-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #000;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-legal-text {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Pantallas grandes (>= 1025px): una sola fila */
+@media (min-width: 1025px) {
+  .footer-legal-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+  }
+
+  .footer-legal-text {
+    text-align: left;
+    width: auto;
+  }
+
+  .footer-legal-links {
+    gap: 80px;
+    justify-content: flex-end;
+    width: auto;
   }
 }
 </style>

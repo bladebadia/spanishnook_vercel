@@ -26,6 +26,9 @@
       <q-card-section class="title subtitulo-responsivo">
         {{ title }}
       </q-card-section>
+      <q-card-section v-if="fechaInicio" class="fecha-inicio text-caption text-grey-8">
+        {{ $t('NuestrasClases.inicio') }}: {{ formatFecha(fechaInicio) }}
+      </q-card-section>
       <q-card-section class="description texto-responsivo">
         <div v-html="formattedDescription"></div>
       </q-card-section>
@@ -46,6 +49,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 //import { useRoute } from 'vue-router';
 import '../css/pages/EstilosGenerales.css';
 
@@ -63,6 +67,7 @@ interface Props {
   showPrice?: boolean;
   price?: string;
   originalPrice?: string;
+  fechaInicio?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,6 +82,8 @@ const emit = defineEmits<{
   buttonClick: [];
 }>();
 
+const { locale } = useI18n();
+
 const handleButtonClick = () => {
   emit('buttonClick');
 };
@@ -89,6 +96,15 @@ const computedImageStyle = computed(() => {
 const formattedDescription = computed(() => {
   return props.description.replace(/\n/g, '<br>');
 });
+
+const formatFecha = (fecha: string): string => {
+  if (!fecha) return '';
+  const date = new Date(fecha);
+  if (isNaN(date.getTime())) return fecha;
+  return new Intl.DateTimeFormat(locale.value || 'es-ES', {
+    dateStyle: 'long',
+  }).format(date);
+};
 
 const onImageError = (event: Event) => {
   const target = event.target as HTMLImageElement;

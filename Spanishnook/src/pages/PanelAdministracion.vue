@@ -224,7 +224,7 @@
 
               <!-- Formulario de configuración -->
               <div class="row q-col-gutter-md">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                   <q-select
                     v-model="configuracion.tipoDia"
                     :options="opcionesTipoDia"
@@ -237,7 +237,7 @@
                 </div>
 
                 <!-- SELECTOR DE HORARIOS MÚLTIPLE -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                   <q-select
                     v-model="configuracion.horariosSeleccionados"
                     :options="todosLosHorarios"
@@ -248,15 +248,6 @@
                     stack-label
                     clearable
                     placeholder="Selecciona horarios"
-                  />
-                </div>
-
-                <div class="col-12 col-md-4">
-                  <q-select
-                    v-model="configuracion.estado"
-                    :options="['Habilitado', 'Deshabilitado', 'Pendiente']"
-                    label="Estado"
-                    filled
                   />
                 </div>
               </div>
@@ -515,20 +506,6 @@
                       <q-input
                         v-model="cursoFormulario.fecha_inicio"
                         label="Fecha inicio"
-                        type="date"
-                        filled
-                        dense
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="event" />
-                        </template>
-                      </q-input>
-                    </div>
-
-                    <div class="col-12 col-md-2">
-                      <q-input
-                        v-model="cursoFormulario.fecha_fin"
-                        label="Fecha fin"
                         type="date"
                         filled
                         dense
@@ -908,16 +885,6 @@
                     />
                   </div>
 
-                  <div class="col-12 col-md-3">
-                    <q-input
-                      v-model="cursoFormulario.fecha_fin"
-                      label="Fecha fin"
-                      type="date"
-                      filled
-                    />
-                  </div>
-
-                  <!-- Días y horarios -->
                   <div class="col-12 col-md-3">
                     <q-select
                       v-model="cursoFormulario.dias_semana"
@@ -1461,7 +1428,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
@@ -1482,7 +1449,6 @@ interface EntradaCalendario {
   id?: number;
   tipo_dia: string;
   horario: string | null;
-  estado: string;
   fecha: string;
   fecha_text: string;
   created_at?: string;
@@ -1491,7 +1457,6 @@ interface EntradaCalendario {
 
 interface Configuracion {
   tipoDia: string;
-  estado: string;
   horariosSeleccionados: string[];
 }
 
@@ -1507,7 +1472,6 @@ interface CursoGrupal {
   nombre_curso: string;
   estado_curso: string;
   fecha_inicio?: string;
-  fecha_fin?: string;
   horarios_curso?: string[];
   dias_semana?: string[];
   descripcion?: string;
@@ -1556,13 +1520,13 @@ const cursoExpandido = ref<number | null>(null);
 const dialogNuevoCurso = ref<boolean>(false);
 const editandoCurso = ref<boolean>(false);
 const guardandoCurso = ref<boolean>(false);
+const cargandoConfiguracion = ref<boolean>(false);
 
 const cursoFormulario = ref<CursoGrupal>({
   codigo_curso: '',
   nombre_curso: '',
-  estado_curso: 'Activo',
+  estado_curso: 'Lista de espera',
   fecha_inicio: '',
-  fecha_fin: '',
   dias_semana: [],
   horarios_curso: [],
   descripcion: '',
@@ -1600,7 +1564,7 @@ const horariosDisponibles = [
 ];
 
 const nivelesDisponibles = ['Principiante', 'Elemental', 'Intermedio', 'Avanzado', 'Nativo'];
-const estadosCurso = ['Activo', 'En reserva', 'Finalizado', 'Completo', 'En preparación'];
+const estadosCurso = ['Activo', 'Completo', 'Lista de espera'];
 const reservasActivas = ref<Reserva[]>([]);
 const reservaSeleccionada = ref<Reserva | null>(null);
 const dialogDetalleReserva = ref(false);
@@ -1627,7 +1591,6 @@ const reservaFormulario = ref<Reserva>({
 // Configuración
 const configuracion = ref<Configuracion>({
   tipoDia: '',
-  estado: 'Habilitado',
   horariosSeleccionados: [],
 });
 
@@ -1792,24 +1755,28 @@ const seleccionarDia = (fecha: Date | null): void => {
     fechasSeleccionadas.value = [fechaStr];
   }
 
-  cargarConfiguracionAutomatica();
+  void cargarConfiguracionAutomatica();
 };
 
-const cargarConfiguracionAutomatica = (): void => {
+const cargarConfiguracionAutomatica = async (): Promise<void> => {
   if (fechasSeleccionadas.value.length === 0) {
     limpiarSeleccion();
     return;
   }
 
+  cargandoConfiguracion.value = true;
+
   if (fechasSeleccionadas.value.length === 1) {
     const fechaStr = fechasSeleccionadas.value[0];
-    if (!fechaStr) return;
+    if (!fechaStr) {
+      cargandoConfiguracion.value = false;
+      return;
+    }
 
     const entradaExistente = datosCalendario.value.find((item) => item.fecha === fechaStr);
 
     if (entradaExistente) {
       configuracion.value.tipoDia = entradaExistente.tipo_dia;
-      configuracion.value.estado = entradaExistente.estado;
 
       if (entradaExistente.horario) {
         try {
@@ -1819,25 +1786,39 @@ const cargarConfiguracionAutomatica = (): void => {
               .split(',')
               .map((h) => h.trim().replace(/"/g, ''))
               .filter((h) => h.length > 0);
+          } else if (Array.isArray(entradaExistente.horario)) {
+            // Si viene como array directamente de Supabase
+            configuracion.value.horariosSeleccionados = [...entradaExistente.horario];
           } else {
             configuracion.value.horariosSeleccionados = [];
           }
-        } catch {
-          //noop
+          console.log(
+            '✅ Horarios cargados para',
+            fechaStr,
+            '(',
+            entradaExistente.tipo_dia,
+            '):',
+            configuracion.value.horariosSeleccionados,
+          );
+        } catch (e) {
+          console.error('❌ Error parseando horarios:', e);
+          configuracion.value.horariosSeleccionados = [];
         }
       } else {
+        console.log('⚠️ Día sin horarios:', fechaStr, entradaExistente.tipo_dia);
         configuracion.value.horariosSeleccionados = [];
       }
     } else {
       configuracion.value.tipoDia = 'laborable';
-      configuracion.value.estado = 'Habilitado';
       configuracion.value.horariosSeleccionados = [...todosLosHorarios];
     }
   } else {
     configuracion.value.tipoDia = 'laborable';
-    configuracion.value.estado = 'Habilitado';
     configuracion.value.horariosSeleccionados = [...todosLosHorarios];
   }
+
+  await nextTick();
+  cargandoConfiguracion.value = false;
 };
 
 // Clases CSS
@@ -1931,7 +1912,6 @@ const limpiarSeleccion = (): void => {
   fechasSeleccionadas.value = [];
   configuracion.value = {
     tipoDia: '',
-    estado: 'Habilitado',
     horariosSeleccionados: [],
   };
 };
@@ -1970,7 +1950,6 @@ const grabarSeleccion = async (): Promise<void> => {
         fecha: fecha,
         fecha_text: formatFechaDisplay(fecha),
         tipo_dia: configuracion.value.tipoDia,
-        estado: configuracion.value.estado,
         horario: horariosArray,
         updated_at: new Date().toISOString(),
       };
@@ -2191,9 +2170,8 @@ const abrirDialogNuevoCurso = (): void => {
   cursoFormulario.value = {
     codigo_curso: '',
     nombre_curso: '',
-    estado_curso: 'Activo',
+    estado_curso: 'Lista de espera',
     fecha_inicio: '',
-    fecha_fin: '',
     dias_semana: [],
     horarios_curso: [],
     descripcion: '',
@@ -2253,7 +2231,6 @@ const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) =
         esCurso: true,
         duracionMinutos: 90,
         diasSemana: datosCurso.dias_semana,
-        fechaFin: datosCurso.fecha_fin || null,
       },
     });
 
@@ -2301,7 +2278,6 @@ const guardarCurso = async (): Promise<void> => {
       nombre_curso: cursoFormulario.value.nombre_curso,
       estado_curso: cursoFormulario.value.estado_curso,
       fecha_inicio: cursoFormulario.value.fecha_inicio || null,
-      fecha_fin: cursoFormulario.value.fecha_fin || null,
       dias_semana: Array.isArray(cursoFormulario.value.dias_semana)
         ? cursoFormulario.value.dias_semana
         : [],
@@ -2531,12 +2507,8 @@ const getColorEstado = (estado: string): string => {
       return 'positive';
     case 'Completo':
       return 'blue';
-    case 'Finalizado':
-      return 'grey-7';
-    case 'En reserva':
-      return 'orange';
-    case 'En preparación':
-      return 'purple';
+    case 'Lista de espera':
+      return 'cyan';
     default:
       return 'grey';
   }
@@ -2740,7 +2712,9 @@ watch(
   () => configuracion.value.tipoDia,
   (nuevoTipo, tipoAnterior) => {
     if (nuevoTipo === tipoAnterior) return;
+    if (cargandoConfiguracion.value) return; // No interferir durante carga de BD
 
+    // Solo auto-rellenar horarios cuando el usuario cambia manualmente el tipo
     if (nuevoTipo === 'laborable') {
       configuracion.value.horariosSeleccionados = [...todosLosHorarios];
     } else if (nuevoTipo === 'festivo' || nuevoTipo === 'especial') {
