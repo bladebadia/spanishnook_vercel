@@ -211,50 +211,36 @@
           <div class="footer-links-container q-px-none q-mx-none">
             <router-link to="/" class="foot-link">{{ $t('inicio') }}</router-link>
 
-            <router-link to="/ClasesGrupales" class="foot-link">{{
-              $t('clasesGrupales')
-            }}</router-link>
-
-            <router-link to="/ClasesIndividuales" class="foot-link">{{
-              $t('clasesIndividuales')
+            <router-link to="/Clases" class="foot-link">{{
+              $t('nuestrasClases')
             }}</router-link>
 
             <router-link to="/TestNivel" class="foot-link">{{ $t('testNivel') }}</router-link>
 
             <router-link to="/sobreSpanish" class="foot-link">{{ $t('sobre') }}</router-link>
 
-            <router-link to="/Contacto" class="foot-link">{{ $t('contacto') }}</router-link>
-
-            <router-link to="/Aviso" class="foot-link">{{ $t('footerAvisoLegal') }}</router-link>
-
-            <router-link to="/Privacidad" class="foot-link">{{
-              $t('footerPrivacidad')
-            }}</router-link>
-
-            <router-link to="/Cookies" class="foot-link">{{ $t('footerCookies') }}</router-link>
-
-            <router-link to="/Condiciones" class="foot-link">{{
-              $t('footerCondiciones')
-            }}</router-link>
+            <router-link to="/Contacto" class="foot-link">{{ $t('contacto') }}</router-link>        
           </div>
         </div>
         <!-- Columna Enlaces de interés -->
-        <div v-if="$q.screen.gt.sm" class="col-12 col-md-3 flex column">
-          <div c>
-            <p class="text-bold items-center footer-titulo q-ma-none">
+        <div v-if="$q.screen.gt.sm" class="col-12 col-md-3 flex column items-center">
+          <div class="text-bold q-mx-xs">
+            <p class="text-bold items-center footer-titulo ">
               {{ $t('footerEnlacesInteres') }}
             </p>
           </div>
-          <a
-            href="https://www.cervantes.es/"
-            target="_blank"
-            rel="noopener"
-            class="foot-link q-mt-md"
-            >{{ $t('footerInstitutoCervantes') }}</a
-          >
-          <a href="https://www.rae.es/" target="_blank" rel="noopener" class="foot-link">RAE</a>
-          <a href="https://www.dele.org/" target="_blank" rel="noopener" class="foot-link">DELE</a>
-          <div class="q-ma-none q-pa-none q-pt-lg">
+          <div class="footer-links-container q-px-none q-mx-none text-center">
+            <a
+              href="https://www.cervantes.es/"
+              target="_blank"
+              rel="noopener"
+              class="foot-link q-mt-md"
+              >{{ $t('footerInstitutoCervantes') }}
+            </a>
+            <a href="https://www.rae.es/" target="_blank" rel="noopener" class="foot-link">RAE</a>
+            <a href="https://www.dele.org/" target="_blank" rel="noopener" class="foot-link">DELE</a>
+          </div>
+          <div class=" q-pt-lg">
             <p class="text-bold footer-titulo items-center q-pa-none q-my-none">
               {{ $t('footerRedes') }}
             </p>
@@ -282,8 +268,14 @@
           </div>
         </div>
       </div>
-      <q-bar class="q-pa-none q-ma-none">
-        <div class="foot-link q-mr-lg q-mb-xs">{{ $t('footerDerechosReservados') }}</div>
+      <q-bar class="footer-legal-bar">
+        <div class="foot-link footer-legal-text">{{ $t('footerDerechosReservados') }}</div>
+        <div class=" items-center footer-legal-links">
+          <router-link to="/Aviso" class="foot-link">{{ $t('footerAvisoLegal') }}</router-link>
+          <router-link to="/Privacidad" class="foot-link">{{ $t('footerPrivacidad') }}</router-link>
+          <router-link to="/Cookies" class="foot-link">{{ $t('footerCookies') }}</router-link>
+          <router-link to="/Condiciones" class="foot-link">{{ $t('footerCondiciones') }}</router-link>
+        </div>
       </q-bar>
     </q-footer>
   </q-layout>
@@ -627,6 +619,34 @@ const cerrarSesion = async (): Promise<void> => {
   min-height: 48px;
   font-size: 1.1rem;
   margin-top: 16px;
+}
+
+.footer-legal-bar {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 4px 12px;
+}
+
+.footer-legal-text {
+  margin: 0;
+}
+
+.footer-legal-links {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 599px) {
+  .footer-legal-bar {
+    padding: 6px 8px;
+    gap: 8px;
+  }
+
+  .footer-legal-links {
+    gap: 8px;
+  }
 }
 
 .whatsapp-sticky-btn {

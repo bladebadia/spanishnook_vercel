@@ -781,7 +781,11 @@ const enviarDatosPersonales = async () => {
 
     if (error) throw error;
 
-    $q.notify({ type: 'positive', message: t('personal.datosGuardadosCorrectamente'), timeout: 3000 });
+    $q.notify({
+      type: 'positive',
+      message: t('personal.datosGuardadosCorrectamente'),
+      timeout: 3000,
+    });
   } catch (error) {
     console.error('Error al guardar:', error);
     $q.notify({ type: 'negative', message: t('personal.errorGuardandoDatos'), timeout: 3000 });
@@ -888,7 +892,7 @@ const formatHorarios = (horarios?: string[]) => {
       const m = Number(parts[1]);
       if (Number.isFinite(h) && Number.isFinite(m)) {
         const d = new Date();
-        d.setHours(h as number, m as number, 0, 0);
+        d.setHours(h, m, 0, 0);
         return d.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' });
       }
       return hora;
