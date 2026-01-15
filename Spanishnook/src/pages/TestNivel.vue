@@ -13,14 +13,12 @@
 
           <div class="text-left q-mb-lg">
             <h3 class="text-h5 text-weight-bold q-mb-md">{{ t('test.instrucciones') }}</h3>
-            <ul class="text-body1 text-grey-8">
+            <ul class="text-body1 text-black">
               <li class="q-mb-sm">{{ t('test.elTestConsta') }}</li>
               <li class="q-mb-sm">
                 {{ t('test.cadaPreguntaTiene') }}
               </li>
-              <li class="q-mb-sm">
-                {{ t('test.alCompletar') }}
-              </li>
+              <li class="q-mb-sm" v-html="t('test.alCompletar')"></li>
               <li class="q-mb-sm">{{ t('test.elTestToma') }}</li>
             </ul>
           </div>
@@ -139,12 +137,10 @@
                   track-color="grey-3"
                   class="q-ma-md"
                 >
-                  <div class="text-h4 text-weight-bold">
-                   {{ levelCorrect }}/{{ levelTotal }}
-                  </div>
+                  <div class="text-h4 text-weight-bold">{{ levelCorrect }}/{{ levelTotal }}</div>
                 </q-circular-progress>
                 <div class="text-body1 text-grey-7">
-                   {{ Math.round(percentage) }}{{ t('test.correcto') }}
+                  {{ Math.round(percentage) }}{{ t('test.correcto') }}
                 </div>
               </div>
 
@@ -464,7 +460,7 @@ const evaluateTestByLevel = (): string => {
     A2: { correct: 0, total: 0 },
     B1: { correct: 0, total: 0 },
     B2: { correct: 0, total: 0 },
-    C1: { correct: 0, total: 0 }
+    C1: { correct: 0, total: 0 },
   };
 
   // Contar preguntas totales y correctas por nivel
@@ -486,11 +482,14 @@ const evaluateTestByLevel = (): string => {
     // Solo evaluar si hay respuestas en este nivel
     if (levelScores[level].total > 0) {
       const percentageForLevel = (levelScores[level].correct / levelScores[level].total) * 100;
-      
+
       // Verificar si hay suficientes preguntas respondidas (al menos 60% del total de preguntas del nivel)
-      const answeredQuestionsPercentage = selectedAnswers.value.filter((answer, index) => 
-        answer !== undefined && testQuestions.value[index]?.level === level
-      ).length / levelScores[level].total * 100;
+      const answeredQuestionsPercentage =
+        (selectedAnswers.value.filter(
+          (answer, index) => answer !== undefined && testQuestions.value[index]?.level === level,
+        ).length /
+          levelScores[level].total) *
+        100;
 
       // Solo asignar nivel si:
       // 1. Se respondió al menos el 60% de las preguntas del nivel
@@ -508,11 +507,11 @@ const evaluateTestByLevel = (): string => {
   percentage.value = levelTotal.value > 0 ? (levelCorrect.value / levelTotal.value) * 100 : 0;
 
   const nivelDescriptions: NivelDescription = {
-    'C1': 'Dominio',
-    'B2': 'Avanzado',
-    'B1': 'Intermedio',
-    'A2': 'Plataforma',
-    'A1': 'Acceso'
+    C1: 'Dominio',
+    B2: 'Avanzado',
+    B1: 'Intermedio',
+    A2: 'Plataforma',
+    A1: 'Acceso',
   };
 
   return `${assignedLevel} - ${nivelDescriptions[assignedLevel]}`;

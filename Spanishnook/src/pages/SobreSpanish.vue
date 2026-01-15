@@ -1,34 +1,34 @@
 <template>
   <q-page>
     <!-- Sección introductoria -->
-    <div class=" row q-my-xl flex flex-center"  >
+    <div class="row q-my-xl flex flex-center">
       <div class="col-12 text-center content-width">
-        <p class="titulo-responsivo" style="color: #77b308ed;">
+        <p class="titulo-responsivo" style="color: #77b308ed">
           {{ t('SobreSpanish.conoce') }}
         </p>
       </div>
       <!-- Descripción  -->
-      <div class="col-12  items-center text-center content-width">
-        <p class="texto-responsivo q-mb-md q-pb-md">
-          {{ t('SobreSpanish.intro') }}
-        </p>
+      <div class="col-12 items-center text-center content-width">
+        <p class="texto-responsivo q-mb-md q-pb-md" v-html="t('SobreSpanish.intro')"></p>
       </div>
-
+      <div class="q-my-xl"></div>
+      <div class="q-my-xl"></div>
+      <div class="q-my-xl"></div>
       <div class="col-12 text-center q-px-xl">
         <p class="subtitulo-responsivo text-primary q-px-xl">
           {{ t('SobreSpanish.tulug') }}
         </p>
       </div>
 
-      <div class="col-12 q-my-md content-width">
+      <div class="col-12 text-justify q-my-md content-width">
         <p class="texto-responsivo">
           {{ t('SobreSpanish.aprender') }}
         </p>
+        <div class="q-mb-md"></div>
         <p class="texto-responsivo">
           {{ t('SobreSpanish.enmedio') }}
         </p>
       </div>
-
 
       <div class="col-12 q-my-md content-width">
         <p class="subtitulo-responsivo text-primary text-center">
@@ -36,49 +36,50 @@
         </p>
       </div>
       <div class="col-12 q-my-md content-width">
-        <p class="texto-responsivo  ">
-           {{ t('SobreSpanish.soy') }}
+        <p class="texto-responsivo">
+          {{ t('SobreSpanish.soy') }}
         </p>
-        <p class="texto-responsivo ">
-          {{ t('SobreSpanish.tras') }}
+        <div class="q-mb-md"></div>
+        <p class="texto-responsivo" v-html="t('SobreSpanish.tras')"></p>
+      </div>
+      <div class="q-mb-lg"></div>
+      <!-- Filosofía -->
+      <div class="col-12 items-center text-center">
+        <p class="subtitulo-responsivo" style="color: #851319">
+          {{ t('SobreSpanish.filosofía') }}
         </p>
       </div>
-    <!-- Filosofía -->
-    <div class="col-12 items-center text-center">
-      <p class="subtitulo-responsivo" style="color: #851319">
-        {{ t('SobreSpanish.filosofía') }}
-      </p>
-    </div>
-    <div class="col-12 text-center q-my-md content-width">
-      <p class="texto-responsivo ">
-        {{ t('SobreSpanish.mipropuesta') }}
-      </p>
-    </div>
-    <div class="col-12 text-left. q-my-md content-width">
-      <p class="texto-responsivo ">
-        {{ t('SobreSpanish.loque') }}
-      </p>
-        <ul class="texto-responsivo text-left" >
-          <li>{{ t('SobreSpanish.cercania') }}</li>
-          <li>{{ t('SobreSpanish.flexibilidad') }}</li>
-          <li>{{ t('SobreSpanish.confianza') }}</li>
+      <div class="col-12 text-center q-my-md content-width">
+        <p class="texto-responsivo" v-html="t('SobreSpanish.mipropuesta')"></p>
+      </div>
+      <div class="col-12 items-center text-center q-my-md content-width">
+        <p class="subtitulo-responsivo" style="color: #851319">
+          {{ t('SobreSpanish.loque') }}
+        </p>
+      </div>
+      <div class="col-12 text-left q-my-md content-width">
+        <ul class="texto-responsivo text-justify">
+          <li v-html="t('SobreSpanish.cercania')"></li>
+          <li v-html="t('SobreSpanish.flexibilidad')"></li>
+          <li v-html="t('SobreSpanish.confianza')"></li>
         </ul>
+      </div>
+      <div class="q-mb-xl"></div>
+      <div class="col-12 text-center q-my-md content-width">
+        <p class="texto-responsivo" v-html="t('SobreSpanish.ojalá')"></p>
+        <div class="q-mb-md"></div>
+        <div class="q-mb-md"></div>
+        <p class="texto-responsivo" v-html="t('SobreSpanish.espero')"></p>
+      </div>
+      <div class="col-12 items-center text-center q-my-xl">
+        <q-btn
+          color="primary"
+          :label="t('indexContactanos')"
+          icon="email"
+          @click="$router.push('/contacto')"
+        />
+      </div>
     </div>
-            <div class="col-12 text-center q-my-md  content-width">
-          <p class="texto-responsivo ">{{ t('SobreSpanish.ojalá') }}</p>
-          <p class="texto-responsivo ">{{ t('SobreSpanish.espero') }}</p>
-          <p class="texto-responsivo ">{{ t('SobreSpanish.proximo') }}</p>
-    </div>
-    <div class="col-12 items-center text-center q-my-xl">
-          <q-btn
-            color="primary"
-            :label="t('indexContactanos')"
-            icon="email"
-            @click="$router.push('/contacto')"
-          />
-    </div>
-  </div>
-  
   </q-page>
 </template>
 

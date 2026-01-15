@@ -12,12 +12,12 @@
         </q-img>
       </div>
 
-      <div class="col-12 col-md-6 text-center q-pa-none q-mx-none q-pa-md-md align-self-center">
+      <div class="col-12 col-md-6 text-center align-self-center q-pa-md">
         <p class="titulo-responsivo" style="color: #851319">
           {{ t('NuestrasClases.nuestrasClases') }}
         </p>
         <p
-          class="texto-responsivo q-ma-none q-pa-none"
+          class="texto-responsivo text-justify"
           v-html="t('NuestrasClases.textoNuestrasClases')"
         ></p>
       </div>
@@ -127,12 +127,14 @@
             {{ $t('NuestrasClases.nuestrasClasesConversacion') }}
           </div>
           <div>
-            <p class="texto-responsivo text-justify">
+            <p class="texto-responsivo text-justify text-weight-bold">
               {{ $t('NuestrasClases.tePasaQue') }}
             </p>
-            <p class="texto-responsivo text-justify">
+            <br />
+            <p class="texto-responsivo text-justify" style="color: #851319">
               {{ $t('NuestrasClases.esteCursoEsParaTi') }}
             </p>
+            <br />
             <p class="texto-responsivo text-justify">
               {{ $t('NuestrasClases.cadaSemanaNos') }}
             </p>
@@ -142,7 +144,8 @@
             <p class="texto-responsivo text-justify">
               {{ $t('NuestrasClases.esUnPrograma') }}
             </p>
-            <p class="texto-responsivo text-justify">
+            <br />
+            <p class="texto-responsivo text-justify" style="color: #851319">
               {{ $t('NuestrasClases.uneteALa') }}
             </p>
           </div>
@@ -239,23 +242,30 @@
             <div class="titulo-responsivo text-center">
               {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
             </div>
-            <p class="texto-responsivo text-justify q-mb-none">
-              {{ $t('NuestrasClases.IntroIndividuales') }}
-            </p>
+            <br />
+            <p
+              class="texto-responsivo text-justify q-mb-none"
+              v-html="$t('NuestrasClases.IntroIndividuales')"
+            ></p>
           </q-card-section>
 
           <q-separator spaced />
 
           <q-card-section>
-            <div class="subtitulo-responsivo text-left q-mb-md">
+            <h2
+              class="text-center q-mb-md"
+              style="color: #851319; font-size: 1.4rem; font-weight: 600"
+            >
               {{ $t('NuestrasClases.Modalidades') }}
-            </div>
+            </h2>
+            <br />
             <div class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <div class="modalidad-card">
                   <div class="subtitulo-responsivo text-center q-mb-sm">
                     {{ $t('NuestrasClases.Modalidad1') }}
                   </div>
+                  <br />
                   <p class="texto-responsivo text-justify q-mb-none">
                     {{ $t('NuestrasClases.TextoModalidad1') }}
                   </p>
@@ -266,9 +276,11 @@
                   <div class="subtitulo-responsivo text-center q-mb-sm">
                     {{ $t('NuestrasClases.Modalidad2') }}
                   </div>
+                  <br />
                   <p class="texto-responsivo text-justify q-mb-none">
                     {{ $t('NuestrasClases.TextoModalidad2') }}
                   </p>
+                  <br />
                 </div>
               </div>
             </div>
@@ -280,12 +292,13 @@
             <div class="subtitulo-responsivo text-left q-mb-md">
               {{ $t('NuestrasClases.TextoComoFuncionanIndividuales') }}
             </div>
+            <br />
             <ul class="texto-responsivo text-justify q-pl-md lista-funcionamiento">
-              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd1') }}</li>
-              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd2') }}</li>
-              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd3') }}</li>
-              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd4') }}</li>
-              <li>{{ $t('NuestrasClases.ListaComoFuncionanInd5') }}</li>
+              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd1')"></li>
+              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd2')"></li>
+              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd3')"></li>
+              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd4')"></li>
+              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd5')"></li>
             </ul>
           </q-card-section>
         </q-card>

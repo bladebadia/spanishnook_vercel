@@ -85,6 +85,9 @@
       &#8226; La cancelación no da derecho al reembolso de los importes correspondientes al período
       ya iniciado.
       <br />
+      &#8226; En el supuesto de no atenter a una clase o servicio dentro de una suscripción activa,
+      no se realizará reembolso ni crédito alguno por dicha clase o servicio no utilizado.
+      <br />
       &#8226; El acceso al servicio se mantendrá activo hasta la finalización del período
       contratado.
     </p>

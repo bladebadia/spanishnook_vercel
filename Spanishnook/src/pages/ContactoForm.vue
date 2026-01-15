@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-lg">
-    <p class="subtitulo-responsivo text-primary text-center q-mb-lg">
+    <p class="subtitulo-responsivo text-primary text-bold text-center q-mb-md">
       📬 {{ t('Contacto.rellena') }}
     </p>
     <q-card flat bordered class="q-pa-md">
@@ -9,7 +9,7 @@
           <!-- Columna de datos de contacto -->
           <div class="col-12 col-md-6">
             <div class="q-pa-md">
-              <h5 class="text-primary">{{ t('Contacto.datosContacto') }}</h5>
+              <h5 class="text-primary text-bold">{{ t('Contacto.datosContacto') }}</h5>
               <p class="text-body1">
                 <strong>{{ t('Contacto.telefono') }}:</strong> +34 694280178
               </p>
@@ -51,7 +51,7 @@
           <div class="col-12 col-md-6">
             <q-form @submit="onSubmit" class="q-gutter-md formulario-con-relieve">
               <div class="text-center">
-                <h5 class="text-primary">{{ t('Contacto.formulario') }}</h5>
+                <h5 class="text-primary text-bold">{{ t('Contacto.formulario') }}</h5>
               </div>
               <!-- Campo de Nombre -->
               <q-input
