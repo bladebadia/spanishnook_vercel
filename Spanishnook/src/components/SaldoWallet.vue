@@ -3,7 +3,7 @@
     <q-card-section class="q-pa-sm">
       <div class="text-subtitle2 text-grey-8 q-mb-sm flex items-center">
         <q-icon name="account_balance_wallet" class="q-mr-xs" color="primary" />
-        {{ t('wallet.tuSaldo') || 'Tu Saldo' }}
+        {{ t('wallet.tuSaldo') }}
         <q-space />
         <q-btn
           flat
@@ -23,7 +23,9 @@
               <q-spinner-dots size="1em" />
             </div>
             <div v-else class="text-h6 text-weight-bold">{{ saldoNormal }}</div>
-            <div class="text-caption" style="font-size: 0.65rem; opacity: 0.9">Clases</div>
+            <div class="text-caption" style="font-size: 0.65rem; opacity: 0.9">
+              {{ t('wallet.clases') }}
+            </div>
           </q-card>
         </div>
 
@@ -33,7 +35,9 @@
               <q-spinner-dots size="1em" />
             </div>
             <div v-else class="text-h6 text-weight-bold">{{ saldoConversacion }}</div>
-            <div class="text-caption" style="font-size: 0.65rem; opacity: 0.9">Conversación</div>
+            <div class="text-caption" style="font-size: 0.65rem; opacity: 0.9">
+              {{ t('wallet.conversacion') }}
+            </div>
           </q-card>
         </div>
       </div>

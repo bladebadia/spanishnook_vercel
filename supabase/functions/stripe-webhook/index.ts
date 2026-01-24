@@ -130,7 +130,7 @@ if (event.type === "checkout.session.completed") {
         precio = lineItems[index].amount_total;
         console.log(`💰 Precio desde line item ${index}:`, precio);
       } else {
-        precio = r.tipo === 'conversacion' ? 2000 : 3200;
+        precio = r.tipo === 'conversacion' ? 2700 : 3200;
         console.log(`💰 Precio por defecto ${index} (${r.tipo}):`, precio);
       }
 

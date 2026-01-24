@@ -59,7 +59,7 @@ export function useReservasClases() {
   // --- COMPUTED ---
   const opcionesTipoClase = computed(() => [
     { label: `${t('reservasClases.claseNormal')} (32€)`, value: 'normal' },
-    { label: `${t('reservasClases.claseConversacion')} (20€)`, value: 'conversacion' },
+    { label: `${t('reservasClases.claseConversacion')} (27€)`, value: 'conversacion' },
   ]);
 
 const fechaMinima = computed<string>(() => {
@@ -201,9 +201,9 @@ const cargarReservasExistentes = async () => {
   const quitarDelCarrito = (i: number) => { carrito.value.splice(i, 1); guardarCarrito(); };
 
   const formatFecha = (f: string) => new Date(f).toLocaleDateString(locale.value || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  const getTipoClaseTexto = (r: ReservaConfirmada) => r.tipo === 'normal' ? 'Normal' : 'Conversación';
+  const getTipoClaseTexto = (r: ReservaConfirmada) => r.tipo === 'normal' ? 'General' : 'Conversación';
   const getPrecioClase = (r: ReservaConfirmada) => {
-    const precio = r.precio ?? (r.tipo === 'normal' ? 32 : 20);
+    const precio = r.precio ?? (r.tipo === 'normal' ? 32 : 27);
     return precio > 1000 ? precio / 100 : precio;
   };
   const puedeCancelar = (r: ReservaConfirmada) => (new Date(r.fecha + 'T' + r.hora).getTime() - Date.now()) / 36e5 >= 72;

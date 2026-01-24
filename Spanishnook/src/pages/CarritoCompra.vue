@@ -1,7 +1,10 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center justify-between q-mb-md">
-      <h4>🛒 {{ t('carrito.carritoDeReservas') }}</h4>
+    <div
+      class="titulo-responsivo2 row items-center justify-between q-mb-md"
+      style="font-size: 2.3rem; font-weight: 800"
+    >
+      🛒 {{ t('carrito.carritoDeReservas') }}
 
       <div style="min-width: 250px" v-if="usuarioLogueado">
         <SaldoWallet
@@ -16,6 +19,7 @@
             label="Utilizar créditos disponibles"
             color="green"
             dense
+            class="checkbox-creditos"
             @update:model-value="recalcularAplicacionCreditos"
             :disable="saldoNormal === 0 && saldoConversacion === 0"
           />
@@ -39,7 +43,7 @@
         >
           <div class="row full-width items-center justify-between">
             <div class="col-grow">
-              <div class="text-h6" :class="{ 'text-white': esReservaConflictiva(reserva) }">
+              <div class="resumen-fecha" :class="{ 'text-white': esReservaConflictiva(reserva) }">
                 {{ formatFecha(reserva.fecha) }} - {{ reserva.hora }}
               </div>
               <div class="text-caption" :class="{ 'text-white': esReservaConflictiva(reserva) }">
@@ -62,12 +66,12 @@
                 <div v-if="reserva.usarCredito" class="text-green text-weight-bold text-h6">
                   0€
                   <span class="text-caption text-grey strike-through">{{
-                    reserva.tipo === 'normal' ? '32€' : '20€'
+                    reserva.tipo === 'normal' ? '32€' : '27€'
                   }}</span>
                   <q-badge color="green" floating transparent rounded>CREDIT</q-badge>
                 </div>
                 <div v-else class="text-h6 text-primary">
-                  {{ reserva.tipo === 'normal' ? '32€' : '20€' }}
+                  {{ reserva.tipo === 'normal' ? '32€' : '27€' }}
                 </div>
               </div>
 
@@ -85,12 +89,16 @@
       </q-list>
 
       <div class="bg-yellow-2 q-pa-md rounded-borders q-mb-lg">
-        <h6>{{ t('carrito.resumenDelPedido') }}</h6>
+        <h6 class="resumen-titulo">{{ t('carrito.resumenDelPedido') }}</h6>
         <div class="row justify-between items-center">
-          <span>{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span>
+          <span class="numero-reservas"
+            >{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span
+          >
 
           <div class="text-right">
-            <div class="text-h5 text-primary text-weight-bold">Total: {{ totalPagarDinero }}€</div>
+            <div class="total-precio text-primary text-weight-bold">
+              Total: {{ totalPagarDinero }}€
+            </div>
             <div v-if="totalGastarCreditos > 0" class="text-caption text-green">
               (Se canjearán {{ totalGastarCreditos }} créditos)
             </div>
@@ -108,6 +116,7 @@
 
         <q-btn
           color="primary"
+          class="btn-confirmar"
           :label="totalPagarDinero === 0 ? 'Confirmar Canje' : t('carrito.pagarYConfirmarReservas')"
           @click="confirmarReservasHibridas"
           :disable="!usuarioLogueado || reservasConflictivas.length > 0"
@@ -221,7 +230,7 @@ const recalcularAplicacionCreditos = () => {
 const totalPagarDinero = computed(() => {
   return carrito.value.reduce((sum, reserva) => {
     if (reserva.usarCredito) return sum;
-    return sum + (reserva.tipo === 'normal' ? 32 : 20);
+    return sum + (reserva.tipo === 'normal' ? 32 : 27);
   }, 0);
 });
 
@@ -245,7 +254,7 @@ const confirmarReservasHibridas = async () => {
           p_tipo_clase: item.tipo,
           p_fecha: item.fecha,
           p_hora: item.hora,
-          p_precio: item.tipo === 'normal' ? 32 : 20,
+          p_precio: item.tipo === 'normal' ? 32 : 27,
           p_meet_link: null,
         });
 
@@ -400,5 +409,37 @@ const esReservaConflictiva = (reserva: ReservaCarrito) => {
 /* Separador sutil entre items */
 .separator > div:not(:last-child) {
   border-bottom: 1px solid #eeeeee;
+}
+/* Reducir tamaño del texto del checkbox de créditos */
+:deep(.checkbox-creditos .q-checkbox__label) {
+  font-size: 0.875rem;
+}
+/* Estilo para la fecha en el resumen */
+.resumen-fecha {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #851319;
+}
+.resumen-fecha.text-white {
+  color: white !important;
+}
+/* Estilo para el título "Resumen del Pedido" */
+.resumen-titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+/* Número de reservas */
+.numero-reservas {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+/* Total y precio */
+.total-precio {
+  font-size: 1.3rem;
+}
+/* Botón confirmar reservas */
+:deep(.btn-confirmar .q-btn__content) {
+  font-weight: bold;
 }
 </style>

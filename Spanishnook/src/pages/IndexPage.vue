@@ -12,7 +12,7 @@
     </div>
     <!-- Sección introductoria OK-->
     <div class="items-center text-center q-my-xl">
-      <p class="titulo-responsivo" style="color: #851319">
+      <p class="titulo-responsivo font-weight: 700" style="color: #851319">
         {{ t('indexeUnLugarDonde') }}
       </p>
 
@@ -28,7 +28,16 @@
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard" class="row align-center">
           <div class="col-12 col-md-6 items-center flex flex-center column">
-            <q-card class="" style="width: 80%">
+            <q-card
+              class=""
+              style="
+                width: 80%;
+                min-height: 420px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+              "
+            >
               <img
                 src="img/Home/tarjeta1_descubre_nuestras_clases.webp"
                 fit="cover"
@@ -48,14 +57,14 @@
             </q-card>
           </div>
           <div class="col-12 col-md-6 q-pa-md">
-            <p class="subtitulo-responsivo">{{ t('indexQueEncontraras') }}</p>
-            <ul class="lista-check">
-              <li class="q-py-sm q-py-md-md">{{ t('indexclasesEnVivo') }}</li>
-              <li class="q-py-sm q-py-md-md">{{ t('indexdiferentesModalidades') }}</li>
-              <li class="q-py-sm q-py-md-md">{{ t('indexseguimientoContinuo') }}</li>
-              <li class="q-py-sm q-py-md-md">{{ t('indexClasesAdaptadas') }}</li>
-              <li class="q-py-sm q-py-md-md">{{ t('indexMaterialesExclusivos') }}</li>
-              <li class="q-py-sm q-py-md-md">{{ t('indexAmbienteRelajado') }}</li>
+            <p class="subtitulo-responsivo text-center">{{ t('indexQueEncontraras') }}</p>
+            <ul class="lista-check" style="font-size: 1.2rem">
+              <li class="q-py-xs">{{ t('indexclasesEnVivo') }}</li>
+              <li class="q-py-xs">{{ t('indexdiferentesModalidades') }}</li>
+              <li class="q-py-xs">{{ t('indexseguimientoContinuo') }}</li>
+              <li class="q-py-xs">{{ t('indexClasesAdaptadas') }}</li>
+              <li class="q-py-xs">{{ t('indexMaterialesExclusivos') }}</li>
+              <li class="q-py-xs">{{ t('indexAmbienteRelajado') }}</li>
             </ul>
           </div>
         </div>
@@ -66,7 +75,7 @@
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
           <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
-            <p class="titulo-responsivo text-center q-mb-md" text-color="#851319">
+            <p class="titulo-responsivo2 text-center q-mb-md" text-color="#851319">
               {{ t('indexDiferentesCaminos') }}
             </p>
 
@@ -81,7 +90,31 @@
             <PromoCard
               :image-src="'img/Home/tarjeta2_clases_privadas.svg'"
               :title="t('indexClasesPrivadas')"
-              :description="t('indexAvanzaEnTu')+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'+ '\u00A0'"
+              :description="
+                t('indexAvanzaEnTu') +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0' +
+                '\u00A0'
+              "
               :button-text="t('indexQuieroMiClase')"
               :to="{ path: '/Clases', hash: '#clases-individuales' }"
             />
@@ -118,11 +151,11 @@
           style="width: 100%; position: relative"
           enter-active-class="animated fadeInUpBig slower "
         >
-          <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 20%">
-            <p class="titulo-responsivo" style="color: #fffdf8">
+          <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 15%">
+            <p class="titulo-responsivo2" style="color: #fff">
               <strong>{{ t('indexDescubreTuPunto') }}</strong>
             </p>
-            <p class="texto-responsivo" style="color: #fffdf8">
+            <p class="texto-responsivo" style="color: #fffdf8; margin-left: 1.45%; padding-left: 0">
               {{ t('indexEnSolo') }}
             </p>
             <q-btn color="black" to="/TestNivel" class="oval-btn q-mx-lg" unelevated>{{
@@ -147,14 +180,14 @@
                   <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
                 </q-avatar>
               </q-item-section>
-              <q-item-label class="subtitulo-responsivo q-pa-md q-ma-md-lg text-bold">
+              <q-item-label class="titulo-responsivo1 q-pa-md q-ma-md-lg text-bold">
                 {{ t('indexQuienHayDetras') }}
               </q-item-label>
             </q-item>
             <q-separator />
             <q-item class="flex flex-justify q-pa-md">
-              <q-item-label class="text-justify texto-responsivo" style="width: 100%">
-                {{ t('indexDetrasDeSpanishnook') }}
+              <q-item-label class="text-justify" style="width: 100%; font-size: 1rem">
+                <span v-html="t('indexDetrasDeSpanishnook')"></span>
               </q-item-label>
             </q-item>
             <q-card-actions class="flex flex-center">
@@ -173,11 +206,11 @@
       </transition>
     </div>
     <!-- Sección de Opiniones Verificadas - CARRUSEL -->
-    <div v-intersect="onOpinionesIntersect" class=" opiniones-section bg-grey-1">
+    <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
       <transition enter-active-class="animated fadeInUpBig slower">
         <div v-if="showOpiniones" class="q-py-xl q-px-md">
           <div class="text-center q-mb-xl">
-            <p class="subtitulo-responsivo " style="color: #851319">
+            <p class="subtitulo-responsivo" style="color: #851319">
               {{ t('indexOpinionesVerificadas') }}
             </p>
             <p class="texto-responsivo">
@@ -292,7 +325,7 @@
     </div>
 
     <!-- Sección de FAQs -->
-    <div class=" faqs-section">
+    <div class="faqs-section">
       <p class="subtitulo-responsivo" style="margin-bottom: 40px">
         {{ t('indexPreguntasFrecuentes') }}
       </p>

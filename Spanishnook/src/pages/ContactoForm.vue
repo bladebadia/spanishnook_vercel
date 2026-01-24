@@ -1,6 +1,9 @@
 <template>
   <q-page class="q-pa-lg">
-    <p class="subtitulo-responsivo text-primary text-bold text-center q-mb-md">
+    <p
+      class="texto-responsivo text-primary text-bold text-center q-mb-md"
+      style="margin-bottom: 30px"
+    >
       📬 {{ t('Contacto.rellena') }}
     </p>
     <q-card flat bordered class="q-pa-md">
@@ -9,9 +12,11 @@
           <!-- Columna de datos de contacto -->
           <div class="col-12 col-md-6">
             <div class="q-pa-md">
-              <h5 class="text-primary text-bold">{{ t('Contacto.datosContacto') }}</h5>
+              <p class="text-primary titulo-responsivo" style="margin-bottom: 24px">
+                {{ t('Contacto.datosContacto') }}
+              </p>
               <p class="text-body1">
-                <strong>{{ t('Contacto.telefono') }}:</strong> +34 694280178
+                <strong>{{ t('Contacto.telefono') }}:</strong> +34 694 280 178
               </p>
               <p class="text-body1">
                 <strong>{{ t('Contacto.email') }}:</strong> info@spanishnook.com
@@ -51,7 +56,7 @@
           <div class="col-12 col-md-6">
             <q-form @submit="onSubmit" class="q-gutter-md formulario-con-relieve">
               <div class="text-center">
-                <h5 class="text-primary text-bold">{{ t('Contacto.formulario') }}</h5>
+                <p class="text-primary titulo-responsivo1">{{ t('Contacto.formulario') }}</p>
               </div>
               <!-- Campo de Nombre -->
               <q-input
@@ -127,6 +132,7 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { supabase } from 'src/supabaseClient';
+import '../css/pages/EstilosGenerales.css';
 
 const { t } = useI18n();
 

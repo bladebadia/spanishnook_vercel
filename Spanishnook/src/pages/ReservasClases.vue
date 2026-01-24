@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-lg">
     <div class="row q-col-gutter-lg">
-      <p class="titulo-responsivo text-center q-my-xl" style="width: 100%; color: #851319">
+      <h2 class="text-h4 text-primary text-weight-bold q-mb-xl text-center" style="width: 100%">
         {{ t('reservasClases.reservaTuClase') }}
-      </p>
+      </h2>
 
       <div class="col-12 col-md-5">
         <div v-if="user" class="q-mb-lg">
@@ -15,11 +15,11 @@
         </div>
 
         <div v-if="carrito.length > 0" class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2">
-          <h5>🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
+          <h5 class="carrito-titulo">🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
           <q-list>
             <q-item v-for="(reserva, index) in carrito" :key="index">
               <q-item-section>
-                <q-item-label>
+                <q-item-label class="fecha-hora-carrito">
                   {{ formatFecha(reserva.fecha) }} {{ t('reservasClases.aLas') }} {{ reserva.hora }}
                 </q-item-label>
                 <q-item-label caption>
@@ -28,13 +28,13 @@
                       ? t('reservasClases.claseNormal')
                       : t('reservasClases.conversacion')
                   }}
-                  ({{ reserva.tipo === 'normal' ? '32€' : '20€' }})
+                  ({{ reserva.tipo === 'normal' ? '32€' : '27€' }})
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-btn
                   color="negative"
-                  icon="remove"
+                  icon="delete"
                   @click="quitarDelCarrito(index)"
                   size="sm"
                   round
@@ -45,6 +45,7 @@
             <div class="q-mt-md text-center">
               <q-btn
                 color="primary"
+                class="btn-ir-carrito"
                 :label="t('reservasClases.botonIrAlCarrito')"
                 to="/CarritoCompra"
               />
@@ -53,7 +54,7 @@
         </div>
 
         <div class="q-mt-lg">
-          <h5>{{ t('reservasClases.misReservasConfirmadas') }}</h5>
+          <h5 class="reservas-titulo">{{ t('reservasClases.misReservasConfirmadas') }}</h5>
 
           <q-list bordered separator v-if="misReservas.length > 0" class="rounded-borders bg-white">
             <q-item v-for="reserva in misReservas" :key="reserva.id" class="q-py-md">
@@ -96,7 +97,9 @@
         <div class="q-mb-md">
           <q-card class="q-pa-md shadow-1 rounded-borders">
             <q-card-section class="q-pa-sm">
-              <div class="text-h6 text-center q-mb-md">{{ t('reservasClases.tipoDeClase') }}</div>
+              <div class="text-h5 text-bold text-center q-mb-md">
+                {{ t('reservasClases.tipoDeClase') }}
+              </div>
               <q-option-group
                 v-model="tipoClase"
                 :options="opcionesTipoClase"
@@ -133,8 +136,9 @@
         </div>
 
         <div v-if="fechaSeleccionada" class="q-mt-lg">
-          <h5>
-            {{ t('reservasClases.horariosDisponiblesPara') }} {{ formatFecha(fechaSeleccionada) }}
+          <h5 class="horarios-titulo">
+            {{ t('reservasClases.horariosDisponiblesPara') }}
+            <span class="fecha-seleccionada">{{ formatFecha(fechaSeleccionada) }}</span>
           </h5>
           <div v-if="horariosDisponiblesFiltrados.length > 0" class="row q-gutter-sm q-mt-md">
             <q-btn
@@ -233,5 +237,49 @@ onMounted(async () => {
 .border-dashed {
   border: 1px dashed #ccc;
   border-radius: 4px;
+}
+
+/* Título del carrito */
+.carrito-titulo {
+  font-weight: 700;
+}
+
+/* Fecha y hora en el carrito */
+.fecha-hora-carrito {
+  font-weight: bold;
+}
+
+/* Botón ir al carrito */
+:deep(.btn-ir-carrito .q-btn__content) {
+  font-weight: bold;
+}
+
+/* Título de reservas confirmadas */
+.reservas-titulo {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+/* Título de horarios disponibles */
+.horarios-titulo {
+  font-size: 1.1rem;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.fecha-seleccionada {
+  font-weight: bold;
+}
+
+/* Estilos para las opciones de tipo de clase */
+:deep(.q-option-group) {
+  text-align: center;
+}
+
+:deep(.q-option-group .q-radio__label) {
+  font-weight: bold;
+  color: #851319;
 }
 </style>

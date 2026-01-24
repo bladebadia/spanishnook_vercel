@@ -13,9 +13,9 @@
       </div>
 
       <div class="col-12 col-md-6 text-center align-self-center q-pa-md">
-        <p class="titulo-responsivo" style="color: #851319">
+        <h2 class="text-h4 text-primary text-weight-bold q-mb-md">
           {{ t('NuestrasClases.nuestrasClases') }}
-        </p>
+        </h2>
         <p
           class="texto-responsivo text-justify"
           v-html="t('NuestrasClases.textoNuestrasClases')"
@@ -126,12 +126,13 @@
           <div class="titulo-responsivo text-justify-center">
             {{ $t('NuestrasClases.nuestrasClasesConversacion') }}
           </div>
+          <br />
           <div>
             <p class="texto-responsivo text-justify text-weight-bold">
               {{ $t('NuestrasClases.tePasaQue') }}
             </p>
             <br />
-            <p class="texto-responsivo text-justify" style="color: #851319">
+            <p class="texto-responsivo text-justify text-weight-bold" style="color: #851319">
               {{ $t('NuestrasClases.esteCursoEsParaTi') }}
             </p>
             <br />
@@ -145,7 +146,7 @@
               {{ $t('NuestrasClases.esUnPrograma') }}
             </p>
             <br />
-            <p class="texto-responsivo text-justify" style="color: #851319">
+            <p class="texto-responsivo text-justify text-weight-bold" style="color: #851319">
               {{ $t('NuestrasClases.uneteALa') }}
             </p>
           </div>
@@ -261,23 +262,29 @@
             <br />
             <div class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
-                <div class="modalidad-card">
+                <div class="modalidad-card bg-yellow-2">
                   <div class="subtitulo-responsivo text-center q-mb-sm">
                     {{ $t('NuestrasClases.Modalidad1') }}
                   </div>
                   <br />
-                  <p class="texto-responsivo text-justify q-mb-none">
+                  <p
+                    class="text-body1 text-justify q-mb-none text-grey-8"
+                    style="font-weight: bold"
+                  >
                     {{ $t('NuestrasClases.TextoModalidad1') }}
                   </p>
                 </div>
               </div>
               <div class="col-12 col-md-6">
-                <div class="modalidad-card">
+                <div class="modalidad-card bg-yellow-2">
                   <div class="subtitulo-responsivo text-center q-mb-sm">
                     {{ $t('NuestrasClases.Modalidad2') }}
                   </div>
                   <br />
-                  <p class="texto-responsivo text-justify q-mb-none">
+                  <p
+                    class="text-body1 text-justify q-mb-none text-grey-8"
+                    style="font-weight: bold"
+                  >
                     {{ $t('NuestrasClases.TextoModalidad2') }}
                   </p>
                   <br />
@@ -594,7 +601,7 @@ watch(
 }
 
 .modalidad-card {
-  background: #f7f7f7;
+  background: #fffbe6;
   border-radius: 12px;
   padding: 16px;
   height: 100%;

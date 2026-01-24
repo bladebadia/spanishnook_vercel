@@ -4,15 +4,17 @@
     <!-- Pagina de instrucciones -->
     <div v-if="!testCompleted && currentQuestion === 0 && !showResults" class="col-12">
       <q-card flat bordered class="instruction-card">
-        <q-card-section class="text-center q-pb-none">
-          <q-icon name="quiz" size="4rem" color="primary" />
+        <q-card-section class="text-center q-pb-none q-mb-none">
+          <div style="font-size: 3.5rem; margin-bottom: 0px">📝</div>
         </q-card-section>
-        <q-card-section class="text-center">
-          <h2 class="text-h3 text-primary text-weight-bold q-mb-md">{{ t('test.deNivel') }}</h2>
+        <q-card-section class="text-center q-pt-none">
+          <h2 class="text-primary text-weight-bold q-mb-md" style="font-size: 3rem">
+            {{ t('test.deNivel') }}
+          </h2>
           <p class="text-h6 text-grey-7 q-mb-lg">{{ t('test.evaluaTuNivel') }}</p>
 
           <div class="text-left q-mb-lg">
-            <h3 class="text-h5 text-weight-bold q-mb-md">{{ t('test.instrucciones') }}</h3>
+            <p class="text-h5 text-weight-bold q-mb-md q-ml-lg">{{ t('test.instrucciones') }}</p>
             <ul class="text-body1 text-black">
               <li class="q-mb-sm">{{ t('test.elTestConsta') }}</li>
               <li class="q-mb-sm">
@@ -27,8 +29,7 @@
             size="lg"
             color="primary"
             :label="t('test.comenzarTest')"
-            icon="play_arrow"
-            class="q-px-xl"
+            class="q-px-xl btn-comenzar-test"
             @click="currentQuestion = 1"
           />
         </q-card-section>
@@ -67,7 +68,7 @@
                 />
               </div>
               <!-- Question -->
-              <h3 class="text-h5 text-weight-bold q-mb-lg">
+              <h3 class="text-h6 text-weight-bold q-mb-lg pregunta-test">
                 {{ testQuestions[currentQuestion - 1]?.question }}
               </h3>
 
@@ -79,7 +80,7 @@
                   :label="`${String.fromCharCode(65 + index)}. ${option}`"
                   :color="selectedAnswers[currentQuestion - 1] === index ? 'primary' : 'grey-3'"
                   :text-color="selectedAnswers[currentQuestion - 1] === index ? 'white' : 'grey-8'"
-                  class="full-width text-left q-pa-md"
+                  class="full-width text-left q-pa-md opcion-test"
                   no-caps
                   @click="selectAnswer(index)"
                 />
@@ -101,6 +102,7 @@
                   :label="t('test.siguiente')"
                   icon-right="chevron_right"
                   color="primary"
+                  class="btn-siguiente"
                   @click="nextQuestion"
                 />
                 <q-btn
@@ -108,6 +110,7 @@
                   :label="t('test.finalizarTest')"
                   icon-right="check"
                   color="positive"
+                  class="btn-finalizar"
                   @click="finishTest"
                 />
               </div>
@@ -122,8 +125,8 @@
       <div class="column full-width items-center">
         <q-card flat bordered class="results-card">
           <q-card-section class="text-center">
-            <q-icon name="emoji_events" size="4rem" color="positive" class="q-mb-md" />
-            <p class="text-h4 text-primary text-weight-bold q-mb-md">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem">✅</div>
+            <p class="text-h3 text-primary text-weight-bold q-mb-xl">
               {{ t('test.testCompletado') }}
             </p>
 
@@ -145,17 +148,17 @@
               </div>
 
               <div class="col-12 col-sm-6 text-center">
-                <div class="text-h4 text-weight-bold text-primary q-mb-sm">
+                <div class="text-h5 text-weight-bold text-primary q-mb-sm">
                   {{ t('test.tuNivel') }}
                 </div>
                 <q-chip
                   :label="testLevel"
-                  color="black"
-                  text-color="white"
+                  color="yellow-2"
+                  text-color="black"
                   size="xl"
-                  class="q-pa-md"
+                  class="q-pa-md chip-nivel"
                 />
-                <div class="text-body2 text-grey-7 q-mt-sm">
+                <div class="text-body2 text-black q-mt-sm descripcion-nivel">
                   <span v-if="testLevel.includes('A1')">
                     {{ t('test.accesoConocesLo') }}
                   </span>
@@ -290,13 +293,13 @@ const testQuestions = computed(() => [
     level: 'A1',
   },
   {
-    question: "2 ¿Cuál es la forma correcta del verbo 'ser' para 'yo'?",
+    question: '2 ¿Cuál es la forma correcta del verbo SER (yo)?',
     options: ['soy', 'eres', 'es'],
     correct: 0,
     level: 'A1',
   },
   {
-    question: '3 El profesor tiene muchos ___.',
+    question: '3 El profesor tiene muchos ___ en su estuche.',
     options: ['lápiz', 'lápices', 'lápizs'],
     correct: 1,
     level: 'A1',
@@ -308,13 +311,13 @@ const testQuestions = computed(() => [
     level: 'A1',
   },
   {
-    question: '5 Completa: nosotros ___ a las 7 de la mañana.',
+    question: '5 Nosotros siempre ___ a las 7 de la mañana.',
     options: ['despertamos nos', 'despiertamos', 'nos despertamos'],
     correct: 2,
     level: 'A1',
   },
   {
-    question: '6 Completa: hoy (yo) ___ un examen difícil.',
+    question: '6 Estoy nervioso. Hoy (yo) ___ un examen difícil.',
     options: ['estoy', 'tiene', 'tengo'],
     correct: 2,
     level: 'A1',
@@ -326,7 +329,7 @@ const testQuestions = computed(() => [
     level: 'A2',
   },
   {
-    question: '8 ¿___ (ir, vosotros) al concierto ayer?',
+    question: '8 ¿Qué tal? ¿___ (ir, vosotros) al concierto ayer?',
     options: ['fuisteis', 'fuiste', 'iban'],
     correct: 0,
     level: 'A2',
@@ -350,31 +353,37 @@ const testQuestions = computed(() => [
     level: 'A2',
   },
   {
-    question: '12 Por favor chicos, ___ las manos antes de comer.',
+    question: '12 Para mí, este es ___ restaurante de la ciudad.',
+    options: ['el mejor', 'lo mejor', 'el más bueno'],
+    correct: 0,
+    level: 'A2',
+  },
+  {
+    question: '13 Por favor chicos, ___ las manos antes de comer.',
     options: ['lavais', 'lavad', 'lavaos'],
     correct: 2,
     level: 'B1',
   },
   {
-    question: '13 ¡Ojalá ___ el examen de lengua!',
+    question: '14 ¡Ojalá todos ___ el examen de lengua!',
     options: ['aprobar', 'aprobemos', 'aprobamos'],
     correct: 1,
     level: 'B1',
   },
   {
-    question: '14 Espero que ___ un buen trabajo pronto.',
+    question: '15 Espero que ___ un buen trabajo pronto.',
     options: ['conseguimos', 'conseguir', 'consigamos'],
     correct: 2,
     level: 'B1',
   },
   {
-    question: '15 Hoy llueve mucho ___ no saldremos a pasear.',
+    question: '16 Hoy llueve mucho ___ no saldremos a pasear.',
     options: ['así que', 'porque', 'como'],
     correct: 0,
     level: 'B1',
   },
   {
-    question: '16 ¿Qué expresión usarías para dar una opinión?',
+    question: '17 ¿Cuál de estas expresiones usarías para dar una opinión?',
     options: ['Me parece que...', 'Hay que...', 'Tengo que...'],
     correct: 0,
     level: 'B1',
@@ -398,11 +407,11 @@ const testQuestions = computed(() => [
     level: 'B2',
   },
   {
-    question: '¿Cuál de estas frases utiliza la palabra “realizar” de forma correcta?',
+    question: '21 ¿Cuál de estas frases utiliza “realizar” correctamente?',
     options: [
       'Mañana voy a realizar un café para mis amigos.',
-      'Finalmente logró realizar su sueño de estudiar en el extranjero.',
-      'No pude realizar a tu hermano en la fiesta porque había mucha gente.',
+      'Al final logró realizar su sueño e irse al extranjero.',
+      'No pude realizar a tu hermano porque había mucha gente.',
     ],
     correct: 1,
     level: 'B2',
@@ -425,12 +434,12 @@ const testQuestions = computed(() => [
   },
   {
     question: '24 Me pareció increíble que ___ aquel traje para la fiesta.',
-    options: ['se ponga,', 'se hubiera puesto', 'se haya puesto'],
+    options: ['se ponga', 'se hubiera puesto', 'se haya puesto'],
     correct: 1,
     level: 'C1',
   },
   {
-    question: '25 Lucas siempre dice que la profesora es guapísima y maravillosa. ¡___!',
+    question: '25 Lucas siempre dice que la profesora es guapa y lista. ¡___!',
     options: ['es un pelota,', 'es un pringao', 'es un maceta'],
     correct: 0,
     level: 'C1',
@@ -637,5 +646,36 @@ const previousQuestion = () => {
   .text-h5 {
     font-size: 1.3rem;
   }
+}
+
+/* Botón comenzar test en negrita */
+:deep(.btn-comenzar-test .q-btn__content) {
+  font-weight: bold;
+}
+
+/* Pregunta del test más pequeña */
+.pregunta-test {
+  font-size: 1.25rem;
+}
+
+/* Opciones del test en negrita */
+:deep(.opcion-test .q-btn__content) {
+  font-weight: bold;
+}
+
+/* Botón siguiente y finalizar en negrita */
+:deep(.btn-siguiente .q-btn__content),
+:deep(.btn-finalizar .q-btn__content) {
+  font-weight: bold;
+}
+
+/* Chip del nivel en negrita */
+:deep(.chip-nivel .q-chip__content) {
+  font-weight: bold;
+}
+
+/* Descripción del nivel en negro y justificado */
+.descripcion-nivel {
+  text-align: justify;
 }
 </style>

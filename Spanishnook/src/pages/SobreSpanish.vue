@@ -3,18 +3,15 @@
     <!-- Sección introductoria -->
     <div class="row q-my-xl flex flex-center">
       <div class="col-12 text-center content-width">
-        <p class="titulo-responsivo" style="color: #77b308ed">
+        <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
           {{ t('SobreSpanish.conoce') }}
         </p>
       </div>
       <!-- Descripción  -->
-      <div class="col-12 items-center text-center content-width">
-        <p class="texto-responsivo q-mb-md q-pb-md" v-html="t('SobreSpanish.intro')"></p>
+      <div class="col-12 items-center text-center" style="width: 70%">
+        <p class="texto-responsivo q-pb-xl q-pb-xl" v-html="t('SobreSpanish.intro')"></p>
       </div>
-      <div class="q-my-xl"></div>
-      <div class="q-my-xl"></div>
-      <div class="q-my-xl"></div>
-      <div class="col-12 text-center q-px-xl">
+      <div class="col-12 text-center">
         <p class="subtitulo-responsivo text-primary q-px-xl">
           {{ t('SobreSpanish.tulug') }}
         </p>
@@ -50,14 +47,14 @@
         </p>
       </div>
       <div class="col-12 text-center q-my-md content-width">
-        <p class="texto-responsivo" v-html="t('SobreSpanish.mipropuesta')"></p>
+        <p class="texto-responsivo text-justify" v-html="t('SobreSpanish.mipropuesta')"></p>
       </div>
-      <div class="col-12 items-center text-center q-my-md content-width">
+      <div class="col-12 items-center text-center q-my-md" style="width: 70%">
         <p class="subtitulo-responsivo" style="color: #851319">
           {{ t('SobreSpanish.loque') }}
         </p>
       </div>
-      <div class="col-12 text-left q-my-md content-width">
+      <div class="col-12 text-center q-my-md content-width">
         <ul class="texto-responsivo text-justify">
           <li v-html="t('SobreSpanish.cercania')"></li>
           <li v-html="t('SobreSpanish.flexibilidad')"></li>
@@ -65,7 +62,7 @@
         </ul>
       </div>
       <div class="q-mb-xl"></div>
-      <div class="col-12 text-center q-my-md content-width">
+      <div class="col-12 text-center q-mt-xl content-width">
         <p class="texto-responsivo" v-html="t('SobreSpanish.ojalá')"></p>
         <div class="q-mb-md"></div>
         <div class="q-mb-md"></div>
@@ -95,7 +92,7 @@ const { t } = useI18n();
 }
 
 .content-width {
-  width: 70%;
+  width: 80%;
   margin-left: auto;
   margin-right: auto;
 }

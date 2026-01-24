@@ -149,13 +149,13 @@
       que se aplican las siguientes condiciones de cancelación:
       <br />
       <br />
-      &#8226; Si el Usuario cancela la clase con al menos 72 horas de antelación, podrá optar a un
+      &#8226; Si el Usuario cancela la clase con al menos 24 horas de antelación, podrá optar a un
       crédito equivalente, utilizable en futuras clases o servicios o bien, a realizar un cambio de
       fecha.
       <br />
       &#8226; Las cancelaciones realizadas con menos de 24 horas de antelación, así como la no
       asistencia a la clase, se considerarán como clase impartida, sin derecho a crédito ni
-      compensación.
+      compensación (salvo causas justificadas).
       <br />
     </p>
 
