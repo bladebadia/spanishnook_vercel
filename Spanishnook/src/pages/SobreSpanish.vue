@@ -6,7 +6,7 @@
         <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
           {{ t('SobreSpanish.conoce') }}
         </p>
-      </div>
+      </div> 
       <!-- Descripción  -->
       <div class="col-12 items-center text-center" style="width: 70%">
         <p class="texto-responsivo q-pb-xl q-pb-xl" v-html="t('SobreSpanish.intro')"></p>
