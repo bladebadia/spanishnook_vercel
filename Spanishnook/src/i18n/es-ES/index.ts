@@ -239,6 +239,7 @@ export default {
   },
   personal: {
     hola: 'Hola',
+    seleccionar: 'Selección',
     bienvenidoAreaPersonal: '¡Bienvenido/a a tu Área Personal!',
     holaUsuario:' ¡Hola Usuario!',
     bienvenido: '¡Bienvenido',
@@ -413,7 +414,7 @@ export default {
     saldoNormal: 'Clases Individuales',
     saldoConversacion: 'Clases Conversación',
     seleccionarPack: 'Seleccionar pack',
-    clases: 'Individuales',
+    clases: 'General',
     conversacion: 'Conversación',
   },
 

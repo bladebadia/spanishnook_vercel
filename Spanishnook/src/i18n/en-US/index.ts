@@ -232,6 +232,7 @@ export default {
   },
   personal:{
     hola: 'Hello',
+    seleccionar: 'Select',
     bienvenidoAreaPersonal: 'Welcome to your Personal Area!',
     holaUsuario:' Hello User!',
     bienvenido: 'Welcome',
@@ -358,6 +359,7 @@ export default {
   },
   Contacto:{
     datosContacto: 'Contact information',
+    hintCorreo: 'Your email',
     telefono: 'Phone',
     email: 'Email',
     redesSociales: 'Social Media',
@@ -407,7 +409,7 @@ export default {
     saldoNormal: 'Individual Classes',
     saldoConversacion: 'Conversation Classes',
     seleccionarPack: 'Select pack',
-    clases: 'Private',
+    clases: 'General',
     conversacion: 'Conversation',
   },
 
