@@ -56,15 +56,17 @@
         <div class="q-mt-lg">
           <h5 class="reservas-titulo">{{ t('reservasClases.misReservasConfirmadas') }}</h5>
 
-          <q-list bordered separator v-if="misReservas.length > 0" class="rounded-borders bg-white">
-            <q-item v-for="reserva in misReservas" :key="reserva.id" class="q-py-md">
+          <q-list
+            bordered
+            separator
+            v-if="misReservasFuturas.length > 0"
+            class="rounded-borders bg-white"
+          >
+            <q-item v-for="reserva in misReservasFuturas" :key="reserva.id" class="q-py-md">
               <q-item-section avatar>
-                <q-avatar
-                  :color="reserva.tipo === 'conversacion' ? 'purple-1' : 'blue-1'"
-                  :text-color="reserva.tipo === 'conversacion' ? 'purple-8' : 'blue-8'"
-                  icon="event"
-                  size="md"
-                />
+                <q-avatar size="80px" square>
+                  <img :src="getIconoPersonalizado(reserva.tipo)" />
+                </q-avatar>
               </q-item-section>
 
               <q-item-section>
@@ -84,11 +86,6 @@
 
           <div v-else class="text-grey q-mt-sm q-pa-md text-center border-dashed">
             {{ t('reservasClases.noTienesReservas') }}
-          </div>
-
-          <div class="text-center q-mt-md text-caption text-grey">
-            * Para cancelar reservas, ve a tu
-            <router-link to="/AreaPersonal" class="text-primary">Área Personal</router-link>.
           </div>
         </div>
       </div>
@@ -182,7 +179,7 @@ const cargandoSaldo = ref(false);
 
 const {
   fechaSeleccionada,
-  misReservas,
+  misReservasFuturas,
   carrito,
   tipoClase,
   opcionesTipoClase,
@@ -198,6 +195,13 @@ const {
   quitarDelCarrito,
   inicializar,
 } = useReservasClases();
+
+const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
+
+const getIconoPersonalizado = (tipo: string | undefined) => {
+  if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
+  return `${BUCKET_URL}iconoindiv.svg`;
+};
 
 const cargarSaldoUsuario = async () => {
   if (!user.value?.id) return;

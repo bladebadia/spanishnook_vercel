@@ -57,6 +57,17 @@ export function useReservasClases() {
   const cursosGrupalesActivos = ref<CursoBloqueo[]>([]);
 
   // --- COMPUTED ---
+
+  const misReservasFuturas = computed(() => {
+    const ahora = new Date();
+    return misReservas.value.filter(r => {
+      // Creamos la fecha completa (Fecha + Hora)
+      const fechaClase = new Date(`${r.fecha}T${r.hora}`);
+      return fechaClase > ahora;
+    });
+  });
+
+
   const opcionesTipoClase = computed(() => [
     { label: `${t('reservasClases.claseNormal')} (32€)`, value: 'normal' },
     { label: `${t('reservasClases.claseConversacion')} (27€)`, value: 'conversacion' },
@@ -100,16 +111,17 @@ const fechaMaxima = computed<string>(() => {
   });
 
   // --- LÓGICA DE HORARIOS ---
+  // --- LÓGICA DE HORARIOS ---
   const horariosDisponiblesFiltrados = computed(() => {
     if (!fechaSeleccionada.value) return [];
     
-    // Normalizamos la selección a guiones para buscar en la data original si hace falta
-    // Ojo: fechaSeleccionada viene del v-model, respeta la máscara (YYYY-MM-DD)
+    // Normalizamos la fecha (YYYY-MM-DD)
     const fechaModelo = fechaSeleccionada.value.replace(/\//g, '-');
 
     const diaCalendario = calendario.value.find(d => d.fecha === fechaModelo);
     if (!diaCalendario || !diaCalendario.horario || diaCalendario.horario.length === 0) return [];
 
+    // Lógica para filtrar cursos grupales (días de la semana)
     const fechaObj = new Date(fechaModelo + 'T12:00:00');
     const diasSemanaMap = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const nombreDia = diasSemanaMap[fechaObj.getDay()] || '';
@@ -122,10 +134,20 @@ const fechaMaxima = computed<string>(() => {
     const horasReservadas = reservasExistentes.value
       .filter(r => r.fecha === fechaModelo && r.estado === 'confirmada')
       .map(r => r.hora.slice(0, 5));
+    const ahora = new Date();
+    const limite24h = ahora.getTime() + (24 * 60 * 60 * 1000);
 
     return diaCalendario.horario.filter(h => {
       const cleanH = h.slice(0, 5);
-      return !horasReservadas.includes(cleanH) && !horasCursos.includes(cleanH) && !estaEnCarrito(cleanH);
+      
+      const estaOcupado = horasReservadas.includes(cleanH) || 
+                          horasCursos.includes(cleanH) || 
+                          estaEnCarrito(cleanH);
+
+      if (estaOcupado) return false;
+      const fechaClase = new Date(`${fechaModelo}T${cleanH}`);
+      
+      return fechaClase.getTime() > limite24h;
     });
   });
 
@@ -231,7 +253,7 @@ const cargarReservasExistentes = async () => {
   const activarSeleccionClases = () => { seleccionClases.value = 'activa'; };
 
   return {
-    seleccionClases, fechaSeleccionada, horasOcupadas, misReservas, carrito, tipoClase, calendario, 
+    seleccionClases, fechaSeleccionada, horasOcupadas, misReservas, misReservasFuturas, carrito, tipoClase, calendario, 
     reservasExistentes, cursosGrupalesActivos, opcionesTipoClase, fechaMinima, fechaMaxima, 
     fechasConEventos, horariosDisponiblesFiltrados, opcionesFechasComputed, 
     activarSeleccionClases, opcionesFechas: opcionesFechasComputed, 

@@ -41,7 +41,13 @@
           class="q-py-md"
           :class="{ 'bg-negative-1': esReservaConflictiva(reserva) }"
         >
-          <div class="row full-width items-center justify-between">
+          <div class="row full-width items-center">
+            <div class="col-auto q-pr-md">
+              <q-avatar size="100px" square>
+                <img :src="getIconoPersonalizado(reserva.tipo)" alt="Icono Clase" />
+              </q-avatar>
+            </div>
+
             <div class="col-grow">
               <div class="resumen-fecha" :class="{ 'text-white': esReservaConflictiva(reserva) }">
                 {{ formatFecha(reserva.fecha) }} - {{ reserva.hora }}
@@ -165,8 +171,14 @@ const saldoNormal = ref(0);
 const saldoConversacion = ref(0);
 const cargandoSaldo = ref(false);
 const usarCreditosGlobal = ref(false); // Checkbox único
-
 const usuarioLogueado = computed(() => !!user.value?.id);
+
+const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
+
+const getIconoPersonalizado = (tipo: string | undefined) => {
+  if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
+  return `${BUCKET_URL}iconoindiv.svg`;
+};
 
 // --- 1. CARGA INICIAL ---
 onMounted(async () => {

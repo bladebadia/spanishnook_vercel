@@ -201,11 +201,9 @@
                   </q-item-section>
 
                   <q-item-section avatar v-else>
-                    <q-avatar
-                      :color="reserva.tipo === 'conversacion' ? 'purple-1' : 'blue-1'"
-                      :text-color="reserva.tipo === 'conversacion' ? 'purple-8' : 'blue-8'"
-                      icon="videocam"
-                    />
+                    <q-avatar size="125px">
+                      <img :src="getIconoPersonalizado(reserva.tipo)" alt="Clase" />
+                    </q-avatar>
                   </q-item-section>
 
                   <q-item-section>
@@ -267,11 +265,9 @@
               <q-list bordered separator v-if="misSuscripciones.length > 0" class="rounded-borders">
                 <q-item v-for="sub in misSuscripciones" :key="sub.id" class="q-py-md">
                   <q-item-section avatar>
-                    <q-icon
-                      :name="sub.cancel_at_period_end ? 'event_busy' : 'check_circle'"
-                      :color="sub.cancel_at_period_end ? 'orange' : 'positive'"
-                      size="md"
-                    />
+                    <q-avatar size="125px">
+                      <img :src="getIconoPersonalizado('grupal')" alt="Curso" />
+                    </q-avatar>
                   </q-item-section>
 
                   <q-item-section>
@@ -289,14 +285,16 @@
                       {{ traducirDiasSemana(sub.cursos_grupales.dias_semana) }} a las
                       {{ formatHorarios(sub.cursos_grupales.horarios_curso) }}
                     </q-item-label>
-                    <q-item-label caption>
-                      <q-badge v-if="sub.cancel_at_period_end" color="orange">{{
-                        t('personal.cancelacionProgramada')
-                      }}</q-badge>
-                      <q-badge v-else :color="sub.estado === 'active' ? 'positive' : 'grey'">{{
-                        sub.estado === 'active' ? 'Activa' : sub.estado
-                      }}</q-badge>
-                    </q-item-label>
+
+                    <div class="row q-gutter-xs q-mt-xs">
+                      <q-badge v-if="sub.cancel_at_period_end" color="orange">
+                        {{ t('personal.cancelacionProgramada') }}
+                      </q-badge>
+                      <q-badge v-else :color="sub.estado === 'active' ? 'positive' : 'grey'">
+                        {{ sub.estado === 'active' ? 'Activa' : sub.estado }}
+                      </q-badge>
+                    </div>
+
                     <q-item-label caption class="text-grey-8 q-mt-xs">
                       {{
                         sub.cancel_at_period_end
@@ -345,9 +343,12 @@
                   </q-item-section>
                 </q-item>
               </q-list>
-              <div v-else class="text-center text-grey q-pa-lg border-dashed">
-                <q-icon name="school" size="50px" color="grey-4" />
-                <p class="q-mt-sm">{{ t('personal.noTienesSuscripciones') }}</p>
+
+              <div v-else class="text-center text-grey q-pa-xl border-dashed">
+                <q-avatar size="125px" class="q-mb-md" style="opacity: 0.4">
+                  <img :src="getIconoPersonalizado('grupal')" />
+                </q-avatar>
+                <p class="text-h6">{{ t('personal.noTienesSuscripciones') }}</p>
               </div>
             </q-card-section>
           </q-card>
@@ -609,7 +610,18 @@ const paises = [
   'Perú',
 ];
 
+// -- IMAGENES --
+
+const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
+
+const getIconoPersonalizado = (tipo: string | undefined) => {
+  if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
+  if (tipo === 'grupal') return `${BUCKET_URL}iconogrupal.svg`;
+  return `${BUCKET_URL}iconoindiv.svg`; // Por defecto Individual
+};
+
 // --- FUNCIONES SELECCIÓN ---
+
 const puedeCancelar = (reserva: Reserva): boolean => {
   const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
   const ahora = new Date();
