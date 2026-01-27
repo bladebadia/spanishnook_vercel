@@ -201,7 +201,7 @@
                   </q-item-section>
 
                   <q-item-section avatar v-else>
-                    <q-avatar size="125px">
+                    <q-avatar :size="avatarSize" square>
                       <img :src="getIconoPersonalizado(reserva.tipo)" alt="Clase" />
                     </q-avatar>
                   </q-item-section>
@@ -619,6 +619,12 @@ const getIconoPersonalizado = (tipo: string | undefined) => {
   if (tipo === 'grupal') return `${BUCKET_URL}iconogrupal.svg`;
   return `${BUCKET_URL}iconoindiv.svg`; // Por defecto Individual
 };
+
+const avatarSize = computed(() => {
+  if ($q.screen.lt.sm) return '60px'; // Móviles pequeños
+  if ($q.screen.lt.md) return '90px'; // Tablets
+  return '120px'; // Pantallas grandes (Desktop)
+});
 
 // --- FUNCIONES SELECCIÓN ---
 

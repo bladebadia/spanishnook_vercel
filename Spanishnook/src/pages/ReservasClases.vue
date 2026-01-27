@@ -64,7 +64,7 @@
           >
             <q-item v-for="reserva in misReservasFuturas" :key="reserva.id" class="q-py-md">
               <q-item-section avatar>
-                <q-avatar size="80px" square>
+                <q-avatar :size="avatarSize" square>
                   <img :src="getIconoPersonalizado(reserva.tipo)" />
                 </q-avatar>
               </q-item-section>
@@ -74,7 +74,12 @@
                   {{ formatFecha(reserva.fecha) }}
                 </q-item-label>
                 <q-item-label caption class="text-grey-8">
-                  A las {{ reserva.hora.slice(0, 5) }} | {{ getTipoClaseTexto(reserva) }}
+                  {{ t('reservasClases.aLas') }} {{ reserva.hora.slice(0, 5) }} |
+                  {{
+                    reserva.tipo === 'normal'
+                      ? t('reservasClases.claseNormal')
+                      : t('reservasClases.conversacion')
+                  }}
                 </q-item-label>
               </q-item-section>
 
@@ -158,7 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useReservasClases } from 'src/composables/useReservasClases';
 import { supabase } from 'src/supabaseClient';
@@ -167,7 +172,9 @@ import SaldoWallet from 'components/SaldoWallet.vue';
 
 import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
+import { useQuasar } from 'quasar';
 
+const $q = useQuasar();
 const { t } = useI18n();
 const { user } = useAuth();
 const cargando = ref(true);
@@ -188,7 +195,6 @@ const {
   fechasConEventos,
   horariosDisponiblesFiltrados,
   opcionesFechasComputed,
-  getTipoClaseTexto,
   formatFecha,
   estaEnCarrito,
   agregarAlCarrito,
@@ -202,6 +208,12 @@ const getIconoPersonalizado = (tipo: string | undefined) => {
   if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
   return `${BUCKET_URL}iconoindiv.svg`;
 };
+
+const avatarSize = computed(() => {
+  if ($q.screen.lt.sm) return '60px'; // Móviles pequeños
+  if ($q.screen.lt.md) return '80px'; // Tablets
+  return '100px'; // Pantallas grandes (Desktop)
+});
 
 const cargarSaldoUsuario = async () => {
   if (!user.value?.id) return;

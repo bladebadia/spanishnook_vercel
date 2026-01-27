@@ -216,7 +216,7 @@ const cargarReservasExistentes = async () => {
   const cargarCarrito = () => { const s = localStorage.getItem('carritoReservas'); if(s) carrito.value = JSON.parse(s); };
   
   const agregarAlCarrito = (hora: string) => {
-    if (!user.value) return $q.notify({ type: 'warning', message: t('individuales.debesIniciarSesion') });
+    if (!user.value) return $q.notify({ type: 'warning', message: t('reservasClases.debesIniciarSesion') });
     carrito.value.push({ fecha: fechaSeleccionada.value, hora, tipo: tipoClase.value });
     guardarCarrito();
   };
