@@ -111,7 +111,7 @@ export default {
     horariosDisponiblesPara: 'Horarios disponibles para',
     claseConversacion:'Clase conversacion',
     noHayHuecosLibres: 'No hay huecos libres (revisa si hay un curso grupal ese día)',
-
+    debesIniciarSesion:'Debes iniciar sesión para reservar',
   },
 
   test:{
@@ -239,6 +239,8 @@ export default {
   },
   personal: {
     hola: 'Hola',
+    aLas: 'a las',
+    seleccionar: 'Selección',
     bienvenidoAreaPersonal: '¡Bienvenido/a a tu Área Personal!',
     holaUsuario:' ¡Hola Usuario!',
     bienvenido: '¡Bienvenido',
@@ -409,11 +411,11 @@ export default {
   wallet: {
     wallet: 'Monedero',
     tuSaldo: 'Tu saldo',
-    comprarPacks: 'Comprar packs de clases',
+    comprarPacks: 'Comprar packs',
     saldoNormal: 'Clases Individuales',
     saldoConversacion: 'Clases Conversación',
     seleccionarPack: 'Seleccionar pack',
-    clases: 'Individuales',
+    clases: 'General',
     conversacion: 'Conversación',
   },
 

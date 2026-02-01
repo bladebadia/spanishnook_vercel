@@ -115,6 +115,7 @@ export default {
     cargandoDisponibilidad: 'Loading availability...',
     horariosDisponiblesPara:'Available times for',
     noHayHuecosLibres: 'No available slots (check if there is a group class that day)',
+    debesIniciarSesion:'You must log in to book a class',
   },
 
   test:{
@@ -232,6 +233,8 @@ export default {
   },
   personal:{
     hola: 'Hello',
+    aLas: 'at',
+    seleccionar: 'Select',
     bienvenidoAreaPersonal: 'Welcome to your Personal Area!',
     holaUsuario:' Hello User!',
     bienvenido: 'Welcome',
@@ -358,6 +361,7 @@ export default {
   },
   Contacto:{
     datosContacto: 'Contact information',
+    hintCorreo: 'Your email',
     telefono: 'Phone',
     email: 'Email',
     redesSociales: 'Social Media',
@@ -403,11 +407,11 @@ export default {
   wallet: {
     wallet: 'Wallet',
     tuSaldo: 'Your Balance',
-    comprarPacks: 'Buy class packs',
+    comprarPacks: 'Buy packs',
     saldoNormal: 'Individual Classes',
     saldoConversacion: 'Conversation Classes',
     seleccionarPack: 'Select pack',
-    clases: 'Private',
+    clases: 'General',
     conversacion: 'Conversation',
   },
 

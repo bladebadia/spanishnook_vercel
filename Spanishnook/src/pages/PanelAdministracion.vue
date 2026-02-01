@@ -775,24 +775,6 @@
                         </div>
                       </q-card>
                     </div>
-                    <div class="col-12">
-                      <q-select
-                        v-model="cursoFormulario.lista_espera"
-                        label="Lista de espera"
-                        filled
-                        dense
-                        multiple
-                        use-chips
-                        use-input
-                        new-value-mode="add-unique"
-                        input-debounce="0"
-                        hint="Lista de espera "
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="hourglass_empty" />
-                        </template>
-                      </q-select>
-                    </div>
                   </div>
 
                   <div class="row q-gutter-sm q-mt-md">
@@ -804,6 +786,23 @@
                       @click="verAlumnosCurso(curso.id!, curso.nombre_curso)"
                       :loading="cargandoAlumnos"
                     />
+
+                    <q-btn
+                      label="Gestionar Espera"
+                      icon="checklist"
+                      color="orange"
+                      outline
+                      @click="abrirGestorListaEspera(curso.id!, curso.lista_espera || [])"
+                    >
+                      <q-badge
+                        color="orange"
+                        floating
+                        v-if="curso.lista_espera && curso.lista_espera.length > 0"
+                      >
+                        {{ curso.lista_espera.length }}
+                      </q-badge>
+                    </q-btn>
+
                     <q-btn
                       label="Guardar cambios"
                       color="primary"
@@ -812,13 +811,33 @@
                       :loading="guardandoCurso"
                       unelevated
                     />
+
                     <q-btn
-                      label="Eliminar curso"
+                      v-if="curso.estado_curso === 'Activo'"
+                      label="Finalizar Curso"
+                      color="deep-purple"
+                      icon="money_off"
+                      @click="confirmarCierreCurso(curso)"
+                      :loading="procesandoCierre === curso.id"
+                      outline
+                    >
+                      <q-tooltip>
+                        Cierra el curso, devuelve el dinero y cancela suscripciones
+                      </q-tooltip>
+                    </q-btn>
+
+                    <q-btn
+                      v-else
+                      label="Eliminar registro"
                       color="negative"
                       icon="delete"
                       @click="eliminarCurso(curso.id!)"
                       outline
-                    />
+                    >
+                      <q-tooltip>
+                        Borra el curso de la base de datos (Solo permitido si no está activo)
+                      </q-tooltip>
+                    </q-btn>
                     <q-btn label="Cancelar" color="grey" @click="cursoExpandido = null" flat />
                   </div>
                 </q-card-section>
@@ -1263,9 +1282,9 @@
                     dense
                     icon="visibility"
                     color="primary"
-                    @click="verDetalleReserva(reserva)"
+                    @click="verDetalleReservaCompleto(reserva)"
                   >
-                    <q-tooltip>Ver detalles</q-tooltip>
+                    <q-tooltip>Ver Ficha Alumno</q-tooltip>
                   </q-btn>
                   <q-btn
                     flat
@@ -1307,49 +1326,119 @@
 
         <!-- Dialog detalle reserva -->
         <q-dialog v-model="dialogDetalleReserva">
-          <q-card style="min-width: 500px">
-            <q-card-section>
-              <div class="text-h6">Detalle de Reserva</div>
+          <q-card style="min-width: 600px; max-width: 90vw">
+            <q-card-section class="bg-primary text-white row items-center">
+              <div class="text-h6">Ficha del Alumno</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
             </q-card-section>
 
-            <q-separator />
+            <q-card-section v-if="datosAlumnoDetalle" class="q-pa-md">
+              <div class="row q-col-gutter-md">
+                <div class="col-12 col-md-6">
+                  <div class="text-subtitle2 text-primary q-mb-sm">Información Básica</div>
+                  <q-list dense>
+                    <q-item class="q-px-none">
+                      <q-item-section avatar style="min-width: 30px"
+                        ><q-icon name="badge" color="grey-7"
+                      /></q-item-section>
+                      <q-item-section>
+                        <q-item-label caption>Nombre</q-item-label>
+                        <q-item-label class="text-weight-bold"
+                          >{{ datosAlumnoDetalle.nombre }}
+                          {{ datosAlumnoDetalle.apellido1 }}</q-item-label
+                        >
+                      </q-item-section>
+                    </q-item>
+                    <q-item class="q-px-none">
+                      <q-item-section avatar style="min-width: 30px"
+                        ><q-icon name="email" color="grey-7"
+                      /></q-item-section>
+                      <q-item-section>
+                        <q-item-label caption>Email</q-item-label>
+                        <q-item-label>{{ datosAlumnoDetalle.email }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item class="q-px-none">
+                      <q-item-section avatar style="min-width: 30px"
+                        ><q-icon name="phone" color="grey-7"
+                      /></q-item-section>
+                      <q-item-section>
+                        <q-item-label caption>Teléfono</q-item-label>
+                        <q-item-label>{{
+                          datosAlumnoDetalle.telefono || 'No indicado'
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item class="q-px-none">
+                      <q-item-section avatar style="min-width: 30px"
+                        ><q-icon name="translate" color="grey-7"
+                      /></q-item-section>
+                      <q-item-section>
+                        <q-item-label caption>Idioma Nativo</q-item-label>
+                        <q-item-label>{{ datosAlumnoDetalle.idioma_nativo || '-' }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
 
-            <q-card-section v-if="reservaSeleccionada">
-              <div class="q-gutter-sm">
-                <div class="row">
-                  <div class="col-5 text-weight-bold">User ID:</div>
-                  <div class="col-7">{{ reservaSeleccionada.user_id }}</div>
+                <div class="col-12 col-md-6">
+                  <div class="text-subtitle2 text-primary q-mb-sm">Perfil de Estudiante</div>
+                  <q-card flat bordered class="bg-grey-1">
+                    <q-card-section>
+                      <div class="row items-center justify-between q-mb-sm">
+                        <span class="text-grey-8">Nivel Estimado:</span>
+                        <q-badge color="secondary" text-color="white" class="text-subtitle2">{{
+                          datosAlumnoDetalle.nivel_estimado || '?'
+                        }}</q-badge>
+                      </div>
+                      <div class="row items-center justify-between">
+                        <span class="text-grey-8">¿Ha estudiado antes?:</span>
+                        <span class="text-weight-bold">{{
+                          datosAlumnoDetalle.ha_estudiado_antes ? 'SÍ' : 'NO'
+                        }}</span>
+                      </div>
+                      <div
+                        v-if="datosAlumnoDetalle.detalles_estudio_previo"
+                        class="q-mt-sm text-caption text-grey-8 bg-white q-pa-sm rounded-borders"
+                      >
+                        "{{ datosAlumnoDetalle.detalles_estudio_previo }}"
+                      </div>
+                    </q-card-section>
+                  </q-card>
                 </div>
-                <div class="row">
-                  <div class="col-5 text-weight-bold">Fecha:</div>
-                  <div class="col-7">{{ formatFechaReserva(reservaSeleccionada.fecha) }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5 text-weight-bold">Hora:</div>
-                  <div class="col-7">{{ reservaSeleccionada.hora }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5 text-weight-bold">Tipo:</div>
-                  <div class="col-7">{{ reservaSeleccionada.tipo || 'Sin tipo' }}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5 text-weight-bold">Precio:</div>
-                  <div class="col-7">{{ reservaSeleccionada.precio }}€</div>
-                </div>
-                <div v-if="reservaSeleccionada.stripe_payment_intent" class="row">
-                  <div class="col-5 text-weight-bold">Payment Intent:</div>
-                  <div class="col-7 text-caption">
-                    {{ reservaSeleccionada.stripe_payment_intent }}
+
+                <div class="col-12">
+                  <q-separator class="q-my-sm" />
+                  <div class="text-subtitle2 text-primary q-mb-xs">Intereses</div>
+                  <div class="q-gutter-xs q-mt-xs">
+                    <q-chip
+                      v-for="tag in datosAlumnoDetalle.intereses"
+                      :key="tag"
+                      color="deep-purple-1"
+                      text-color="deep-purple-9"
+                      icon="check"
+                      >{{ tag }}</q-chip
+                    >
+                    <span v-if="!datosAlumnoDetalle.intereses?.length" class="text-italic text-grey"
+                      >Sin intereses seleccionados</span
+                    >
+                  </div>
+
+                  <div class="q-mt-md">
+                    <div class="text-subtitle2 text-primary q-mb-xs">Objetivos con el Español</div>
+                    <div class="bg-blue-grey-1 q-pa-md rounded-borders text-body2 text-blue-grey-9">
+                      {{ datosAlumnoDetalle.uso_espanol || 'No especificado por el alumno.' }}
+                    </div>
                   </div>
                 </div>
               </div>
             </q-card-section>
 
-            <q-separator />
-
-            <q-card-actions align="right">
-              <q-btn flat label="Cerrar" color="grey" v-close-popup />
-            </q-card-actions>
+            <q-card-section v-else class="text-center q-pa-xl">
+              <q-spinner-dots color="primary" size="3em" />
+              <div class="text-grey q-mt-sm">Cargando perfil del alumno...</div>
+            </q-card-section>
           </q-card>
         </q-dialog>
 
@@ -1424,6 +1513,65 @@
         </div>
       </div>
     </div>
+    <q-dialog v-model="dialogGestorEspera">
+      <q-card style="min-width: 500px; max-width: 90vw">
+        <q-card-section class="bg-orange text-white row items-center">
+          <div class="text-h6">📋 Gestión Lista de Espera</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section class="q-pa-none">
+          <div v-if="cargandoGestor" class="row justify-center q-pa-lg">
+            <q-spinner color="orange" size="3em" />
+          </div>
+
+          <div v-else-if="listaEsperaCargada.length === 0" class="text-center q-pa-xl text-grey">
+            <q-icon name="low_priority" size="4em" class="q-mb-sm" />
+            <div>La lista de espera está vacía.</div>
+          </div>
+
+          <q-list v-else separator>
+            <q-item v-for="persona in listaEsperaCargada" :key="persona.id">
+              <q-item-section avatar>
+                <q-avatar
+                  color="orange-1"
+                  text-color="orange"
+                  icon="person"
+                  v-if="persona.tipo === 'usuario'"
+                />
+                <q-avatar color="grey-3" text-color="grey" icon="no_accounts" v-else />
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label class="text-weight-bold">{{ persona.nombre }}</q-item-label>
+                <q-item-label caption>{{ persona.email }}</q-item-label>
+                <q-item-label caption v-if="persona.telefono !== '-'"
+                  >📞 {{ persona.telefono }}</q-item-label
+                >
+              </q-item-section>
+
+              <q-item-section side>
+                <q-btn
+                  flat
+                  round
+                  color="negative"
+                  icon="delete"
+                  @click="borrarDeListaEspera(persona)"
+                >
+                  <q-tooltip>Sacar de la lista</q-tooltip>
+                </q-btn>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-card-section>
+
+        <q-separator />
+        <q-card-actions align="right">
+          <q-btn flat label="Cerrar" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -1436,6 +1584,28 @@ import type { User } from '@supabase/supabase-js';
 // Interfaces
 interface SubscripcionRow {
   user_id: string;
+}
+
+interface ItemListaEspera {
+  id: string;
+  nombre: string;
+  email: string;
+  telefono: string;
+  tipo: 'usuario' | 'invitado' | 'desconocido';
+}
+
+interface PerfilUsuarioCompleto {
+  user_id: string;
+  nombre: string;
+  apellido1: string;
+  email: string;
+  telefono?: string;
+  idioma_nativo?: string;
+  nivel_estimado?: string;
+  ha_estudiado_antes?: boolean;
+  detalles_estudio_previo?: string;
+  intereses?: string[];
+  uso_espanol?: string;
 }
 
 interface PerfilUsuario {
@@ -1520,6 +1690,7 @@ const cursoExpandido = ref<number | null>(null);
 const dialogNuevoCurso = ref<boolean>(false);
 const editandoCurso = ref<boolean>(false);
 const guardandoCurso = ref<boolean>(false);
+const procesandoCierre = ref<number | null>(null);
 const cargandoConfiguracion = ref<boolean>(false);
 
 const cursoFormulario = ref<CursoGrupal>({
@@ -1566,12 +1737,33 @@ const horariosDisponibles = [
 const nivelesDisponibles = ['Principiante', 'Elemental', 'Intermedio', 'Avanzado', 'Nativo'];
 const estadosCurso = ['Activo', 'Completo', 'Lista de espera'];
 const reservasActivas = ref<Reserva[]>([]);
-const reservaSeleccionada = ref<Reserva | null>(null);
-const dialogDetalleReserva = ref(false);
 const dialogEditarReserva = ref(false);
 const guardandoReserva = ref(false);
 const paginaActual = ref(1);
 const itemsPorPagina = 10;
+const dialogDetalleReserva = ref(false);
+const datosAlumnoDetalle = ref<PerfilUsuarioCompleto | null>(null);
+
+const verDetalleReservaCompleto = async (reserva: Reserva) => {
+  dialogDetalleReserva.value = true;
+  datosAlumnoDetalle.value = null;
+
+  try {
+    const { data, error } = await supabase
+      .from('datos_usuarios')
+      .select('*')
+      .eq('user_id', reserva.user_id)
+      .single();
+
+    if (error) throw error;
+
+    datosAlumnoDetalle.value = data;
+  } catch (e) {
+    console.error(e);
+    $q.notify({ type: 'negative', message: 'No se encontró el perfil de este alumno.' });
+    dialogDetalleReserva.value = false;
+  }
+};
 
 const filtroReservas = ref({
   userId: '',
@@ -2103,7 +2295,7 @@ const cargarCursosGrupales = async (): Promise<void> => {
           .from('user_subscriptions')
           .select('*', { count: 'exact', head: true }) // head:true significa "solo dame el número, no los datos"
           .eq('course_id', curso.id)
-          .in('estado', ['active', 'trialing']); // Solo contamos activos
+          .in('estado', ['active', 'trialing', 'canceled']);
 
         return {
           ...curso,
@@ -2199,28 +2391,42 @@ const cerrarDialogNuevoCurso = (): void => {
 };
 
 // --- 1. NUEVA FUNCIÓN AUXILIAR  ---
+// --- FUNCIÓN INTELIGENTE PARA CREAR MEET Y CALENDARIO ---
 const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) => {
-  // Solo generamos si está ACTIVO y NO tiene link todavía (o si queremos forzarlo)
-  // Nota: Si ya tiene link, no hacemos nada para no romper el acceso a alumnos antiguos
-  if (datosCurso.estado_curso !== 'Activo' || datosCurso.meet_link) {
+  // 1. Si ya tiene link, no hacemos nada (ya está creado y no queremos duplicar)
+  if (datosCurso.meet_link) return;
+
+  // 2. FRENO DE MANO:
+  // Solo generamos el calendario si el curso está ACTIVO.
+  // Si está en "Lista de espera", nos salimos silenciosamente (no ensuciamos el calendario).
+  if (datosCurso.estado_curso !== 'Activo') {
+    return;
+  }
+
+  // 3. VALIDACIÓN ANTI-ERRORES:
+  if (
+    !datosCurso.fecha_inicio ||
+    !datosCurso.horarios_curso ||
+    datosCurso.horarios_curso.length === 0
+  ) {
+    $q.notify({
+      type: 'warning',
+      message: '⚠️ El curso está Activo pero le falta Fecha u Hora. No se ha creado el calendario.',
+      timeout: 5000,
+    });
     return;
   }
 
   try {
-    // Notificación discreta de que estamos trabajando en segundo plano
     $q.notify({
       type: 'ongoing',
-      message: 'Generando Sala de Google Meet para el curso...',
+      message: 'Generando evento en Google Calendar...',
       timeout: 2000,
     });
 
-    // Preparamos datos. Si no hay fecha/hora, inventamos una futura segura
-    const fechaInicio =
-      datosCurso.fecha_inicio || new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    const horaInicio =
-      datosCurso.horarios_curso && datosCurso.horarios_curso.length > 0
-        ? datosCurso.horarios_curso[0]
-        : '10:00';
+    // Preparamos datos (ya sabemos que existen por la validación del paso 3)
+    const fechaInicio = datosCurso.fecha_inicio;
+    const horaInicio = datosCurso.horarios_curso[0];
 
     // Llamamos a la Edge Function
     const { data, error } = await supabase.functions.invoke('crear-meet', {
@@ -2236,25 +2442,29 @@ const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) =
 
     if (error) throw error;
 
+    // Si devuelve datos, guardamos TANTO el Link COMO el ID del evento
     if (data && data.meetLink) {
       console.log('✨ Meet generado:', data.meetLink);
+      console.log('🆔 Google Event ID:', data.googleEventId);
 
-      // Guardamos el link en la base de datos silenciosamente
       const { error: dbError } = await supabase
         .from('cursos_grupales')
-        .update({ meet_link: data.meetLink })
+        .update({
+          meet_link: data.meetLink,
+          google_event_id: data.googleEventId, // <--- VITAL PARA PODER BORRARLO LUEGO
+        })
         .eq('id', cursoId);
 
       if (dbError) throw dbError;
 
-      $q.notify({ type: 'positive', message: '¡Sala de Meet creada y vinculada!' });
+      $q.notify({ type: 'positive', message: '¡Evento y Meet creados!' });
     }
   } catch (e) {
     console.error('Error generando Meet:', e);
-    // No bloqueamos el guardado del curso, solo avisamos
+    // No bloqueamos el guardado del curso en BD, solo avisamos del fallo en Calendar
     $q.notify({
       type: 'warning',
-      message: 'El curso se guardó, pero falló la creación de Google Calendar',
+      message: 'El curso se guardó, pero falló la conexión con Google Calendar',
     });
   }
 };
@@ -2262,17 +2472,24 @@ const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) =
 // --- 2. FUNCIÓN
 const guardarCurso = async (): Promise<void> => {
   if (!cursoFormulario.value.codigo_curso || !cursoFormulario.value.nombre_curso) {
-    $q.notify({
-      type: 'warning',
-      message: 'El código y nombre del curso son obligatorios',
-      timeout: 2000,
-    });
+    $q.notify({ type: 'warning', message: 'Faltan datos obligatorios' });
     return;
   }
 
   guardandoCurso.value = true;
 
   try {
+    // 1. Detectar si estamos ACTIVANDO un curso
+    const cursoAntiguo = cursosGrupales.value.find((c) => c.id === cursoFormulario.value.id);
+
+    const esActivacion =
+      editandoCurso.value &&
+      cursoAntiguo?.estado_curso !== 'Activo' &&
+      cursoFormulario.value.estado_curso === 'Activo';
+
+    const tieneListaEspera =
+      cursoFormulario.value.lista_espera && cursoFormulario.value.lista_espera.length > 0;
+
     const datosGuardar = {
       codigo_curso: cursoFormulario.value.codigo_curso,
       nombre_curso: cursoFormulario.value.nombre_curso,
@@ -2305,7 +2522,7 @@ const guardarCurso = async (): Promise<void> => {
     };
 
     let resultado;
-    let cursoIdParaMeet: number | undefined; // <--- VARIABLE IMPORTANTE
+    let cursoIdParaMeet: number | undefined;
 
     if (editandoCurso.value && cursoFormulario.value.id) {
       // UPDATE
@@ -2315,35 +2532,65 @@ const guardarCurso = async (): Promise<void> => {
         .eq('id', cursoFormulario.value.id)
         .select();
 
-      if (resultado.error) {
-        console.error('Supabase UPDATE error:', resultado.error.message);
-        throw resultado.error;
-      }
-
-      // Capturamos el ID del curso que estamos editando
+      if (resultado.error) throw resultado.error;
       cursoIdParaMeet = cursoFormulario.value.id;
 
-      $q.notify({
-        type: 'positive',
-        message: 'Curso actualizado correctamente',
-        timeout: 2000,
-      });
+      $q.notify({ type: 'positive', message: 'Curso actualizado' });
+
+      // 🔥 LÓGICA DE NOTIFICACIÓN (CORREGIDA SIN $q.loading) 🔥
+      if (esActivacion && tieneListaEspera) {
+        $q.dialog({
+          title: '📢 Notificar Lista de Espera',
+          message: `El curso ha pasado a ACTIVO y hay ${cursoFormulario.value.lista_espera!.length} personas esperando. ¿Quieres enviarles un email ahora?`,
+          cancel: true,
+          persistent: true,
+          ok: { label: 'Sí, enviar emails', color: 'positive' },
+        }).onOk(() => {
+          // Usamos void() para evitar error de promesas en el linter
+          void (async () => {
+            // 1. Mostramos notificación de "Cargando..." que no desaparece sola (timeout 0)
+            const notifCarga = $q.notify({
+              group: false,
+              timeout: 0,
+              spinner: true,
+              message: 'Enviando correos masivos...',
+              color: 'primary',
+            });
+
+            try {
+              const { error: errorMail } = await supabase.functions.invoke('notify-waitlist', {
+                body: {
+                  cursoId: cursoFormulario.value.id,
+                  nombreCurso: cursoFormulario.value.nombre_curso,
+                  listaIds: cursoFormulario.value.lista_espera,
+                },
+              });
+
+              // 2. Cerramos la notificación de carga
+              notifCarga();
+
+              if (errorMail) throw errorMail;
+
+              $q.notify({ type: 'positive', message: 'Correos enviados correctamente 📨' });
+            } catch (e) {
+              // Si falla, cerramos la carga y mostramos error
+              notifCarga();
+              console.error(e);
+              $q.notify({
+                type: 'negative',
+                message: 'Error enviando correos (Revisa los logs de Supabase)',
+              });
+            }
+          })();
+        });
+      }
     } else {
-      // INSERT
+      // INSERT (Nuevo curso)
       resultado = await supabase.from('cursos_grupales').insert([datosGuardar]).select();
       if (resultado.error) throw resultado.error;
+      if (resultado.data && resultado.data.length > 0) cursoIdParaMeet = resultado.data[0].id;
 
-      // Capturamos el ID del curso nuevo que nos devuelve la base de datos
-      if (resultado.data && resultado.data.length > 0) {
-        cursoIdParaMeet = resultado.data[0].id;
-      }
-
-      $q.notify({
-        type: 'positive',
-        message: 'Curso creado correctamente',
-        timeout: 2000,
-      });
-
+      $q.notify({ type: 'positive', message: 'Curso creado' });
       dialogNuevoCurso.value = false;
     }
 
@@ -2355,14 +2602,77 @@ const guardarCurso = async (): Promise<void> => {
     cursoExpandido.value = null;
     editandoCurso.value = false;
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-    $q.notify({
-      type: 'negative',
-      message: `Error al guardar: ${errorMessage}`,
-      timeout: 5000,
-    });
+    let errorMessage = 'Error al guardar';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'object' && error !== null && 'message' in error) {
+      errorMessage = (error as { message: string }).message;
+    }
+
+    $q.notify({ type: 'negative', message: errorMessage });
   } finally {
     guardandoCurso.value = false;
+  }
+};
+
+// --- FUNCIÓN PARA CERRAR CURSO Y REEMBOLSAR ---
+const confirmarCierreCurso = (curso: CursoGrupal) => {
+  if (!curso.id) return;
+
+  $q.dialog({
+    title: '⚠️ Cierre de Curso y Reembolsos',
+    message: `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
+    Esto realizará las siguientes acciones:<br>
+    1. Marcará el curso como 'Completo' y lo ocultará.<br>
+    2. Cancelará las suscripciones de todos los alumnos activos.<br>
+    3. <b>Stripe devolverá automáticamente la parte proporcional</b> del dinero no disfrutado.<br>
+    4. Se enviará un email automático de despedida.`,
+    html: true,
+    persistent: true,
+    ok: {
+      label: 'Sí, Finalizar y Devolver',
+      color: 'deep-orange',
+      push: true,
+    },
+    cancel: {
+      label: 'Cancelar',
+      color: 'primary',
+      flat: true,
+    },
+  }).onOk(() => {
+    void finalizarCurso(curso.id!);
+  });
+};
+
+const finalizarCurso = async (cursoId: number) => {
+  procesandoCierre.value = cursoId;
+
+  try {
+    // Llamada a tu nueva Edge Function
+    const { data, error } = await supabase.functions.invoke('cerrar-curso', {
+      body: { courseId: cursoId },
+    });
+
+    if (error) throw error;
+
+    const numProcesados = data?.procesados?.length || 0;
+
+    $q.notify({
+      type: 'positive',
+      message: `Curso cerrado. Se han procesado ${numProcesados} reembolsos/cancelaciones.`,
+      timeout: 5000,
+    });
+
+    // Recargar la lista para que se actualice el estado a "Completo" visualmente
+    await cargarCursosGrupales();
+  } catch (error: unknown) {
+    console.error('Error cerrando curso:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al procesar el cierre en el servidor.',
+    });
+  } finally {
+    procesandoCierre.value = null;
   }
 };
 
@@ -2375,9 +2685,11 @@ const verAlumnosCurso = async (id: number, nombre: string) => {
     // PASO 1: Obtener los user_id de las suscripciones
     const { data: subs, error: errorSubs } = await supabase
       .from('user_subscriptions')
-      .select('user_id')
+      .select('user_id, estado') // Traemos también el estado para pintarlo
       .eq('course_id', id)
-      .in('estado', ['active', 'trialing']);
+      // Si el curso está activo, solo activos. Si está cerrado, todos.
+      // O por simplicidad, tráete todos los que no sean null:
+      .in('estado', ['active', 'trialing', 'canceled']);
 
     if (errorSubs) throw errorSubs;
 
@@ -2579,14 +2891,147 @@ const formatFechaReserva = (fecha: string): string => {
   });
 };
 
-const verDetalleReserva = (reserva: Reserva): void => {
-  reservaSeleccionada.value = reserva;
-  dialogDetalleReserva.value = true;
-};
-
 const editarReserva = (reserva: Reserva): void => {
   reservaFormulario.value = { ...reserva };
   dialogEditarReserva.value = true;
+};
+
+// --- VARIABLES PARA EL GESTOR DE LISTA DE ESPERA ---
+const dialogGestorEspera = ref(false);
+const listaEsperaCargada = ref<ItemListaEspera[]>([]);
+const cursoIdEnGestion = ref<number | null>(null); // Para saber qué curso estamos tocando
+const cargandoGestor = ref(false);
+
+const isUuid = (str: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
+const abrirGestorListaEspera = async (cursoId: number, listaIds: string[]) => {
+  cursoIdEnGestion.value = cursoId;
+  dialogGestorEspera.value = true;
+  listaEsperaCargada.value = [];
+  cargandoGestor.value = true;
+
+  try {
+    if (!listaIds || listaIds.length === 0) {
+      cargandoGestor.value = false;
+      return;
+    }
+
+    // A. SEPARAMOS: ¿Cuáles son IDs de usuario y cuáles son emails escritos a mano?
+    const idsValidos = listaIds.filter((id) => isUuid(id));
+
+    // B. CONSULTAMOS: Solo enviamos a Supabase los que son IDs reales
+    let perfiles: {
+      user_id: string;
+      nombre: string;
+      apellido1: string;
+      email: string;
+      telefono: string | null;
+    }[] = [];
+
+    if (idsValidos.length > 0) {
+      const { data, error } = await supabase
+        .from('datos_usuarios')
+        .select('user_id, nombre, apellido1, email, telefono')
+        .in('user_id', idsValidos);
+
+      if (error) throw error;
+
+      // 🔥 CAMBIO: Forzamos a TypeScript a entender que 'data' tiene esa forma
+      if (data) {
+        perfiles = data as {
+          user_id: string;
+          nombre: string;
+          apellido1: string;
+          email: string;
+          telefono: string | null;
+        }[];
+      }
+    }
+
+    // C. MEZCLAMOS: Juntamos los perfiles encontrados con los invitados manuales
+    listaEsperaCargada.value = listaIds.map((id) => {
+      if (isUuid(id)) {
+        // Es un ID: Buscamos sus datos en lo que devolvió Supabase
+        const perfil = perfiles.find((p) => p.user_id === id);
+        if (perfil) {
+          return {
+            tipo: 'usuario',
+            id: id,
+            nombre: `${perfil.nombre} ${perfil.apellido1}`,
+            email: perfil.email,
+            telefono: perfil.telefono || '-',
+          };
+        } else {
+          return {
+            tipo: 'desconocido',
+            id: id,
+            nombre: 'Usuario borrado',
+            email: 'ID: ' + id,
+            telefono: '-',
+          };
+        }
+      } else {
+        // Es un Email suelto (Invitado manual): Lo mostramos tal cual
+        return {
+          tipo: 'invitado',
+          id: id,
+          nombre: 'Invitado Manual',
+          email: id, // El "id" en este caso es el propio email
+          telefono: '-',
+        };
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    $q.notify({ type: 'negative', message: 'Error cargando la lista' });
+  } finally {
+    cargandoGestor.value = false;
+  }
+};
+
+// --- 2. BORRAR A ALGUIEN DE LA LISTA ---
+const borrarDeListaEspera = (itemBorrar: ItemListaEspera) => {
+  if (!cursoIdEnGestion.value) return;
+
+  $q.dialog({
+    title: 'Sacar de la lista',
+    message: `¿Estás seguro de quitar a <b>${itemBorrar.nombre}</b> de la lista de espera?`,
+    html: true,
+    cancel: true,
+    persistent: true,
+    ok: { label: 'Quitar', color: 'negative' },
+  }).onOk(() => {
+    void (async () => {
+      try {
+        // Calculamos la nueva lista de IDs
+        const nuevaListaIds = listaEsperaCargada.value
+          .filter((item) => item.id !== itemBorrar.id)
+          .map((item) => item.id);
+
+        // Actualizamos BD
+        const { error } = await supabase
+          .from('cursos_grupales')
+          .update({ lista_espera: nuevaListaIds })
+          .eq('id', cursoIdEnGestion.value);
+
+        if (error) throw error;
+
+        // Actualizamos vista local
+        listaEsperaCargada.value = listaEsperaCargada.value.filter(
+          (item) => item.id !== itemBorrar.id,
+        );
+
+        // Actualizamos el contador general
+        await cargarCursosGrupales();
+
+        $q.notify({ type: 'positive', message: 'Usuario retirado de la lista' });
+      } catch (e) {
+        console.error(e);
+        $q.notify({ type: 'negative', message: 'Error al actualizar la base de datos' });
+      }
+    })();
+  });
 };
 
 const cerrarDialogEditar = (): void => {

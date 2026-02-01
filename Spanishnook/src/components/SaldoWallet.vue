@@ -10,8 +10,8 @@
           dense
           size="xs"
           color="primary"
-          label="Comprar Packs"
-          to="/Precios"
+          :label="t('wallet.comprarPacks')"
+          to="/ComprarPacks"
           icon-right="chevron_right"
         />
       </div>

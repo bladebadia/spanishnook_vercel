@@ -84,8 +84,13 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false, layout: 'empty' },
   },
   {
-    path: '/Registro',
-    component: () => import('pages/Registro.vue'),
+    path: '/RegistroCuenta',
+    component: () => import('pages/RegistroCuenta.vue'),
+    meta: { requiresAuth: false, layout: 'empty' },
+  },
+  {
+    path: '/ComprarPacks',
+    component: () => import('pages/ComprarPacks.vue'),
     meta: { requiresAuth: false, layout: 'empty' },
   },
   {
