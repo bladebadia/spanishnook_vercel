@@ -239,6 +239,7 @@ export default {
   },
   personal: {
     hola: 'Hola',
+    aLas: 'a las',
     seleccionar: 'Selección',
     bienvenidoAreaPersonal: '¡Bienvenido/a a tu Área Personal!',
     holaUsuario:' ¡Hola Usuario!',

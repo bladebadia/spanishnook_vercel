@@ -257,10 +257,12 @@ const confirmarReservasHibridas = async () => {
     const itemsConCredito = carrito.value.filter((i) => i.usarCredito);
     const itemsConTarjeta = carrito.value.filter((i) => !i.usarCredito);
 
+    const reservasParaEmail: { fecha: string; hora: string; tipo: string }[] = [];
+
     // A. PAGAR CON CRÉDITOS
     if (itemsConCredito.length > 0) {
       for (const item of itemsConCredito) {
-        // SQL Directo
+        // 1. SQL
         const { data, error } = await supabase.rpc('reservar_con_credito', {
           p_user_id: user.value!.id,
           p_tipo_clase: item.tipo,
@@ -271,28 +273,56 @@ const confirmarReservasHibridas = async () => {
         });
 
         if (error || !data.success) {
-          // Si el error es controlado (ej: "Ya reservado"), viene en data.message
           throw new Error(data?.message || error?.message || 'Error desconocido');
         }
 
-        // Generar Meet en segundo plano
+        // 2. Meet
         const nuevaReservaId = data.reserva_id;
         if (nuevaReservaId) {
           await supabase.functions.invoke('crear-meet', {
             body: { reservaId: nuevaReservaId },
           });
         }
+
+        // 3. Acumular para email
+        reservasParaEmail.push({
+          fecha: item.fecha,
+          hora: item.hora,
+          tipo: item.tipo === 'normal' ? 'individual' : 'conversacion',
+        });
+      }
+
+      // 🔥 4. ENVÍO DE EMAIL (CON AWAIT) 🔥
+      // Esperamos a que termine antes de redirigir, si no, el navegador cancela la petición.
+      if (reservasParaEmail.length > 0) {
+        try {
+          console.log('📨 Enviando resumen...');
+          await supabase.functions.invoke('send-booking-email', {
+            body: {
+              reservas: reservasParaEmail,
+              userId: user.value!.id,
+            },
+          });
+          console.log('✅ Email enviado.');
+        } catch (e) {
+          console.error('Error no bloqueante enviando email:', e);
+          // No hacemos throw para que el usuario no pierda la redirección
+        }
       }
     }
 
-    // B. PAGAR CON TARJETA
+    // B. PAGAR CON TARJETA O FINALIZAR
     if (itemsConTarjeta.length > 0) {
       await irAStripe(itemsConTarjeta);
     } else {
-      $q.notify({ type: 'positive', message: '¡Reservas confirmadas!' });
+      $q.notify({ type: 'positive', message: '¡Reservas confirmadas! 📧' });
       carrito.value = [];
       guardarCarrito();
-      window.location.href = '/AreaPersonal';
+
+      // Pequeño delay de seguridad visual antes de irse
+      setTimeout(() => {
+        window.location.href = '/AreaPersonal';
+      }, 500);
     }
   } catch (err: unknown) {
     console.error('Error pago:', err);

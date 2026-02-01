@@ -11,7 +11,7 @@
           size="xs"
           color="primary"
           :label="t('wallet.comprarPacks')"
-          to="/Precios"
+          to="/ComprarPacks"
           icon-right="chevron_right"
         />
       </div>

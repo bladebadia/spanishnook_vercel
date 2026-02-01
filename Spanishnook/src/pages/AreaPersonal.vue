@@ -1,32 +1,35 @@
 <template>
-  <q-page class="q-pa-lg">
-    <div class="col-12 text-center">
-      <p v-if="user?.user_metadata?.nombre" class="subtitulo-responsivo">
-        ¡{{ t('personal.hola') }} {{ user.user_metadata.nombre }}!
+  <q-page class="q-pa-lg bg-grey-1">
+    <div class="col-12 text-center q-mb-lg">
+      <h4 class="text-h4 text-weight-bold text-primary q-my-none">
+        {{
+          user?.user_metadata?.nombre
+            ? `¡Hola, ${user.user_metadata.nombre}!`
+            : t('personal.holaUsuario')
+        }}
+      </h4>
+      <p class="text-subtitle1 text-grey-7 q-mt-sm">
         {{ t('personal.bienvenidoAreaPersonal') }}
       </p>
-      <p v-else-if="user?.email" class="subtitulo-responsivo">
-        {{ t('personal.bienvenido') }} {{ user.email }} {{ t('personal.bienvenidoAreaPersonal') }}
-      </p>
-      <p v-else class="subtitulo-responsivo">{{ t('personal.holaUsuario') }}</p>
-    </div>
-
-    <div class="col-12 text-center q-py-md q-py-md-lg">
-      <q-btn
-        color="primary"
-        :label="t('personal.nuevaReserva')"
-        icon="add"
-        to="/Reservas"
-        size="md"
-      />
     </div>
 
     <div class="row q-col-gutter-lg">
-      <div :class="['menu-lateral', $q.screen.lt.md ? 'col-12' : 'col-3']">
+      <div :class="['menu-lateral', $q.screen.lt.md ? 'col-12' : 'col-12 col-md-3']">
         <SaldoWallet
           :saldo-normal="formDatos.saldo_normal"
           :saldo-conversacion="formDatos.saldo_conversacion"
           :loading="cargandoSaldo"
+          class="q-mb-md"
+        />
+
+        <q-btn
+          color="primary"
+          class="full-width q-mb-md shadow-2"
+          size="lg"
+          icon="add_circle"
+          :label="t('personal.nuevaReserva')"
+          to="/Reservas"
+          unelevated
         />
 
         <div v-if="$q.screen.lt.md" class="flex justify-center q-mb-md">
@@ -36,27 +39,30 @@
             :label="menuVisible ? t('personal.ocultarMenu') : t('personal.mostrarMenu')"
             @click="menuVisible = !menuVisible"
             color="primary"
-            class="full-width"
+            class="full-width bg-white"
           />
         </div>
 
-        <q-card v-show="menuVisible || $q.screen.gt.sm" class="menu-card q-mb-md">
-          <q-list bordered class="rounded-borders">
-            <q-item-label header class="text-weight-bold text-primary"> Mis Clases </q-item-label>
+        <q-card v-show="menuVisible || $q.screen.gt.sm" class="menu-card no-shadow border-gray">
+          <q-list separator>
+            <q-item-label
+              header
+              class="text-weight-bold text-uppercase text-grey-7 text-caption q-pt-md"
+            >
+              Mis Clases
+            </q-item-label>
 
             <q-item
               clickable
               v-ripple
               :active="menuActivo === 'reservadas'"
               @click="seleccionarMenu('reservadas')"
-              active-class="menu-activo"
+              active-class="text-primary bg-red-1"
             >
-              <q-item-section avatar><q-icon name="event" color="primary" /></q-item-section>
+              <q-item-section avatar><q-icon name="event" /></q-item-section>
               <q-item-section>{{ t('personal.clasesReservadas') }}</q-item-section>
-              <q-item-section side>
-                <q-badge v-if="reservasConfirmadas.length > 0" color="positive" rounded>{{
-                  reservasConfirmadas.length
-                }}</q-badge>
+              <q-item-section side v-if="reservasConfirmadas.length > 0">
+                <q-badge color="primary" rounded>{{ reservasConfirmadas.length }}</q-badge>
               </q-item-section>
             </q-item>
 
@@ -65,18 +71,10 @@
               v-ripple
               :active="menuActivo === 'cursos'"
               @click="seleccionarMenu('cursos')"
-              active-class="menu-activo"
+              active-class="text-primary bg-red-1"
             >
-              <q-item-section avatar><q-icon name="school" color="primary" /></q-item-section>
+              <q-item-section avatar><q-icon name="school" /></q-item-section>
               <q-item-section>{{ t('personal.misCursos') }}</q-item-section>
-              <q-item-section side>
-                <q-badge
-                  v-if="misSuscripciones.some((s) => s.estado === 'active')"
-                  color="positive"
-                  rounded
-                  >Active</q-badge
-                >
-              </q-item-section>
             </q-item>
 
             <q-item
@@ -84,14 +82,16 @@
               v-ripple
               :active="menuActivo === 'historial'"
               @click="seleccionarMenu('historial')"
-              active-class="menu-activo"
+              active-class="text-primary bg-red-1"
             >
-              <q-item-section avatar><q-icon name="history" color="primary" /></q-item-section>
+              <q-item-section avatar><q-icon name="history" /></q-item-section>
               <q-item-section>{{ t('personal.historialClases') }}</q-item-section>
             </q-item>
 
-            <q-separator />
-            <q-item-label header class="text-weight-bold text-primary">
+            <q-item-label
+              header
+              class="text-weight-bold text-uppercase text-grey-7 text-caption q-mt-sm"
+            >
               {{ t('personal.miCuenta') }}
             </q-item-label>
 
@@ -100,9 +100,9 @@
               v-ripple
               :active="menuActivo === 'datos'"
               @click="seleccionarMenu('datos')"
-              active-class="menu-activo"
+              active-class="text-primary bg-red-1"
             >
-              <q-item-section avatar><q-icon name="person" color="primary" /></q-item-section>
+              <q-item-section avatar><q-icon name="person" /></q-item-section>
               <q-item-section>{{ t('personal.datosPersonales') }}</q-item-section>
             </q-item>
 
@@ -111,82 +111,75 @@
               v-ripple
               :active="menuActivo === 'eliminar'"
               @click="seleccionarMenu('eliminar')"
-              active-class="menu-activo"
+              active-class="text-negative bg-red-1"
             >
               <q-item-section avatar
-                ><q-icon name="delete_forever" color="negative"
+                ><q-icon name="delete_outline" color="negative"
               /></q-item-section>
-              <q-item-section>{{ t('personal.eliminarCuenta') }}</q-item-section>
+              <q-item-section class="text-negative">{{
+                t('personal.eliminarCuenta')
+              }}</q-item-section>
             </q-item>
 
             <q-item
               v-if="esAdmin"
               clickable
               v-ripple
-              :active="menuActivo === 'admin'"
               @click="irAPanelAdmin"
-              active-class="menu-activo"
+              class="bg-grey-2 q-mt-md"
             >
               <q-item-section avatar
-                ><q-icon name="admin_panel_settings" color="red"
+                ><q-icon name="admin_panel_settings" color="negative"
               /></q-item-section>
-              <q-item-section
-                ><span class="text-weight-bold text-red">Panel Admin</span></q-item-section
-              >
+              <q-item-section class="text-weight-bold text-negative">PANEL ADMIN</q-item-section>
             </q-item>
           </q-list>
         </q-card>
       </div>
 
-      <div :class="[$q.screen.lt.md ? 'col-12' : 'col-9']">
+      <div :class="[$q.screen.lt.md ? 'col-12' : 'col-12 col-md-9']">
         <div v-if="menuActivo === 'reservadas' || menuActivo === ''">
-          <q-card class="q-mb-md">
-            <q-card-section>
-              <div class="row items-center justify-between">
-                <div class="text-h6">{{ t('personal.misReservasConfirmadas') }}</div>
+          <q-card class="shadow-1 rounded-borders">
+            <q-card-section class="row items-center justify-between q-pb-none">
+              <div class="text-h6 text-primary">{{ t('personal.misReservasConfirmadas') }}</div>
 
-                <div v-if="reservasConfirmadas.length > 0">
+              <div v-if="reservasConfirmadas.length > 0">
+                <q-btn
+                  v-if="!modoSeleccion"
+                  flat
+                  dense
+                  color="primary"
+                  icon="checklist"
+                  label="Gestionar"
+                  @click="modoSeleccion = true"
+                />
+                <div v-else class="row q-gutter-sm">
                   <q-btn
-                    v-if="!modoSeleccion"
                     flat
                     dense
-                    color="primary"
-                    icon="checklist"
-                    :label="t('personal.seleccionar') || 'Seleccionar'"
-                    @click="modoSeleccion = true"
+                    color="grey"
+                    label="Cancelar"
+                    @click="
+                      modoSeleccion = false;
+                      seleccionadas = [];
+                    "
                   />
-                  <div v-else class="row q-gutter-sm">
-                    <q-btn
-                      flat
-                      dense
-                      color="grey"
-                      label="Cancelar"
-                      @click="
-                        modoSeleccion = false;
-                        seleccionadas = [];
-                      "
-                    />
-                    <q-btn
-                      color="negative"
-                      :label="`Borrar (${seleccionadas.length})`"
-                      :disable="seleccionadas.length === 0"
-                      :loading="cargandoOperacion"
-                      @click="cancelarSeleccionadas"
-                      dense
-                      icon="delete"
-                    />
-                  </div>
+                  <q-btn
+                    color="negative"
+                    :label="`Borrar (${seleccionadas.length})`"
+                    :disable="seleccionadas.length === 0"
+                    :loading="cargandoOperacion"
+                    @click="cancelarSeleccionadas"
+                    dense
+                    icon="delete"
+                    unelevated
+                  />
                 </div>
               </div>
             </q-card-section>
 
             <q-card-section>
-              <q-list
-                bordered
-                separator
-                v-if="reservasConfirmadas.length > 0"
-                class="rounded-borders"
-              >
+              <q-list separator v-if="reservasConfirmadas.length > 0">
                 <q-item v-for="reserva in reservasConfirmadas" :key="reserva.id" class="q-py-md">
                   <q-item-section avatar v-if="modoSeleccion">
                     <q-checkbox
@@ -194,37 +187,39 @@
                       :val="reserva.id"
                       :disable="!puedeCancelar(reserva)"
                     >
-                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative">
-                        Menos de 24h
-                      </q-tooltip>
+                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative"
+                        >Menos de 24h</q-tooltip
+                      >
                     </q-checkbox>
                   </q-item-section>
 
-                  <q-item-section avatar v-else>
-                    <q-avatar :size="avatarSize" square>
-                      <img :src="getIconoPersonalizado(reserva.tipo)" alt="Clase" />
-                    </q-avatar>
+                  <q-item-section avatar v-else style="min-width: 100px">
+                    <img
+                      :src="getIconoPersonalizado(reserva.tipo)"
+                      alt="Clase"
+                      style="width: 90px; height: 90px; object-fit: contain"
+                    />
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label class="text-weight-bold text-h6">
-                      {{ formatFecha(reserva.fecha) }}
+                    <q-item-label class="text-weight-bold text-subtitle1">{{
+                      formatFecha(reserva.fecha)
+                    }}</q-item-label>
+                    <q-item-label class="text-primary q-mb-xs">
+                      <q-icon name="schedule" /> {{ t('personal.aLas') || 'de' }}
+                      {{ formatHorarioIndividual(reserva.hora) }}
                     </q-item-label>
-                    <q-item-label class="text-subtitle1 text-primary q-mb-xs">
-                      A las {{ reserva.hora.slice(0, 5) }}
-                    </q-item-label>
-                    <q-item-label caption>
-                      {{ getTipoClaseTexto(reserva) }}
-                    </q-item-label>
+                    <q-badge outline color="grey-7" class="q-mt-xs self-start">{{
+                      getTipoClaseTexto(reserva)
+                    }}</q-badge>
 
-                    <q-item-label
-                      caption
+                    <div
                       v-if="!puedeCancelar(reserva)"
-                      class="text-negative q-mt-xs text-weight-bold"
+                      class="text-negative text-caption q-mt-xs flex items-center"
                     >
-                      <q-icon name="lock" size="xs" />
+                      <q-icon name="lock" size="xs" class="q-mr-xs" />
                       {{ t('personal.noSePuedeCancelar') || 'Menos de 24h' }}
-                    </q-item-label>
+                    </div>
                   </q-item-section>
 
                   <q-item-section side v-if="!modoSeleccion">
@@ -234,265 +229,330 @@
                       :href="reserva.meet_link"
                       target="_blank"
                       color="primary"
-                      icon="video_camera_front"
+                      icon="videocam"
                       label="ENTRAR"
-                      class="text-weight-bold q-px-md"
                       unelevated
                     />
-                    <q-badge v-else color="grey-3" text-color="grey-8" label="Pendiente" />
+                    <q-chip
+                      v-else
+                      color="grey-3"
+                      text-color="grey-8"
+                      icon="hourglass_empty"
+                      label="Pendiente"
+                      size="sm"
+                    />
                   </q-item-section>
                 </q-item>
               </q-list>
 
-              <p v-else class="text-grey q-pa-md text-center">
-                <q-icon name="event_busy" size="md" /> <br />
-                {{ t('personal.noTienesReservas') }}
-              </p>
+              <div v-else class="column flex-center q-pa-xl text-grey-6">
+                <q-icon name="event_busy" size="60px" class="q-mb-md opacity-50" />
+                <div class="text-h6">{{ t('personal.noTienesReservas') }}</div>
+                <q-btn
+                  outline
+                  color="primary"
+                  label="Reservar mi primera clase"
+                  to="/Reservas"
+                  class="q-mt-md"
+                />
+              </div>
             </q-card-section>
           </q-card>
         </div>
 
         <div v-if="menuActivo === 'cursos'">
-          <q-card class="q-mb-lg">
-            <q-card-section>
-              <div class="row items-center justify-between">
-                <div class="text-h6">{{ t('personal.misSuscripcionesActivas') }}</div>
-                <q-btn flat icon="refresh" round color="primary" @click="cargarSuscripciones" />
-              </div>
+          <q-card class="shadow-1 rounded-borders">
+            <q-card-section class="row items-center justify-between">
+              <div class="text-h6 text-primary">{{ t('personal.misSuscripcionesActivas') }}</div>
+              <q-btn flat icon="refresh" round color="primary" @click="cargarSuscripciones" />
             </q-card-section>
 
             <q-card-section>
-              <q-list bordered separator v-if="misSuscripciones.length > 0" class="rounded-borders">
-                <q-item v-for="sub in misSuscripciones" :key="sub.id" class="q-py-md">
-                  <q-item-section avatar>
-                    <q-avatar size="125px">
-                      <img :src="getIconoPersonalizado('grupal')" alt="Curso" />
-                    </q-avatar>
-                  </q-item-section>
+              <div v-if="misSuscripciones.length > 0" class="row q-col-gutter-md">
+                <div class="col-12" v-for="suscripcion in misSuscripciones" :key="suscripcion.id">
+                  <q-card bordered flat class="card-curso">
+                    <q-card-section horizontal>
+                      <q-card-section class="col-auto flex flex-center bg-grey-1 q-pa-md">
+                        <q-avatar size="80px" square
+                          ><img :src="getIconoPersonalizado('grupal')"
+                        /></q-avatar>
+                      </q-card-section>
+                      <q-card-section class="col q-py-md">
+                        <div
+                          class="text-h6 text-primary cursor-pointer hover-underline"
+                          @click="router.push(`/ReservasCursos?id=${suscripcion.course_id}`)"
+                        >
+                          {{ suscripcion.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
+                        </div>
+                        <div class="text-subtitle2 text-grey-8 q-mb-sm">
+                          <q-icon name="schedule" class="q-mr-xs" />
+                          {{ traducirDiasSemana(suscripcion.cursos_grupales?.dias_semana) }} •
+                          {{ formatHorarios(suscripcion.cursos_grupales?.horarios_curso) }}
+                        </div>
+                        <div class="row items-center q-gutter-x-sm">
+                          <q-badge :color="suscripcion.estado === 'active' ? 'positive' : 'orange'">
+                            {{ suscripcion.estado === 'active' ? 'Activa' : suscripcion.estado }}
+                          </q-badge>
+                          <span class="text-caption text-grey"
+                            >Renovación:
+                            {{ formatearFechaSuscripcion(suscripcion.current_period_end) }}</span
+                          >
+                        </div>
+                      </q-card-section>
+                      <q-card-section class="col-auto column justify-center q-gutter-y-sm">
+                        <q-btn
+                          v-if="suscripcion.cursos_grupales?.meet_link"
+                          :href="suscripcion.cursos_grupales?.meet_link"
+                          target="_blank"
+                          color="primary"
+                          icon="videocam"
+                          label="Entrar"
+                          unelevated
+                          size="sm"
+                        />
+                        <q-btn
+                          v-if="
+                            !suscripcion.cancel_at_period_end && suscripcion.estado === 'active'
+                          "
+                          flat
+                          color="negative"
+                          label="Cancelar"
+                          @click="confirmarCancelacion(suscripcion)"
+                          :loading="procesando"
+                          size="sm"
+                        />
+                        <q-btn
+                          v-if="suscripcion.cancel_at_period_end"
+                          flat
+                          color="positive"
+                          label="Reactivar"
+                          @click="reactivarSuscripcion(suscripcion)"
+                          :loading="procesando"
+                          size="sm"
+                        />
+                      </q-card-section>
+                    </q-card-section>
+                  </q-card>
+                </div>
+              </div>
 
-                  <q-item-section>
-                    <q-item-label
-                      class="text-h6 text-primary text-weight-bold cursor-pointer hover-link"
-                      @click="router.push(`/ReservasCursos?id=${sub.course_id}`)"
-                    >
-                      {{ sub.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
-                    </q-item-label>
-                    <q-item-label
-                      v-if="sub.cursos_grupales?.horarios_curso"
-                      class="text-subtitle2 text-grey-9 q-mb-xs"
-                    >
-                      <q-icon name="schedule" size="xs" class="q-mr-xs" />
-                      {{ traducirDiasSemana(sub.cursos_grupales.dias_semana) }} a las
-                      {{ formatHorarios(sub.cursos_grupales.horarios_curso) }}
-                    </q-item-label>
-
-                    <div class="row q-gutter-xs q-mt-xs">
-                      <q-badge v-if="sub.cancel_at_period_end" color="orange">
-                        {{ t('personal.cancelacionProgramada') }}
-                      </q-badge>
-                      <q-badge v-else :color="sub.estado === 'active' ? 'positive' : 'grey'">
-                        {{ sub.estado === 'active' ? 'Activa' : sub.estado }}
-                      </q-badge>
-                    </div>
-
-                    <q-item-label caption class="text-grey-8 q-mt-xs">
-                      {{
-                        sub.cancel_at_period_end
-                          ? t('personal.accesoValidoHasta')
-                          : t('personal.proximaRenovacion')
-                      }}:
-                      <strong>{{ formatearFechaSuscripcion(sub.current_period_end) }}</strong>
-                    </q-item-label>
-                  </q-item-section>
-
-                  <q-item-section side>
-                    <div class="column q-gutter-sm items-end">
-                      <q-btn
-                        v-if="sub.cursos_grupales?.meet_link"
-                        type="a"
-                        :href="sub.cursos_grupales.meet_link"
-                        target="_blank"
-                        color="primary"
-                        icon="video_camera_front"
-                        label="ENTRAR"
-                        class="text-weight-bold q-px-md"
-                        unelevated
-                      />
-                      <q-badge v-else color="grey-3" text-color="grey-8" label="Pendiente" />
-
-                      <q-btn
-                        v-if="!sub.cancel_at_period_end && sub.estado === 'active'"
-                        outline
-                        color="negative"
-                        :label="t('personal.cancelar')"
-                        class="q-px-md"
-                        @click="confirmarCancelacion(sub)"
-                        :loading="procesando"
-                      />
-
-                      <q-btn
-                        v-if="sub.cancel_at_period_end && sub.estado === 'active'"
-                        outline
-                        color="positive"
-                        label="Reactivar"
-                        class="q-px-md"
-                        @click="reactivarSuscripcion(sub)"
-                        :loading="procesando"
-                      />
-                    </div>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-
-              <div v-else class="text-center text-grey q-pa-xl border-dashed">
-                <q-avatar size="125px" class="q-mb-md" style="opacity: 0.4">
-                  <img :src="getIconoPersonalizado('grupal')" />
-                </q-avatar>
-                <p class="text-h6">{{ t('personal.noTienesSuscripciones') }}</p>
+              <div v-else class="column flex-center q-pa-xl text-grey-6">
+                <q-icon name="school" size="60px" class="q-mb-md opacity-50" />
+                <div class="text-h6">{{ t('personal.noTienesSuscripciones') }}</div>
               </div>
             </q-card-section>
           </q-card>
         </div>
 
-        <q-card v-if="menuActivo === 'datos'">
-          <q-card-section>
-            <div class="text-h6 q-mb-md">{{ t('personal.datosPersonales') }}</div>
-            <q-form @submit="enviarDatosPersonales" class="q-gutter-md">
-              <div class="row q-col-gutter-md">
+        <div v-if="menuActivo === 'datos'" class="column q-gutter-lg">
+          <q-card class="shadow-1 rounded-borders overflow-hidden">
+            <div class="bg-primary" style="height: 100px"></div>
+
+            <q-card-section class="relative-position q-pt-none">
+              <div class="absolute-top-left q-ml-md" style="top: -40px">
+                <q-avatar
+                  size="80px"
+                  class="shadow-3 bg-white text-primary text-weight-bold font-title"
+                >
+                  {{ (formDatos.nombre?.[0] || 'U').toUpperCase() }}
+                </q-avatar>
+              </div>
+
+              <div class="row justify-end q-mt-sm">
+                <q-btn
+                  label="Guardar Cambios"
+                  color="primary"
+                  unelevated
+                  @click="enviarDatosPersonales"
+                  icon="save"
+                />
+              </div>
+
+              <div class="q-mt-md">
+                <div class="text-h5 text-weight-bold">
+                  {{ formDatos.nombre }} {{ formDatos.apellido1 }}
+                </div>
+                <div class="text-grey-7">{{ formDatos.email }}</div>
+              </div>
+
+              <div class="row q-col-gutter-lg q-mt-md">
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="formDatos.nombre"
-                    :label="t('personal.nombre') + ' *'"
+                    label="Nombre"
+                    dense
                     outlined
-                    :rules="[(val) => !!val || t('personal.elnombreEs')]"
+                    class="q-mb-md"
                   />
-                  <q-input
-                    v-model="formDatos.apellido1"
-                    :label="t('personal.primerApellido')"
-                    outlined
-                  />
-                  <q-input
-                    v-model="formDatos.apellido2"
-                    :label="t('personal.segundoApellido')"
-                    outlined
-                  />
-                  <q-input
-                    v-model="formDatos.direccion"
-                    :label="t('personal.direccion')"
-                    outlined
-                  />
-                  <q-input
-                    v-model="formDatos.codigoPostal"
-                    :label="t('personal.codigoPostal')"
-                    outlined
-                    mask="#####"
-                  />
+                  <q-input v-model="formDatos.apellido1" label="Apellido" dense outlined />
                 </div>
                 <div class="col-12 col-md-6">
-                  <q-input v-model="formDatos.ciudad" :label="t('personal.ciudad')" outlined />
                   <q-select
-                    v-model="formDatos.pais"
-                    :options="paises"
-                    :label="t('personal.pais')"
+                    v-model="formDatos.idioma_nativo"
+                    :options="idiomasComunes"
+                    label="Idioma Nativo"
+                    dense
                     outlined
-                  />
-                  <q-input
-                    v-model="formDatos.nif"
-                    :label="t('personal.nif')"
-                    outlined
-                    mask="XXXXXXXXX"
-                  />
-                  <q-input
-                    v-model="formDatos.email"
-                    :label="t('personal.email') + ' *'"
-                    type="email"
-                    outlined
-                    :rules="[
-                      (val) => (!!val && /.+@.+\..+/.test(val)) || t('personal.emailDebeSerValido'),
-                    ]"
-                  />
-                  <q-input
-                    v-model="formDatos.telefono"
-                    :label="t('personal.telefono')"
-                    outlined
-                    mask="### ### ###"
-                  />
+                    class="q-mb-md"
+                  >
+                    <template v-slot:prepend><q-icon name="language" /></template>
+                  </q-select>
+                  <q-field label="Email" dense outlined stack-label readonly bg-color="grey-1">
+                    <template v-slot:control
+                      ><div class="self-center full-width no-outline">
+                        {{ formDatos.email }}
+                      </div></template
+                    >
+                    <template v-slot:prepend><q-icon name="email" /></template>
+                  </q-field>
                 </div>
               </div>
-              <q-input
-                v-model="formDatos.observaciones"
-                :label="t('personal.observaciones')"
-                outlined
-                type="textarea"
-                rows="3"
-              />
-              <div class="row q-gutter-md q-mt-lg">
-                <q-btn
-                  :label="t('personal.validarDatos')"
-                  color="info"
-                  @click="validarDatos"
-                  icon="check_circle"
-                />
-                <q-btn
-                  :label="t('personal.guardarCambios')"
-                  type="submit"
-                  color="primary"
-                  icon="save"
-                />
-                <q-btn
-                  :label="t('personal.limpiar')"
-                  color="grey"
-                  @click="limpiarFormulario"
-                  icon="clear"
-                />
+
+              <div class="q-mt-lg">
+                <div class="text-subtitle2 text-primary q-mb-xs">Tu Perfil de Estudiante</div>
+                <q-separator class="q-mb-md" />
+                <div class="row q-gutter-md">
+                  <div>
+                    <div class="text-caption text-grey">Nivel</div>
+                    <q-chip color="secondary" text-color="white" icon="leaderboard">{{
+                      formDatos.nivel_estimado || 'Sin definir'
+                    }}</q-chip>
+                  </div>
+                  <div>
+                    <div class="text-caption text-grey">Intereses</div>
+                    <template v-if="formDatos.intereses && formDatos.intereses.length > 0">
+                      <q-chip
+                        v-for="tag in formDatos.intereses"
+                        :key="tag"
+                        color="grey-3"
+                        text-color="grey-9"
+                        >{{ tag }}</q-chip
+                      >
+                    </template>
+                    <span v-else class="text-grey text-caption text-italic"
+                      >Sin intereses seleccionados</span
+                    >
+                  </div>
+                </div>
               </div>
-            </q-form>
-          </q-card-section>
-        </q-card>
+            </q-card-section>
+          </q-card>
 
-        <q-card v-if="menuActivo === 'historial'">
-          <q-card-section
-            ><div class="text-h6">{{ t('personal.tuHistorialDeClases') }}</div></q-card-section
-          >
-          <q-card-section>
-            <q-list bordered v-if="reservasPasadas.length > 0">
-              <q-item v-for="reserva in reservasPasadas" :key="reserva.id" class="q-mb-sm">
-                <q-item-section>
-                  <q-item-label class="text-weight-bold"
-                    >{{ formatFecha(reserva.fecha) }} a las
-                    {{ reserva.hora.slice(0, 5) }}</q-item-label
-                  >
-                  <q-item-label caption>{{ getTipoClaseTexto(reserva) }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <p v-else class="text-grey">{{ t('personal.noTienesClases') }}</p>
-          </q-card-section>
-        </q-card>
+          <q-card class="shadow-1 rounded-borders">
+            <q-card-section>
+              <div class="text-h6 text-primary flex items-center">
+                <q-icon name="security" class="q-mr-sm" /> Seguridad
+              </div>
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <q-form @submit="verificarYCambiarPassword" class="row q-col-gutter-md items-end">
+                <div class="col-12 col-md-4">
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Contraseña Actual</div>
+                  <q-input
+                    v-model="passForm.current"
+                    type="password"
+                    dense
+                    outlined
+                    placeholder="Introduce tu contraseña actual"
+                    :rules="[(val) => !!val || 'Requerida']"
+                  />
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Nueva Contraseña</div>
+                  <q-input
+                    v-model="passForm.new"
+                    type="password"
+                    dense
+                    outlined
+                    placeholder="Mínimo 6 caracteres"
+                    :rules="[(val) => val.length >= 6 || 'Mínimo 6 caracteres']"
+                  />
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Confirmar Nueva</div>
+                  <q-input
+                    v-model="passForm.confirm"
+                    type="password"
+                    dense
+                    outlined
+                    placeholder="Repite la nueva"
+                    :rules="[(val) => val === passForm.new || 'No coinciden']"
+                  />
+                </div>
 
-        <q-card v-if="menuActivo === 'eliminar'">
-          <q-card-section>
-            <div class="text-h6 q-mb-md">{{ t('personal.eliminarCuenta') }}</div>
-            <q-form @submit="eliminarCuenta" class="q-gutter-md">
-              <q-input
-                v-model="passwordConfirm"
-                type="password"
-                :label="t('personal.confirmaTuContrasena')"
-                outlined
-                required
-              />
-              <div class="row q-gutter-md q-mt-lg">
+                <div class="col-12 flex justify-end">
+                  <q-btn
+                    label="Actualizar Contraseña"
+                    color="primary"
+                    unelevated
+                    type="submit"
+                    :loading="loadingPass"
+                  />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </div>
+
+        <div v-if="menuActivo === 'historial'">
+          <q-card class="shadow-1">
+            <q-card-section class="text-h6 text-primary">{{
+              t('personal.tuHistorialDeClases')
+            }}</q-card-section>
+            <q-card-section>
+              <q-list separator v-if="reservasPasadas.length > 0">
+                <q-item v-for="reserva in reservasPasadas" :key="reserva.id">
+                  <q-item-section>
+                    <q-item-label class="text-weight-bold">{{
+                      formatFecha(reserva.fecha)
+                    }}</q-item-label>
+                    <q-item-label caption
+                      >{{ t('personal.aLas') || 'a las' }}
+                      {{ formatHorarioIndividual(reserva.hora) }}</q-item-label
+                    >
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-badge color="grey-4" text-color="grey-8">Finalizada</q-badge>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <div v-else class="text-center text-grey q-pa-lg">No tienes clases pasadas</div>
+            </q-card-section>
+          </q-card>
+        </div>
+
+        <div v-if="menuActivo === 'eliminar'">
+          <q-card class="bg-red-1 shadow-1" style="border: 1px solid #ef9a9a">
+            <q-card-section>
+              <div class="text-h6 text-negative">{{ t('personal.eliminarCuenta') }}</div>
+              <p class="text-grey-9 q-mt-sm">
+                Esta acción es irreversible. Se borrarán todos tus datos y reservas.
+              </p>
+            </q-card-section>
+            <q-card-section>
+              <q-form @submit="eliminarCuenta" class="row items-end q-gutter-md">
+                <q-input
+                  v-model="passwordConfirm"
+                  type="password"
+                  :label="t('personal.confirmaTuContrasena')"
+                  outlined
+                  dense
+                  class="col-12 col-md-6"
+                  bg-color="white"
+                />
                 <q-btn
-                  label="Eliminar Cuenta"
+                  label="Eliminar definitivamente"
                   type="submit"
                   color="negative"
                   icon="delete_forever"
                   :loading="deleting"
+                  unelevated
                 />
-              </div>
-            </q-form>
-          </q-card-section>
-        </q-card>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </div>
       </div>
     </div>
   </q-page>
@@ -526,12 +586,14 @@ const deleting = ref(false);
 const cargandoSaldo = ref(true);
 const sessionToken = ref<string | null>(null);
 
-// Múltiple selección
+// Variables para cambio de contraseña
+const loadingPass = ref(false);
+const passForm = ref({ current: '', new: '', confirm: '' });
+
 const modoSeleccion = ref(false);
 const seleccionadas = ref<string[]>([]);
-const cargandoOperacion = ref(false); // Estado local de carga
+const cargandoOperacion = ref(false);
 
-// Interfaces
 interface Reserva {
   id: string;
   user_id: string;
@@ -553,88 +615,57 @@ interface Suscripcion {
   current_period_end: string;
   cancel_at_period_end: boolean;
   created_at: string;
+  // 🔥 CORRECCIÓN: HACEMOS ESTO OPCIONAL
   cursos_grupales?: {
     nombre_curso: string;
     dias_semana: string[];
     horarios_curso: string[];
     meet_link?: string;
+    estado_curso: string;
   };
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
 
+// 🔥 INTERFAZ ACTUALIZADA
 interface DatosUsuario {
   nombre: string;
   apellido1: string;
-  apellido2: string;
-  direccion: string;
-  codigoPostal: string;
-  ciudad: string;
-  pais: string | null;
-  nif: string;
   email: string;
-  telefono: string;
-  observaciones: string;
+  idioma_nativo: string;
+  nivel_estimado: string;
+  intereses: string[];
   saldo_normal: number;
   saldo_conversacion: number;
-  [key: string]: string | number | null;
+  [key: string]: string | number | null | string[];
 }
 
 const formDatos = ref<DatosUsuario>({
   nombre: '',
   apellido1: '',
-  apellido2: '',
-  direccion: '',
-  codigoPostal: '',
-  ciudad: '',
-  pais: null,
-  nif: '',
   email: '',
-  telefono: '',
-  observaciones: '',
+  idioma_nativo: '',
+  nivel_estimado: '',
+  intereses: [],
   saldo_normal: 0,
   saldo_conversacion: 0,
 });
 
-const paises = [
-  'España',
-  'Portugal',
-  'Francia',
-  'Italia',
-  'Alemania',
-  'Reino Unido',
-  'Estados Unidos',
-  'México',
-  'Argentina',
-  'Colombia',
-  'Chile',
-  'Perú',
-];
-
-// -- IMAGENES --
-
+const idiomasComunes = ['English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Otro'];
 const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
 
 const getIconoPersonalizado = (tipo: string | undefined) => {
   if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
   if (tipo === 'grupal') return `${BUCKET_URL}iconogrupal.svg`;
-  return `${BUCKET_URL}iconoindiv.svg`; // Por defecto Individual
+  return `${BUCKET_URL}iconoindiv.svg`;
 };
 
-const avatarSize = computed(() => {
-  if ($q.screen.lt.sm) return '60px'; // Móviles pequeños
-  if ($q.screen.lt.md) return '90px'; // Tablets
-  return '120px'; // Pantallas grandes (Desktop)
-});
-
 // --- FUNCIONES SELECCIÓN ---
-
 const puedeCancelar = (reserva: Reserva): boolean => {
   const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
   const ahora = new Date();
   return (fechaReserva.getTime() - ahora.getTime()) / (1000 * 60 * 60) >= 24;
 };
 
-// Cancelación Masiva (Corregido error de loading)
 const cancelarSeleccionadas = () => {
   if (seleccionadas.value.length === 0) return;
 
@@ -676,7 +707,9 @@ const cargarSuscripciones = async () => {
   if (!user.value) return;
   const { data, error } = await supabase
     .from('user_subscriptions')
-    .select(`*, cursos_grupales!course_id (nombre_curso, dias_semana, horarios_curso, meet_link)`)
+    .select(
+      `*, cursos_grupales!course_id (nombre_curso, dias_semana, horarios_curso, meet_link, estado_curso)`,
+    )
     .eq('user_id', user.value?.id)
     .order('created_at', { ascending: false });
 
@@ -685,14 +718,21 @@ const cargarSuscripciones = async () => {
     return;
   }
   if (data) {
-    misSuscripciones.value = data.map((sub) => ({
+    const cursosTemp = data.map((sub) => ({
       ...sub,
       cursos_grupales: sub.cursos_grupales || {
         nombre_curso: 'Curso no encontrado',
         dias_semana: [],
         horarios_curso: [],
+        estado_curso: 'Desconocido',
       },
     })) as Suscripcion[];
+
+    misSuscripciones.value = cursosTemp.filter(
+      (s) =>
+        s.cursos_grupales?.estado_curso !== 'Completo' &&
+        s.cursos_grupales?.estado_curso !== 'Cerrado',
+    );
   }
 };
 
@@ -718,11 +758,58 @@ const reactivarSuscripcion = async (sub: Suscripcion) => {
   if (exito) await cargarSuscripciones();
 };
 
-const formatearFechaSuscripcion = (fecha: string) => {
+const formatearFechaSuscripcion = (fecha: string | number) => {
   if (!fecha) return '---';
-  const date = new Date(fecha);
-  if (isNaN(date.getTime())) return 'Fecha inválida';
-  return date.toLocaleDateString(locale.value, { day: 'numeric', month: 'long', year: 'numeric' });
+  if (!isNaN(Number(fecha))) {
+    const date = new Date(Number(fecha) * 1000);
+    return date.toLocaleDateString(locale.value, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  }
+  const dateISO = new Date(fecha);
+  if (!isNaN(dateISO.getTime())) {
+    return dateISO.toLocaleDateString(locale.value, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  }
+  return 'Fecha inválida';
+};
+
+const formatHorarios = (horarios?: string[]) => {
+  if (!horarios || horarios.length === 0) return '';
+  const horaInicio = horarios[0];
+  if (!horaInicio) return '';
+  const partes = horaInicio.split(':');
+  if (partes.length < 2) return horaInicio;
+  const h = Number(partes[0]);
+  const m = Number(partes[1]);
+  if (isNaN(h) || isNaN(m)) return horaInicio;
+  const fecha = new Date();
+  fecha.setHours(h, m, 0, 0);
+  fecha.setMinutes(fecha.getMinutes() + 90);
+  const hFin = fecha.getHours().toString().padStart(2, '0');
+  const mFin = fecha.getMinutes().toString().padStart(2, '0');
+  return `${horaInicio} - ${hFin}:${mFin}`;
+};
+
+const formatHorarioIndividual = (horaInicio: string) => {
+  if (!horaInicio) return '';
+  const limpia = horaInicio.slice(0, 5);
+  const partes = limpia.split(':');
+  if (partes.length < 2) return limpia;
+  const h = Number(partes[0]);
+  const m = Number(partes[1]);
+  if (isNaN(h) || isNaN(m)) return limpia;
+  const fecha = new Date();
+  fecha.setHours(h, m, 0, 0);
+  fecha.setMinutes(fecha.getMinutes() + 90);
+  const hFin = fecha.getHours().toString().padStart(2, '0');
+  const mFin = fecha.getMinutes().toString().padStart(2, '0');
+  return `${limpia} - ${hFin}:${mFin}`;
 };
 
 const eliminarCuenta = async () => {
@@ -748,6 +835,33 @@ const eliminarCuenta = async () => {
   }
 };
 
+const verificarYCambiarPassword = async () => {
+  if (!user.value?.email) return;
+
+  loadingPass.value = true;
+  try {
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: user.value.email,
+      password: passForm.value.current,
+    });
+
+    if (loginError) {
+      throw new Error('La contraseña actual no es correcta.');
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({ password: passForm.value.new });
+    if (updateError) throw updateError;
+
+    $q.notify({ type: 'positive', message: 'Contraseña actualizada con éxito.' });
+    passForm.value = { current: '', new: '', confirm: '' };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Error al actualizar';
+    $q.notify({ type: 'negative', message: msg });
+  } finally {
+    loadingPass.value = false;
+  }
+};
+
 const cargarDatosPersonales = async () => {
   if (!user.value?.id) return;
   cargandoSaldo.value = true;
@@ -762,15 +876,10 @@ const cargarDatosPersonales = async () => {
       formDatos.value = {
         nombre: data.nombre || '',
         apellido1: data.apellido1 || '',
-        apellido2: data.apellido2 || '',
-        direccion: data.direccion || '',
-        codigoPostal: data.codigo_postal || '',
-        ciudad: data.ciudad || '',
-        pais: data.pais || null,
-        nif: data.nif || '',
-        email: data.email || '',
-        telefono: data.telefono || '',
-        observaciones: data.observaciones || '',
+        email: data.email || user.value.email || '',
+        idioma_nativo: data.idioma_nativo || '',
+        nivel_estimado: data.nivel_estimado || '',
+        intereses: data.intereses || [],
         saldo_normal: data.saldo_normal || 0,
         saldo_conversacion: data.saldo_conversacion || 0,
       };
@@ -846,7 +955,7 @@ const cargarReservasConfirmadas = async () => {
       .select('*')
       .eq('user_id', user.value.id)
       .eq('estado', 'confirmada')
-      .gte('fecha', new Date().toISOString().split('T')[0]) // >= Hoy
+      .gte('fecha', new Date().toISOString().split('T')[0])
       .order('fecha', { ascending: true })
       .order('hora', { ascending: true });
 
@@ -854,7 +963,7 @@ const cargarReservasConfirmadas = async () => {
       const ahora = new Date();
       reservasConfirmadas.value = data.filter((r) => {
         const fechaClase = new Date(`${r.fecha}T${r.hora}`);
-        return fechaClase > ahora; // Solo si es en el futuro
+        return fechaClase > ahora;
       });
     }
   } catch (error) {
@@ -866,49 +975,26 @@ const irAPanelAdmin = async () => {
   await router.push('/Administracion');
 };
 
-const validarDatos = () => {
-  if (!formDatos.value.nombre || !formDatos.value.email)
-    $q.notify({ type: 'warning', message: t('personal.faltanCamposObligatorios') });
-  else $q.notify({ type: 'positive', message: t('personal.datosValidos') });
-};
-
 const enviarDatosPersonales = async () => {
   try {
     const datos = {
       user_id: user.value?.id,
       nombre: formDatos.value.nombre,
       apellido1: formDatos.value.apellido1,
-      apellido2: formDatos.value.apellido2,
-      direccion: formDatos.value.direccion,
-      codigo_postal: formDatos.value.codigoPostal,
-      ciudad: formDatos.value.ciudad,
-      pais: formDatos.value.pais,
-      nif: formDatos.value.nif,
-      email: formDatos.value.email,
-      telefono: formDatos.value.telefono,
-      observaciones: formDatos.value.observaciones,
+      idioma_nativo: formDatos.value.idioma_nativo,
     };
     const { error } = await supabase
       .from('datos_usuarios')
-      .upsert([datos], { onConflict: 'email' });
+      .update(datos)
+      .eq('user_id', user.value?.id);
+
     if (error) throw error;
 
-    $q.notify({
-      type: 'positive',
-      message: t('personal.datosGuardadosCorrectamente'),
-      timeout: 3000,
-    });
+    $q.notify({ type: 'positive', message: t('personal.datosGuardadosCorrectamente') });
   } catch (error) {
     console.error('Error al guardar:', error);
-    $q.notify({ type: 'negative', message: t('personal.errorGuardandoDatos'), timeout: 3000 });
+    $q.notify({ type: 'negative', message: t('personal.errorGuardandoDatos') });
   }
-};
-
-const limpiarFormulario = () => {
-  Object.keys(formDatos.value).forEach((key) => {
-    formDatos.value[key] = '';
-  });
-  formDatos.value.pais = null;
 };
 
 const seleccionarMenu = (menu: string) => {
@@ -923,9 +1009,11 @@ const diasSemanaMap: Record<string, Record<string, string>> = {
   lunes: { 'es-ES': 'lunes', 'en-US': 'Monday' },
   martes: { 'es-ES': 'martes', 'en-US': 'Tuesday' },
   miercoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
+  miércoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
   jueves: { 'es-ES': 'jueves', 'en-US': 'Thursday' },
   viernes: { 'es-ES': 'viernes', 'en-US': 'Friday' },
   sabado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
+  sábado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
   domingo: { 'es-ES': 'domingo', 'en-US': 'Sunday' },
 };
 
@@ -948,23 +1036,6 @@ const traducirDiasSemana = (dias?: string[]) => {
     .join(', ');
 };
 
-const formatHorarios = (horarios?: string[]) => {
-  if (!horarios || horarios.length === 0) return '';
-  return horarios
-    .map((hora) => {
-      const parts = hora.split(':');
-      const h = Number(parts[0]);
-      const m = Number(parts[1]);
-      if (Number.isFinite(h) && Number.isFinite(m)) {
-        const d = new Date();
-        d.setHours(h, m, 0, 0);
-        return d.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' });
-      }
-      return hora;
-    })
-    .join(', ');
-};
-
 const getTipoClaseTexto = (reserva: Reserva): string =>
   reserva.tipo === 'normal' ? t('personal.claseNormal') : t('personal.claseConversacion');
 
@@ -976,17 +1047,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.hover-link:hover {
+.menu-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+.border-gray {
+  border: 1px solid #e0e0e0;
+}
+.font-title {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 32px;
+}
+.hover-underline:hover {
   text-decoration: underline;
-  opacity: 0.8;
 }
-.border-dashed {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-}
-.menu-activo {
-  background-color: #fce4ec;
-  color: #851319;
-  border-right: 3px solid #851319;
+.opacity-50 {
+  opacity: 0.5;
 }
 </style>

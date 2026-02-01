@@ -1,69 +1,92 @@
 <template>
-  <q-page class="q-pa-md column items-center justify-center">
-    <q-card class="q-pa-lg" style="max-width: 400px; width: 90vw">
-      <q-card-section class="text-h6 text-center"> Restablecer contraseña </q-card-section>
-
-      <q-card-section>
-        <q-input
-          filled
-          v-model="nuevaPassword"
-          label="Nueva contraseña"
-          :type="mostrarPassword ? 'text' : 'password'"
-          dense
-          @update:model-value="serverPasswordError = ''"
-          :error="(passwordError && mostrarErrores) || !!serverPasswordError"
-          :hide-bottom-space="(!passwordError || !mostrarErrores) && !serverPasswordError"
-          :error-message="obtenerMensajeErrorPassword"
-        >
-          <template v-slot:append>
-            <q-icon
-              :name="mostrarPassword ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="mostrarPassword = !mostrarPassword"
-            />
-          </template>
-        </q-input>
-
-        <q-input
-          filled
-          v-model="confirmarPassword"
-          label="Confirmar nueva contraseña"
-          type="password"
-          class="q-mt-md"
-          dense
-          :error="confirmarError && mostrarErrores"
-          :hide-bottom-space="!confirmarError || !mostrarErrores"
-          :error-message="confirmarError && mostrarErrores ? 'Las contraseñas no coinciden' : ''"
-        />
-
-        <q-banner v-if="errorMessage" class="bg-negative text-white q-mt-md rounded-borders">
-          <template v-slot:avatar>
-            <q-icon name="error" color="white" />
-          </template>
-          {{ errorMessage }}
-        </q-banner>
+  <q-page class="flex flex-center bg-grey-2">
+    <q-card class="q-pa-none shadow-2 my-card" bordered style="width: 100%; max-width: 450px">
+      <q-card-section class="q-pt-xl q-pb-md text-center">
+        <div class="text-h5 text-primary text-weight-bold">Restablecer Contraseña</div>
+        <div class="text-caption text-grey-7">Introduce tu nueva contraseña</div>
       </q-card-section>
 
-      <q-card-actions align="center">
-        <q-btn
-          label="Restablecer contraseña"
-          color="primary"
-          @click="resetPassword"
-          :loading="loading"
-          :disable="!nuevaPassword || !confirmarPassword"
-        />
-      </q-card-actions>
+      <q-card-section class="q-px-lg">
+        <form @submit.prevent="resetPassword" class="q-gutter-md">
+          <q-input
+            v-model="nuevaPassword"
+            label="Nueva Contraseña"
+            :type="mostrarPassword ? 'text' : 'password'"
+            outlined
+            dense
+            @update:model-value="serverPasswordError = ''"
+            :error="(passwordError && mostrarErrores) || !!serverPasswordError"
+            :hide-bottom-space="(!passwordError || !mostrarErrores) && !serverPasswordError"
+            :error-message="obtenerMensajeErrorPassword"
+          >
+            <template v-slot:prepend>
+              <q-icon name="lock_reset" color="primary" />
+            </template>
+            <template v-slot:append>
+              <q-icon
+                :name="mostrarPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="mostrarPassword = !mostrarPassword"
+                color="grey-7"
+              />
+            </template>
+          </q-input>
 
-      <q-card-section v-if="success" class="text-positive text-center text-weight-bold">
-        ✅ Contraseña restablecida correctamente. <br />
-        Redirigiendo...
+          <q-input
+            v-model="confirmarPassword"
+            label="Confirmar Nueva Contraseña"
+            type="password"
+            outlined
+            dense
+            :error="confirmarError && mostrarErrores"
+            :error-message="confirmarError && mostrarErrores ? 'Las contraseñas no coinciden' : ''"
+          >
+            <template v-slot:prepend>
+              <q-icon name="lock" color="primary" />
+            </template>
+          </q-input>
+
+          <q-banner
+            v-if="errorMessage"
+            dense
+            rounded
+            class="bg-red-1 text-negative q-mt-md border-red"
+          >
+            <template v-slot:avatar>
+              <q-icon name="error" color="negative" />
+            </template>
+            {{ errorMessage }}
+          </q-banner>
+
+          <div
+            v-if="success"
+            class="text-center q-pa-md bg-green-1 text-positive rounded-borders q-mt-md"
+          >
+            <q-icon name="check_circle" size="sm" />
+            <div class="text-weight-bold q-mt-xs">¡Contraseña restablecida!</div>
+            <div class="text-caption">Redirigiendo al login...</div>
+          </div>
+
+          <div class="q-mt-lg q-mb-md">
+            <q-btn
+              label="Guardar Nueva Contraseña"
+              color="primary"
+              type="submit"
+              :loading="loading"
+              unelevated
+              size="lg"
+              class="full-width shadow-1"
+              :disable="!nuevaPassword || !confirmarPassword || success"
+            />
+          </div>
+        </form>
       </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
 
@@ -74,21 +97,25 @@ const mostrarPassword = ref(false);
 const loading = ref(false);
 
 // Errores
-const errorMessage = ref(''); // Error genérico (Banner)
-const serverPasswordError = ref(''); // Error específico del input (Estilo nativo)
+const errorMessage = ref(''); // Error genérico
+const serverPasswordError = ref(''); // Error específico del input
 const success = ref(false);
 const mostrarErrores = ref(false);
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-const passwordValida = computed(() => passwordRegex.test(nuevaPassword.value));
+// 🔥 REGLA DE VALIDACIÓN CORREGIDA (Igual que Registro: 6 chars, número, vocal)
+// (?=.*\d) -> Al menos un dígito
+// (?=.*[aeiouAEIOU]) -> Al menos una vocal
+// .{6,} -> Longitud mínima de 6
+const passwordRegex = /^(?=.*[aeiouAEIOU])(?=.*\d).{6,}$/;
 
+const passwordValida = computed(() => passwordRegex.test(nuevaPassword.value));
 const passwordError = computed(() => !passwordValida.value);
 const confirmarError = computed(() => confirmarPassword.value !== nuevaPassword.value);
 
-// Computed para decidir qué mensaje mostrar en el input de contraseña
 const obtenerMensajeErrorPassword = computed(() => {
   if (passwordError.value && mostrarErrores.value) {
-    return 'Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo';
+    // 🔥 MENSAJE COHERENTE CON EL REGISTRO
+    return 'Mínimo 6 caracteres, un número y una vocal.';
   }
   if (serverPasswordError.value) {
     return serverPasswordError.value;
@@ -96,14 +123,10 @@ const obtenerMensajeErrorPassword = computed(() => {
   return '';
 });
 
-onMounted(() => {
-  // Verificar sesión
-});
-
 const resetPassword = async () => {
   mostrarErrores.value = true;
   errorMessage.value = '';
-  serverPasswordError.value = ''; // Limpiamos errores previos del input
+  serverPasswordError.value = '';
 
   if (!passwordValida.value || confirmarPassword.value !== nuevaPassword.value) {
     return;
@@ -121,19 +144,20 @@ const resetPassword = async () => {
     success.value = true;
     setTimeout(() => {
       void router.push('/Acceder');
-    }, 2000);
+    }, 2500);
   } catch (error: unknown) {
-    console.error('Error restableciendo contraseña:', error);
-
+    console.error('Error reset:', error);
     let msg = 'Error al restablecer la contraseña';
-    if (error instanceof Error) msg = error.message;
 
-    // LÓGICA DE ESTILOS:
-    if (msg.includes('different from the old password')) {
-      // Si es el error de "misma contraseña", lo mandamos al INPUT
+    if (error instanceof Error) msg = error.message;
+    else if (typeof error === 'object' && error !== null && 'message' in error) {
+      msg = (error as { message: string }).message;
+    }
+
+    // Gestionar error de "misma contraseña" de forma elegante
+    if (msg.toLowerCase().includes('different from the old')) {
       serverPasswordError.value = 'La nueva contraseña no puede ser igual a la anterior.';
     } else {
-      // Cualquier otro error raro, lo mandamos al BANNER general
       errorMessage.value = msg;
     }
   } finally {
@@ -143,7 +167,10 @@ const resetPassword = async () => {
 </script>
 
 <style scoped>
-.q-mt-md {
-  margin-top: 16px;
+.my-card {
+  border-radius: 16px;
+}
+.border-red {
+  border: 1px solid #ef9a9a;
 }
 </style>

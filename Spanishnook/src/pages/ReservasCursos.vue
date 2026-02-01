@@ -8,7 +8,6 @@
       <q-card flat bordered class="q-pa-xl text-center">
         <q-icon name="error_outline" size="64px" color="grey-5" />
         <div class="text-h6 q-mt-md">Curso no encontrado</div>
-        <div class="text-caption q-mt-sm">Verifica el enlace o vuelve atrás.</div>
         <q-btn color="primary" class="q-mt-md" :to="rutaClases" label="Volver a cursos" />
       </q-card>
     </div>
@@ -25,6 +24,11 @@
               <q-chip size="sm" :color="colorEstado" text-color="white" dense>
                 {{ curso.estado_curso }}
               </q-chip>
+
+              <span class="text-caption q-ml-sm text-grey-8">
+                <q-icon name="group" class="q-mr-xs" />
+                Plazas: <strong>{{ ocupacionActual }} / {{ curso.max_estudiantes || '∞' }}</strong>
+              </span>
             </div>
           </q-card-section>
 
@@ -35,37 +39,27 @@
               {{ curso.descripcion || 'Sin descripción disponible.' }}
             </div>
 
-            <div class="text-body2 q-mt-sm">
-              <div v-if="curso.nivel"><strong>Nivel:</strong> {{ curso.nivel }}</div>
-              <div v-if="curso.precio_curso">
-                <strong>Precio del curso:</strong> {{ curso.precio_curso }}
-              </div>
-            </div>
-
             <div class="row q-col-gutter-sm q-mt-md">
               <div class="col-12 col-md-6">
                 <q-list dense bordered class="rounded-borders">
                   <q-item-label header>Días de la semana</q-item-label>
                   <q-item v-for="d in curso.dias_semana" :key="d">
                     <q-item-section avatar><q-icon name="event" color="primary" /></q-item-section>
-                    <q-item-section>{{ d }}</q-item-section>
-                  </q-item>
-                  <q-item v-if="!curso.dias_semana?.length" dense>
-                    <q-item-section caption>Sin días asignados</q-item-section>
+                    <q-item-section>{{ traducirDia(d) }}</q-item-section>
                   </q-item>
                 </q-list>
               </div>
+
               <div class="col-12 col-md-6">
                 <q-list dense bordered class="rounded-borders">
-                  <q-item-label header>Horarios</q-item-label>
-                  <q-item v-for="h in curso.horarios_curso" :key="h">
+                  <q-item-label header>Horario de Clase</q-item-label>
+                  <q-item v-if="curso.horarios_curso && curso.horarios_curso.length > 0">
                     <q-item-section avatar
                       ><q-icon name="schedule" color="primary"
                     /></q-item-section>
-                    <q-item-section>{{ h }}</q-item-section>
-                  </q-item>
-                  <q-item v-if="!curso.horarios_curso?.length" dense>
-                    <q-item-section caption>Sin horarios</q-item-section>
+                    <q-item-section>
+                      {{ formatearHorario(curso.horarios_curso[0] || '') }}
+                    </q-item-section>
                   </q-item>
                 </q-list>
               </div>
@@ -80,206 +74,158 @@
             <div class="text-h6 text-weight-bold" style="color: #851319">
               {{ esCursoActivo ? 'Inscripción al Curso' : 'Reserva tu plaza' }}
             </div>
-
-            <div v-if="autenticado" class="text-caption text-grey-7">
-              Estás autenticado. Puedes reservar directamente.
-            </div>
-            <div v-else class="text-caption text-grey-7">
-              {{
-                esCursoActivo
-                  ? 'Inicia sesión para suscribirte.'
-                  : 'No has iniciado sesión. Puedes registrarte o reservar con tu email.'
-              }}
-            </div>
           </q-card-section>
 
           <q-separator />
 
-          <div v-if="esCursoActivo">
-            <q-card-section class="text-center">
+          <q-card-section class="text-center">
+            <div v-if="estaSuscrito">
+              <div class="text-h5 text-positive q-my-md text-weight-bold">¡Ya eres alumno!</div>
+              <q-banner dense class="bg-green-1 text-green-9 q-pa-md rounded-borders q-mb-md">
+                <template v-slot:avatar><q-icon name="check_circle" color="positive" /></template>
+                Tienes tu plaza asegurada en este curso.
+              </q-banner>
+              <q-btn
+                color="primary"
+                label="Ir a mi Área Personal"
+                to="/AreaPersonal"
+                class="full-width"
+                icon="account_circle"
+              />
+            </div>
+
+            <div v-else-if="esCursoActivo && !cursoLleno">
               <div class="text-h4 text-weight-bold q-my-md" style="color: #851319">
                 {{ curso.precio_curso }}<span class="text-caption">/mes</span>
               </div>
 
-              <div v-if="autenticado" class="column items-center">
-                <template v-if="estaSuscrito">
-                  <q-banner dense class="bg-green-1 text-green-9 q-pa-md rounded-borders q-mb-md">
-                    <template v-slot:avatar>
-                      <q-icon name="check_circle" color="positive" />
-                    </template>
-                    <div class="text-weight-bold">Ya eres alumno de este curso.</div>
-                    <div>Puedes gestionar tu suscripción desde tu área personal.</div>
-                  </q-banner>
-
-                  <q-btn
-                    outline
-                    color="primary"
-                    label="Ir a mi área personal"
-                    to="/AreaPersonal"
-                    icon="account_circle"
-                    class="full-width"
-                  />
-                </template>
-
-                <template v-else>
-                  <q-btn
-                    color="primary"
-                    size="lg"
-                    icon="credit_card"
-                    label="Suscribirse Ahora"
-                    :loading="procesando"
-                    @click="iniciarSuscripcion"
-                    class="q-px-xl"
-                  />
-                  <div class="text-caption q-mt-sm text-grey">Pago seguro vía Stripe</div>
-                </template>
+              <div v-if="autenticado">
+                <q-btn
+                  color="primary"
+                  size="lg"
+                  icon="credit_card"
+                  label="Suscribirse Ahora"
+                  :loading="procesando"
+                  @click="iniciarSuscripcion"
+                  class="q-px-xl"
+                />
+                <div class="text-caption q-mt-sm text-grey">Pago seguro vía Stripe</div>
               </div>
-
               <div v-else>
                 <q-btn
                   outline
                   color="primary"
-                  class="full-width q-mb-sm"
+                  class="full-width"
                   :to="rutaLogin"
                   label="Iniciar Sesión para Inscribirse"
                 />
               </div>
-            </q-card-section>
-          </div>
+            </div>
 
-          <div v-else>
-            <q-card-section v-if="autenticado" class="column items-center text-center">
-              <q-btn
-                color="primary"
-                icon="event_available"
-                :disable="!aceptaCondiciones"
-                :loading="reservando"
-                label="Unirme a lista de espera"
-                @click="confirmarReservaAutenticado"
-                class="q-px-xl q-mb-md"
-                size="md"
-              />
-
-              <q-checkbox
-                v-model="aceptaCondiciones"
-                label="Acepto las condiciones y la política de privacidad"
-                dense
-                size="sm"
-                color="primary"
-              />
-
-              <q-banner
-                v-if="yaEnListaEspera"
-                dense
-                class="bg-orange-1 text-orange-9 q-mt-md rounded-borders"
+            <div v-else>
+              <div
+                v-if="cursoLleno && esCursoActivo"
+                class="text-body2 text-negative q-mb-md text-weight-bold"
               >
-                Ya estás en lista de espera o reserva registrada.
-              </q-banner>
-            </q-card-section>
+                ⚠️ El curso está completo.
+              </div>
+              <div v-else class="text-body2 text-grey-8 q-mb-md">El curso aún no está abierto.</div>
 
-            <q-card-section v-else class="column items-center">
-              <div class="full-width">
-                <q-input
-                  v-model="formGuest.nombre"
-                  label="Tu nombre"
-                  dense
-                  filled
-                  class="q-mb-sm"
-                  :rules="[(val) => !!val || 'Requerido']"
-                />
-                <q-input
-                  v-model="formGuest.email"
-                  label="Tu email"
-                  dense
-                  filled
-                  class="q-mb-sm"
-                  :rules="[(val) => !!val || 'Requerido']"
-                  type="email"
-                />
+              <div v-if="autenticado">
+                <div v-if="!yaEnListaEspera">
+                  <p>Apúntate a la lista de espera prioritaria.</p>
+                  <q-btn
+                    color="primary"
+                    icon="event_available"
+                    :disable="!aceptaCondiciones"
+                    :loading="reservando"
+                    label="Unirme a lista de espera"
+                    @click="confirmarReservaAutenticado"
+                    class="q-px-xl q-mb-md"
+                  />
+                  <br />
+                  <q-checkbox
+                    v-model="aceptaCondiciones"
+                    label="Acepto condiciones"
+                    dense
+                    size="sm"
+                  />
+                </div>
+                <q-banner v-else dense class="bg-orange-1 text-orange-9 q-mt-md rounded-borders">
+                  <template v-slot:avatar><q-icon name="watch_later" /></template>
+                  Ya estás en la lista de espera.
+                </q-banner>
               </div>
 
-              <q-btn
-                color="primary"
-                icon="event_available"
-                :disable="!formGuestValido || reservando"
-                :loading="reservando"
-                label="Avisadme por email"
-                @click="confirmarReservaGuest"
-                class="q-mt-sm q-px-xl"
-              />
-
-              <q-checkbox
-                v-model="aceptaCondicionesGuest"
-                label="Acepto las condiciones y la política de privacidad"
-                class="q-mt-md"
-                dense
-                size="sm"
-              />
-
-              <q-btn
-                flat
-                color="primary"
-                class="q-mt-md"
-                icon="login"
-                label="Registrarme / Iniciar sesión"
-                :to="rutaLogin"
-                size="sm"
-              />
-
-              <q-banner
-                v-if="yaEnListaEspera"
-                dense
-                class="bg-orange-1 text-orange-9 q-mt-sm full-width"
-              >
-                Tu email ya está registrado para este curso.
-              </q-banner>
-            </q-card-section>
-
-            <q-card-section>
-              <div class="text-caption text-center text-grey-6">
-                Al reservar aceptas nuestras condiciones. Te avisaremos cuando se abra el curso.
+              <div v-else>
+                <div v-if="!yaEnListaEspera" class="full-width">
+                  <q-input
+                    v-model="formGuest.nombre"
+                    label="Tu nombre"
+                    dense
+                    filled
+                    class="q-mb-sm"
+                  />
+                  <q-input
+                    v-model="formGuest.email"
+                    label="Tu email"
+                    dense
+                    filled
+                    class="q-mb-sm"
+                  />
+                  <q-btn
+                    color="primary"
+                    :disable="!formGuestValido || reservando"
+                    :loading="reservando"
+                    label="Avisadme por email"
+                    @click="confirmarReservaGuest"
+                    class="q-mt-sm full-width"
+                  />
+                  <q-checkbox
+                    v-model="aceptaCondicionesGuest"
+                    label="Acepto condiciones"
+                    class="q-mt-md"
+                    dense
+                    size="sm"
+                  />
+                </div>
+                <q-banner v-else dense class="bg-orange-1 text-orange-9 q-mt-sm">
+                  Tu email ya está registrado.
+                </q-banner>
+                <q-btn
+                  flat
+                  color="primary"
+                  class="q-mt-md"
+                  label="Iniciar sesión"
+                  :to="rutaLogin"
+                  size="sm"
+                />
               </div>
-            </q-card-section>
-          </div>
+            </div>
+          </q-card-section>
         </q-card>
       </div>
     </div>
 
     <q-dialog v-model="dialogConfirm" persistent>
-      <q-card style="max-width: 420px">
-        <q-card-section>
-          <div class="text-h6">Confirmar</div>
-          <div class="text-body2 q-mt-sm">
-            ¿Deseas unirte a la lista de espera para <strong>{{ curso?.nombre_curso }}</strong
-            >?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="grey" v-close-popup />
-          <q-btn
+      <q-card
+        ><q-card-section>¿Unirse a la lista?</q-card-section
+        ><q-card-actions align="right"
+          ><q-btn flat label="No" v-close-popup /><q-btn
             color="primary"
-            label="Confirmar"
-            :loading="reservando"
-            @click="reservarAutenticado"
-          />
-        </q-card-actions>
-      </q-card>
+            label="Sí"
+            @click="reservarAutenticado" /></q-card-actions
+      ></q-card>
     </q-dialog>
-
     <q-dialog v-model="dialogGuestConfirm" persistent>
-      <q-card style="max-width: 420px">
-        <q-card-section>
-          <div class="text-h6">Confirmar</div>
-          <div class="text-body2 q-mt-sm">
-            ¿Confirmas con el email <strong>{{ formGuest.email }}</strong
-            >?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="grey" v-close-popup />
-          <q-btn color="primary" label="Confirmar" :loading="reservando" @click="reservarGuest" />
-        </q-card-actions>
-      </q-card>
+      <q-card
+        ><q-card-section>¿Confirmar email {{ formGuest.email }}?</q-card-section
+        ><q-card-actions align="right"
+          ><q-btn flat label="No" v-close-popup /><q-btn
+            color="primary"
+            label="Sí"
+            @click="reservarGuest" /></q-card-actions
+      ></q-card>
     </q-dialog>
   </q-page>
 </template>
@@ -290,12 +236,15 @@ import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
-import { useSuscripciones } from 'src/composables/useSuscripciones'; // Composable de pagos
+import { useSuscripciones } from 'src/composables/useSuscripciones';
+import { useI18n } from 'vue-i18n'; // 🔥 IMPORTAR I18N
 
 const $q = useQuasar();
 const route = useRoute();
-const { procesando, handleSubscribe } = useSuscripciones(); // Lógica de Stripe
+const { procesando, handleSubscribe } = useSuscripciones();
+const { locale } = useI18n(); // 🔥 USAR LOCALE
 
+// Interfaces
 interface CursoGrupal {
   id?: number;
   nombre_curso: string;
@@ -307,41 +256,45 @@ interface CursoGrupal {
   precio_curso?: string;
   dias_semana?: string[];
   horarios_curso?: string[];
-  stripe_price_id?: string; // ⚠️ Necesario en la base de datos
+  stripe_price_id?: string;
+  max_estudiantes?: number;
 }
 
 const curso = ref<CursoGrupal | null>(null);
 const cargando = ref(true);
 const reservando = ref(false);
 const user = ref<User | null>(null);
+const ocupacionActual = ref(0);
 
 const autenticado = computed(() => !!user.value);
 const rutaClases = '/NuestrasClases';
-const rutaLogin = '/Acceder'; // Cambiado a 'Acceder' que es tu ruta habitual
-
-// Computed para saber si está activo y mostramos pasarela
+const rutaLogin = '/Acceder';
 const esCursoActivo = computed(() => curso.value?.estado_curso === 'Activo');
 
+const cursoLleno = computed(() => {
+  if (!curso.value) return false;
+  const max = curso.value.max_estudiantes || 100;
+  return ocupacionActual.value >= max;
+});
+
 const colorEstado = computed(() => {
+  if (cursoLleno.value && esCursoActivo.value) return 'red';
   switch (curso.value?.estado_curso) {
     case 'Activo':
       return 'positive';
-    case 'En reserva':
-      return 'orange';
     case 'Completo':
-      return 'primary'; // Rojo al estar completo
+      return 'red';
     default:
-      return 'grey';
+      return 'orange';
   }
 });
 
-// Variables formularios
 const aceptaCondiciones = ref(false);
 const aceptaCondicionesGuest = ref(false);
 const dialogConfirm = ref(false);
 const dialogGuestConfirm = ref(false);
 const formGuest = ref({ nombre: '', email: '' });
-
+const estaSuscrito = ref(false);
 const formGuestValido = computed(
   () => !!formGuest.value.nombre && !!formGuest.value.email && aceptaCondicionesGuest.value,
 );
@@ -352,7 +305,45 @@ const yaEnListaEspera = computed(() => {
   return (curso.value.lista_espera || []).includes(valor);
 });
 
-// --- FUNCIONES ---
+// --- TRADUCCIÓN DÍAS Y HORAS ---
+
+const diasSemanaMap: Record<string, Record<string, string>> = {
+  lunes: { 'es-ES': 'Lunes', 'en-US': 'Monday' },
+  martes: { 'es-ES': 'Martes', 'en-US': 'Tuesday' },
+  miercoles: { 'es-ES': 'Miércoles', 'en-US': 'Wednesday' },
+  miércoles: { 'es-ES': 'Miércoles', 'en-US': 'Wednesday' }, // 🔥 Clave con tilde
+  jueves: { 'es-ES': 'Jueves', 'en-US': 'Thursday' },
+  viernes: { 'es-ES': 'Viernes', 'en-US': 'Friday' },
+  sabado: { 'es-ES': 'Sábado', 'en-US': 'Saturday' },
+  sábado: { 'es-ES': 'Sábado', 'en-US': 'Saturday' }, // 🔥 Clave con tilde
+  domingo: { 'es-ES': 'Domingo', 'en-US': 'Sunday' },
+};
+
+const traducirDia = (dia: string) => {
+  if (!dia) return '';
+  const key = dia.toLowerCase();
+  const traducciones = diasSemanaMap[key];
+  return traducciones?.[locale.value] ?? traducciones?.['es-ES'] ?? dia;
+};
+
+const formatearHorario = (horaInicio: string) => {
+  if (!horaInicio) return 'Horario por definir';
+  const partes = horaInicio.split(':');
+  if (partes.length < 2) return horaInicio;
+
+  const h = Number(partes[0]);
+  const m = Number(partes[1]);
+  if (isNaN(h) || isNaN(m)) return horaInicio;
+
+  const fecha = new Date();
+  fecha.setHours(h, m, 0, 0);
+  fecha.setMinutes(fecha.getMinutes() + 90);
+  const hFin = fecha.getHours().toString().padStart(2, '0');
+  const mFin = fecha.getMinutes().toString().padStart(2, '0');
+  return `${horaInicio} - ${hFin}:${mFin}`;
+};
+
+// --- CARGAS DE DATOS ---
 
 const cargarUsuario = async () => {
   const { data } = await supabase.auth.getUser();
@@ -370,18 +361,20 @@ const cargarCurso = async () => {
       .select('*')
       .eq('id', idNum)
       .maybeSingle();
-
     if (error) throw error;
 
-    // Mapeo seguro de arrays
     if (data) {
       curso.value = {
         ...data,
         dias_semana: Array.isArray(data.dias_semana) ? data.dias_semana : [],
         horarios_curso: Array.isArray(data.horarios_curso) ? data.horarios_curso : [],
         lista_espera: Array.isArray(data.lista_espera) ? data.lista_espera : [],
-        usuarios: Array.isArray(data.usuarios) ? data.usuarios : [],
       };
+      // Contador Seguro (RPC)
+      const { data: countData } = await supabase.rpc('get_curso_ocupacion', {
+        curso_id_param: idNum,
+      });
+      ocupacionActual.value = countData || 0;
     }
   } catch {
     curso.value = null;
@@ -390,23 +383,32 @@ const cargarCurso = async () => {
   }
 };
 
-// Lógica de PAGO (Solo si está activo)
 const iniciarSuscripcion = async () => {
-  if (!curso.value?.stripe_price_id) {
-    $q.notify({
-      type: 'negative',
-      message: 'Error: Este curso no tiene ID de precio configurado.',
-    });
-    return;
+  if (!curso.value?.stripe_price_id)
+    return $q.notify({ type: 'negative', message: 'Error configuración' });
+
+  if (ocupacionActual.value >= (curso.value.max_estudiantes || 100)) {
+    return $q.notify({ type: 'negative', message: '¡Plazas agotadas!' });
   }
-  // Llamamos a Stripe
   await handleSubscribe(curso.value.stripe_price_id, curso.value.id!.toString());
 };
 
-// Lógica de LISTA DE ESPERA (Guest)
+const comprobarSuscripcion = async () => {
+  if (!user.value || !curso.value?.id) return;
+  const { data } = await supabase
+    .from('user_subscriptions')
+    .select('id')
+    .eq('user_id', user.value.id)
+    .eq('course_id', curso.value.id)
+    .in('estado', ['active', 'trialing'])
+    .maybeSingle();
+  if (data) estaSuscrito.value = true;
+};
+
+// --- RESERVAS (LISTA DE ESPERA) ---
+
 const confirmarReservaGuest = () => {
-  if (!formGuestValido.value)
-    return $q.notify({ type: 'warning', message: 'Rellena todos los campos' });
+  if (!formGuestValido.value) return $q.notify({ type: 'warning', message: 'Rellena los campos' });
   dialogGuestConfirm.value = true;
 };
 
@@ -415,38 +417,22 @@ const reservarGuest = async () => {
   dialogGuestConfirm.value = false;
   reservando.value = true;
   try {
-    const lista = new Set([...(curso.value.lista_espera || [])]);
-    lista.add(formGuest.value.email);
-    await supabase
-      .from('cursos_grupales')
-      .update({ lista_espera: Array.from(lista) })
-      .eq('id', curso.value.id);
-    $q.notify({ type: 'positive', message: 'Te avisaremos por correo.' });
+    const { error } = await supabase.rpc('add_to_waitlist', {
+      p_course_id: curso.value.id,
+      p_email_or_id: formGuest.value.email,
+    });
+    if (error) throw error;
+
+    $q.notify({ type: 'positive', message: 'Apuntado a la lista de espera.' });
     await cargarCurso();
-  } catch {
-    $q.notify({ type: 'negative', message: 'Error al registrar.' });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Error desconocido';
+    $q.notify({ type: 'negative', message: 'Error al registrar: ' + msg });
   } finally {
     reservando.value = false;
   }
 };
 
-const estaSuscrito = ref(false); // Para saber si ya tiene este curso
-
-// Función para verificar si el usuario ya tiene este curso activo
-const comprobarSuscripcion = async () => {
-  if (!user.value || !curso.value?.id) return;
-  const { data } = await supabase
-    .from('user_subscriptions')
-    .select('id')
-    .eq('user_id', user.value.id)
-    .eq('course_id', curso.value.id)
-    .eq('estado', 'active')
-    .maybeSingle();
-
-  if (data) estaSuscrito.value = true;
-};
-
-// Lógica de LISTA DE ESPERA (Autenticado)
 const confirmarReservaAutenticado = () => {
   if (!aceptaCondiciones.value)
     return $q.notify({ type: 'warning', message: 'Acepta las condiciones' });
@@ -458,16 +444,17 @@ const reservarAutenticado = async () => {
   dialogConfirm.value = false;
   reservando.value = true;
   try {
-    const lista = new Set([...(curso.value.lista_espera || [])]);
-    lista.add(user.value.id);
-    await supabase
-      .from('cursos_grupales')
-      .update({ lista_espera: Array.from(lista) })
-      .eq('id', curso.value.id);
+    const { error } = await supabase.rpc('add_to_waitlist', {
+      p_course_id: curso.value.id,
+      p_email_or_id: user.value.id,
+    });
+    if (error) throw error;
+
     $q.notify({ type: 'positive', message: 'Añadido a lista de espera.' });
     await cargarCurso();
-  } catch {
-    $q.notify({ type: 'negative', message: 'Error al registrar.' });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Error desconocido';
+    $q.notify({ type: 'negative', message: 'Error al registrar: ' + msg });
   } finally {
     reservando.value = false;
   }
@@ -476,9 +463,7 @@ const reservarAutenticado = async () => {
 onMounted(async () => {
   await cargarUsuario();
   await cargarCurso();
-  if (autenticado.value) {
-    await comprobarSuscripcion();
-  }
+  if (autenticado.value) await comprobarSuscripcion();
 });
 </script>
 

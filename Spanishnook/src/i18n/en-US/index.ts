@@ -233,6 +233,7 @@ export default {
   },
   personal:{
     hola: 'Hello',
+    aLas: 'at',
     seleccionar: 'Select',
     bienvenidoAreaPersonal: 'Welcome to your Personal Area!',
     holaUsuario:' Hello User!',

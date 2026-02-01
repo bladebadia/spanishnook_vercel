@@ -596,7 +596,7 @@ const handleDarOpinion = () => {
 // Redirigir a registro
 const irARegistro = () => {
   showLoginDialog.value = false;
-  void router.push('/Registro');
+  void router.push('/RegistroCuenta');
 };
 
 // Enviar opinión a Supabase
