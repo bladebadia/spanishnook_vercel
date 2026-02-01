@@ -1,89 +1,88 @@
+/*  TARJETAS */
 
-
-                                  /*  TARJETAS */
-   
-.tarjeta-quien{
-    width: 55%;    
+.tarjeta-quien {
+  width: 55%;
 }
 @media (max-width: 599px) {
-    .tarjeta-quien {
-       width: 90%;
-    }
+  .tarjeta-quien {
+    width: 90%;
+  }
 }
 /* Para hacer el avatar responsive */
 .tarjeta-quien .q-avatar {
-  font-size: 100px !important;
+  font-size: 140px !important;
 }
 
 @media (max-width: 768px) {
   .tarjeta-quien .q-avatar {
-    font-size: 80px !important;
+    font-size: 100px !important;
   }
 }
-
 
 /* Estilos para la lista con checks */
-    .lista-check {
-        list-style: none;
-        padding-left: 0;
-        font-size: 1.3rem;
-    }
-    .lista-check > li {
-    padding-left: 2em; /* Sangría para el texto */
-    text-indent: -1.5em; /* Retrocede el check */
-    margin-bottom: 0.5em; /* Espacio entre elementos */
-    line-height: 1.4; /* Altura de línea para mejor legibilidad */
-  }
-    .lista-check > li::before {
-        content: '\2713'; /* Unicode para ✓ */
-        color: #2ecc40 !important;
-        margin-right: 0.5em;
-        font-size: 1.1em;
-        font-family: inherit;
-    }
-
-
-    .faqs-section {
-        border-radius: 18px;
-        padding: 32px 0;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    .contacto-section {
-        border-radius: 18px;
-        padding: 32px 0 40px 0;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-/* Agrandar icono de q-expansion-item en FAQs */
-    .faqs-section .q-expansion-item__toggle-icon {
-        font-size: 1.8rem !important;
-    }
-/* Agrandar icono de q-expansion-item en FAQs usando ::v-deep para Quasar */
-    .faqs-section ::v-deep .q-expansion-item__toggle-icon {
-        font-size: 2.3rem !important;
-    }
-
-
-  /* En móvil, cambiar el orden: imagen arriba, texto abajo */
-.row.justify-center.items-center {
-    flex-direction: column-reverse;
+.lista-check {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1.3rem;
+}
+.lista-check > li {
+  padding-left: 2em; /* Sangría para el texto */
+  text-indent: -1.5em; /* Retrocede el check */
+  margin-bottom: 0.5em; /* Espacio entre elementos */
+  line-height: 1.4; /* Altura de línea para mejor legibilidad */
+}
+.lista-check > li::before {
+  content: '\2713'; /* Unicode para ✓ */
+  color: #2ecc40 !important;
+  margin-right: 0.5em;
+  font-size: 1.1em;
+  font-family: inherit;
 }
 
+.faqs-section {
+  border-radius: 18px;
+  padding: 32px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.contacto-section {
+  border-radius: 18px;
+  padding: 32px 0 40px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Agrandar icono de q-expansion-item en FAQs */
+/* Flechas de q-expansion-item más grandes y blancas */
+.faqs-section .q-expansion-item__toggle-icon {
+  font-size: 2.4rem !important;
+  color: #fff !important;
+}
+/* Para Quasar v2+ con deep selector */
+.faqs-section ::v-deep .q-expansion-item__toggle-icon {
+  font-size: 2.4rem !important;
+  color: #fff !important;
+}
+/* Agrandar icono de q-expansion-item en FAQs usando ::v-deep para Quasar */
+.faqs-section ::v-deep .q-expansion-item__toggle-icon {
+  font-size: 2.3rem !important;
+}
+
+/* En móvil, cambiar el orden: imagen arriba, texto abajo */
+.row.justify-center.items-center {
+  flex-direction: column-reverse;
+}
 
 /* Móviles (max-width: 600px) */
-    
-@media (max-width: 600px) {
 
+@media (max-width: 600px) {
   .lista-check {
     font-size: 0.9rem;
   }
   .lista-check > li {
-        padding-left: 1.5em;
-        text-indent: -1.2em;
+    padding-left: 1.5em;
+    text-indent: -1.2em;
   }
-
 }
 
 .promocards-container {
@@ -97,11 +96,16 @@
   align-items: stretch;
   height: 100%;
 }
+
 .promocards-container .q-card {
-  /* igualar altura: que ocupe todo el contenedor del grid item */
   height: 100%;
   display: flex;
   flex-direction: column;
+  min-height: 480px;
+}
+
+.promocards-container .q-card .q-card__section {
+  flex-grow: 1;
 }
 
 .promocards-container .q-card .q-card__section {
@@ -140,7 +144,6 @@
   }
 }
 
-
 /* Sección de Opiniones */
 .opiniones-section {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -171,11 +174,11 @@
   .opinion-card {
     margin-bottom: 20px;
   }
-  
+
   .opiniones-section h2 {
     font-size: 1.8rem;
   }
-  
+
   .opiniones-section p {
     font-size: 1.1rem;
   }
@@ -291,8 +294,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 20% 80%, rgba(25, 118, 210, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(25, 118, 210, 0.05) 0%, transparent 50%);
+  background:
+    radial-gradient(circle at 20% 80%, rgba(25, 118, 210, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(25, 118, 210, 0.05) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -302,30 +306,30 @@
     left: 15px;
     top: 45%;
   }
-  
+
   .carousel-arrow-right {
     right: 15px;
     top: 45%;
   }
-  
+
   .carousel-arrow {
     width: 40px;
     height: 40px;
   }
-  
+
   .opinions-carousel.single-card {
     height: auto !important;
     min-height: 400px;
   }
-  
+
   .opinions-carousel.single-card .q-carousel__slide {
     padding: 20px 15px;
   }
-  
+
   .carousel-container {
     margin: 0 15px;
   }
-  
+
   .single-opinion-card {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
@@ -336,19 +340,19 @@
     width: 36px;
     height: 36px;
   }
-  
+
   .carousel-arrow-left {
     left: 10px;
   }
-  
+
   .carousel-arrow-right {
     right: 10px;
   }
-  
+
   .opinions-carousel.single-card {
     min-height: 380px;
   }
-  
+
   .indicator-dot {
     width: 12px;
     height: 12px;

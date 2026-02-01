@@ -7,7 +7,7 @@
           style="width: 100%; height: auto"
           fit="cover"
           position="center"
-          src="/img/estudiante_1024.jpg"
+          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-baner.png"
         >
         </q-img>
       </div>
@@ -22,6 +22,7 @@
         ></p>
       </div>
     </div>
+
     <!-- Botones de Clases de conversación y Clases Individuales -->
     <div class="row q-pa-md q-my-md justify-evenly botones-clases">
       <q-btn
@@ -78,17 +79,18 @@
       <div class="col-12">
         <div v-intersect="onImgIntersect" class="animacion-banner">
           <div v-if="showAnimatedImg" class="anim-group">
-            <div class="test-card">
-              <div class="test-card__text">{{ $t('NuestrasClases.recuerdaHacerTest') }}</div>
-              <q-btn
-                class="oval-btn q-mt-sm"
-                color="black"
-                unelevated
-                to="/TestNivel"
-                :label="$t('NuestrasClases.testDeNivel')"
-              />
-            </div>
-            <img src="/img/animacion4.png" alt="Animación" class="anim-img" />
+            <q-btn
+              class="oval-btn q-mt-sm"
+              color="black"
+              unelevated
+              to="/TestNivel"
+              :label="$t('NuestrasClases.testDeNivel')"
+            />
+            <img
+              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/test-nicel-spanish-cta.png"
+              alt="Animación"
+              class="anim-img"
+            />
           </div>
         </div>
       </div>
@@ -211,25 +213,21 @@
     </div>
 
     <!--Seccion clases individuales-->
-    <div
-      id="clases-individuales"
-      class="row full-width q-my-xl items-center"
-      style="gap: 32px; scroll-margin-top: 120px"
-    >
+    <div id="clases-individuales" class="row full-width q-my-xl items-center">
       <!-- Banner rojo izquierdo -->
-      <div class="col-12 col-md-6 flex justify-center">
+      <div class="col-12 col-md-6 flex justify-center q-mx-xl">
         <div class="banner-clases-grupales">
-          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center">
+          <p class="banner-clases-grupales__titulo titulo-responsivo text-center">
             {{ $t('NuestrasClases.clasesIndividualesPersonalizadas') }}
-          </h2>
+          </p>
         </div>
       </div>
 
       <!-- Imagen derecha -->
       <div class="col-12 col-md-5 flex justify-center">
         <q-img
-          src="/img/estudiante_1024.jpg"
-          style="width: 100%; max-width: 500px; border-radius: 16px"
+          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases_spanish-individuales.png"
+          style="width: 100%; max-width: 300px; border-radius: 16px"
           fit="cover"
         />
       </div>
@@ -238,7 +236,7 @@
     <!-- div de servicio clases individuales -->
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
-        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
+        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">          
           <q-card-section class="q-pt-lg">
             <div class="titulo-responsivo text-center">
               {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
@@ -249,9 +247,7 @@
               v-html="$t('NuestrasClases.IntroIndividuales')"
             ></p>
           </q-card-section>
-
           <q-separator spaced />
-
           <q-card-section>
             <h2
               class="text-center q-mb-md"
@@ -263,6 +259,11 @@
             <div class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
+            <q-img
+              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/cursoA2_conv.png"
+              style="width: 70%; max-width: 300px; border-radius: 16px"
+              fit="cover"
+            />
                   <div class="subtitulo-responsivo text-center q-mb-sm">
                     {{ $t('NuestrasClases.Modalidad1') }}
                   </div>
@@ -292,9 +293,7 @@
               </div>
             </div>
           </q-card-section>
-
           <q-separator spaced />
-
           <q-card-section>
             <div class="subtitulo-responsivo text-left q-mb-md">
               {{ $t('NuestrasClases.TextoComoFuncionanIndividuales') }}
@@ -319,7 +318,7 @@
         :title="t('NuestrasClases.tituloClasesA1')"
         :description="t('NuestrasClases.textoClasesA1')"
         :button-text="t('NuestrasClases.botonClasesA1')"
-        :show-promo="true"
+        :show-promo="false"
         :promo-text="t('NuestrasClases.pruebaTuClaseGratis')"
         to="/Reservas"
       />
@@ -328,7 +327,7 @@
         :title="t('NuestrasClases.tituloClasesB1')"
         :description="t('NuestrasClases.textoClasesB1')"
         :button-text="t('NuestrasClases.botonClasesB1')"
-        :show-promo="true"
+        :show-promo="false"
         :promo-text="t('NuestrasClases.pruebaTuClaseGratis')"
         to="/Reservas"
       />
@@ -346,7 +345,7 @@ import '../css/pages/ClasesGrupales.css';
 import { supabase } from 'src/supabaseClient';
 import { useRoute } from 'vue-router';
 import { scroll, useMeta } from 'quasar';
-
+import '../css/pages/NuestrasClases.css';
 const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 const { t } = useI18n();

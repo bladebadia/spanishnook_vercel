@@ -118,7 +118,7 @@ const onImageError = (event: Event) => {
 .card.promo-card {
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   min-height: 420px;
   overflow: visible;
   width: 100%;
@@ -203,6 +203,7 @@ const onImageError = (event: Event) => {
   overflow: hidden;
   background-color: #f5f5f5;
   padding: 8px;
+  margin-top:20px;
 }
 
 /* Título: corte seguro */
@@ -265,6 +266,7 @@ const onImageError = (event: Event) => {
   .card-img-animada {
     height: 140px;
     padding: 6px;
+    margin-top: 16px;
   }
 
   .promo-badge {

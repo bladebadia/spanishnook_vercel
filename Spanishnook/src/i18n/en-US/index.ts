@@ -42,7 +42,7 @@ export default {
   indexClasesPrivadas: 'Private Classes',
   indexClasesConversacion: 'Group Conversation Classes',
   indexClasesGrupales: 'Group Classes',
-  indexAvanzaEnTu: 'Improve your Spanish with a teacher dedicated exclusively to you. You decide the pace, the topics, and your goals.',                                      
+  indexAvanzaEnTu: 'Improve your Spanish with a teacher dedicated exclusively to you. You decide the pace, the topics, and your goals.                               ',                                      
   indexQuieroMiClase: 'I want my class',
   indexAprendeEspañol: 'Learn Spanish step by step with classmates at your same level. Small, dynamic groups designed to help you progress together.',
   indexAprenderEnGrupo: 'Learn in a group',

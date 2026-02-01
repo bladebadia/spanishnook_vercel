@@ -273,10 +273,10 @@
 
   .banner-clases-grupales {
     padding: 32px 24px;
-    margin: 0 16px;
+    margin:  16px;
   }
   .banner-clases-grupales__titulo {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   .tarjeta-formativos {

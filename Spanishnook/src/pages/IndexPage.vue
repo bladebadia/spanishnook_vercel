@@ -3,7 +3,7 @@
     <!-- Banner principal OK-->
     <div>
       <q-img
-        style="width: 100%; max-height: 600px"
+        style="width: 100vw; height: 100vh; object-fit: cover; object-position: center; margin-left: calc(-50vw + 50%);"
         fit="cover"
         position="center"
         src="/img/Home/banner_1920.webp"
@@ -39,9 +39,9 @@
               "
             >
               <img
-                src="img/Home/tarjeta1_descubre_nuestras_clases.webp"
+                src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/inicio_principal_OK.png"
                 fit="cover"
-                style="width: 50%; height: auto; max-height: 300px; display: block; margin: 0 auto"
+                style="width: 50%; height: auto; max-height: 300px; display: block; margin: 20px auto"
               />
               <q-card-section class="subtitulo-responsivo text-center">{{
                 t('indexDescubreNuestrasClases')
@@ -88,39 +88,15 @@
           <div class="col-12 promocards-container">
             <!-- Componente 1: Clases Privadas -->
             <PromoCard
-              :image-src="'img/Home/tarjeta2_clases_privadas.svg'"
+              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-individuales.png'"
               :title="t('indexClasesPrivadas')"
-              :description="
-                t('indexAvanzaEnTu') +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0' +
-                '\u00A0'
-              "
+              :description="t('indexAvanzaEnTu')"
               :button-text="t('indexQuieroMiClase')"
               :to="{ path: '/Clases', hash: '#clases-individuales' }"
             />
             <!-- Componente 2: Clases Grupales -->
             <PromoCard
-              :image-src="'img/Home/tarjeta3_clases_grupales.svg'"
+              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-grupo.png'"
               :title="t('indexClasesGrupales')"
               :description="t('indexAprendeEspañol')"
               :button-text="t('indexAprenderEnGrupo')"
@@ -128,7 +104,7 @@
             />
             <!-- Componente 3: Clases de Conversación -->
             <PromoCard
-              :image-src="'img/Home/tarjeta4_conversacion.svg'"
+              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-conversacion.png'"
               :title="t('indexClasesDeConversacion')"
               :description="t('indexMejoraTuConfianza')"
               :button-text="t('indexUneteALaLista')"
@@ -177,7 +153,7 @@
             <q-item>
               <q-item-section avatar>
                 <q-avatar>
-                  <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+                  <img src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-sobre-perfil.png" />
                 </q-avatar>
               </q-item-section>
               <q-item-label class="titulo-responsivo1 q-pa-md q-ma-md-lg text-bold">
