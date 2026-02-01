@@ -6,7 +6,7 @@
         <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
           {{ t('SobreSpanish.conoce') }}
         </p>
-      </div> 
+      </div>
       <!-- Descripción  -->
       <div class="col-12 items-center text-center" style="width: 70%">
         <p class="texto-responsivo q-pb-xl q-pb-xl" v-html="t('SobreSpanish.intro')"></p>
@@ -27,19 +27,38 @@
         </p>
       </div>
 
-      <div class="col-12 q-my-md content-width">
+      <!-- Quién soy -->
+      <div class="col-12 text-center content-width">
         <p class="subtitulo-responsivo text-primary text-center">
           {{ t('SobreSpanish.quien') }}
         </p>
       </div>
-      <div class="col-12 q-my-md content-width">
-        <p class="texto-responsivo">
-          {{ t('SobreSpanish.soy') }}
-        </p>
-        <div class="q-mb-md"></div>
-        <p class="texto-responsivo" v-html="t('SobreSpanish.tras')"></p>
+      <!-- video y texto -->
+      <div class="row q-my-md content-width items-center">
+        <div class="col-12 col-md-6 flex flex-center q-mb-md q-mb-none-md">
+          <video
+            src="/video/clases_espanol_video_subt.mp4"
+            controls
+            style="max-width: 100%; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)"
+            poster="/img/Home/logo.png"
+            preload="auto"
+            playsinline
+          >
+            Tu navegador no soporta el elemento de vídeo.
+          </video>
+        </div>
+        <div class="col-12 col-md-6 flex flex-center q-mb-md q-mb-none-md">
+          <div>
+            <p class="texto-responsivo">
+              {{ t('SobreSpanish.soy') }}
+            </p>
+            <div class="q-mb-md"></div>
+            <p class="texto-responsivo" v-html="t('SobreSpanish.tras')"></p>
+          </div>
+        </div>
       </div>
       <div class="q-mb-lg"></div>
+
       <!-- Filosofía -->
       <div class="col-12 items-center text-center">
         <p class="subtitulo-responsivo" style="color: #851319">

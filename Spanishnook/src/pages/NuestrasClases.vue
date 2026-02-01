@@ -46,36 +46,8 @@
       </q-btn>
     </div>
 
-    <!-- Div con números ascendentes y título -->
-    <div
-      class="numeros-div q-my-xl flex column items-center justify-center bg-primary"
-      v-intersect="onLogrosIntersect"
-      style="width: 100%"
-      v-if="$q.screen.gt.md"
-    >
-      <p class="titulo-responsivo text-center text-weight-bold">
-        {{ $t('NuestrasClases.uneteAEllas') }}
-      </p>
-      <div class="flex row justify-around full-width">
-        <div class="numero-item">
-          <div class="numero" style="color: white">{{ count1 }}</div>
-          <div style="font-size: 1.8rem; color: white">{{ $t('NuestrasClases.alumnos') }}</div>
-        </div>
-        <div class="numero-item">
-          <div class="numero" style="color: white">{{ count2 }}</div>
-          <div style="font-size: 1.8rem; color: white">{{ $t('NuestrasClases.cursos') }}</div>
-        </div>
-        <div class="numero-item">
-          <div class="numero" style="color: white">{{ count3 }}</div>
-          <div style="font-size: 1.8rem; color: white">
-            {{ $t('NuestrasClases.clasesImpartidas') }}
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Animación: imagen que entra desde la izquierda y queda a la derecha -->
-    <div class="row full-width q-my-xl">
+    <div class="row full-width">
       <div class="col-12">
         <div v-intersect="onImgIntersect" class="animacion-banner">
           <div v-if="showAnimatedImg" class="anim-group">
@@ -87,7 +59,7 @@
               :label="$t('NuestrasClases.testDeNivel')"
             />
             <img
-              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/test-nicel-spanish-cta.png"
+              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/test-nivel-spanish-cta.png"
               alt="Animación"
               class="anim-img"
             />
@@ -337,7 +309,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from 'vue';
-import type { Ref } from 'vue';
 import '../css/pages/EstilosGenerales.css';
 import PromoCard from '../components/PromoCard.vue';
 import { useI18n } from 'vue-i18n';
@@ -419,43 +390,8 @@ function onImgIntersect(entry: IntersectionObserverEntry) {
 }
 
 // Animación de conteo ascendente para los números
-const count1 = ref(0);
-const count2 = ref(0);
-const count3 = ref(0);
-const count4 = ref(0);
 
-function animateCount(refVar: Ref<number, number>, target: number, duration = 1200) {
-  const start = 0;
-  const increment = Math.ceil(target / (duration / 20));
-  let current = start;
-  const interval = setInterval(() => {
-    current += increment;
-    if (current >= target) {
-      refVar.value = target;
-      clearInterval(interval);
-    } else {
-      refVar.value = current;
-    }
-  }, 20);
-}
 
-let logrosAnimado = false;
-function onLogrosIntersect(entry: IntersectionObserverEntry) {
-  if (entry.isIntersecting && !logrosAnimado) {
-    logrosAnimado = true;
-    animateCount(count1, 600);
-    animateCount(count2, 240);
-    animateCount(count3, 360);
-    animateCount(count4, 48);
-  }
-  if (!entry.isIntersecting) {
-    logrosAnimado = false;
-    count1.value = 0;
-    count2.value = 0;
-    count3.value = 0;
-    count4.value = 0;
-  }
-}
 async function cargarCursosPromo(): Promise<void> {
   const { data, error } = await supabase
     .from('cursos_grupales')
