@@ -176,14 +176,27 @@
       <router-view />
     </q-page-container>
 
-    <q-page-sticky position="bottom-right" :offset="[10, 10]">
+    <q-page-sticky
+      v-if="
+        ![
+          '/Administracion',
+          '/CarritoCompra',
+          '/Aviso',
+          '/Privacidad',
+          '/Cookies',
+          '/Condiciones',
+        ].includes(route.path)
+      "
+      position="bottom-right"
+      :offset="[10, 10]"
+    >
       <q-btn
         class="whatsapp-sticky-btn enlarged-touch"
         round
         color="green-6"
         icon="mdi-whatsapp"
         size="lg"
-        href="https://wa.me/34600000000"
+        href="https://wa.me/34694280178"
         target="_blank"
         rel="noopener"
         aria-label="WhatsApp"

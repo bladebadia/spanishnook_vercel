@@ -160,7 +160,7 @@ export default {
     testDeNivel: 'Test de nivel',
     tituloClasesA1: 'Clases Nivel A1',
     textoClasesA1: 'Ideal para principiantes. Enfócate en conocer la lengua: gramática básica, vocabulario esencial y conversaciones simples para construir una base sólida en español.',
-    botonClasesA1: 'Reservar clase A1',
+    botonClasesA1: 'Ver',
     tituloClasesB1: 'Clases Nivel B1',
     textoClasesB1: 'Perfecto para nivel intermedio. Desarrolla tu capacidad comunicativa: conversaciones fluidas, comprensión de textos complejos y expresión de opiniones con confianza.',
     botonClasesB1: 'Reservar clase B1',

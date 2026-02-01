@@ -155,7 +155,7 @@ export default {
     tituloClasesA1: 'A1 Level Classes',
     pruebaTuClaseGratis: 'Try your free class!',
     textoClasesA1: 'Ideal for beginners. Focus on learning the language: basic grammar, essential vocabulary, and simple conversations to build a solid foundation in Spanish.',
-    botonClasesA1: 'Book A1 class',
+    botonClasesA1: 'See',
     tituloClasesB1: 'B1 Level Classes',
     textoClasesB1: 'Perfect for intermediate level. Develop your communication skills: fluent conversations, understanding complex texts, and expressing opinions with confidence.',
     botonClasesB1: 'Book B1 class',

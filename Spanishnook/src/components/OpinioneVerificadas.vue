@@ -56,7 +56,6 @@ function formatDate(dateString: string): string {
 </script>
 
 <style scoped>
-@import '../css/quasar.variables.scss';
 
 .opinion-card {
   height: 100%;

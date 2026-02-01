@@ -11,7 +11,17 @@
       <div class="col-12 items-center text-center" style="width: 70%">
         <p class="texto-responsivo q-pb-xl q-pb-xl" v-html="t('SobreSpanish.intro')"></p>
       </div>
-      <div class="col-12 text-center">
+      <!-- Video de presentación -->
+      <div class="col-12 items-center text-center q-my-md video-responsive">
+        <video
+          controls
+          style=" border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)"
+        >
+          <source src="/video/clases_espanol_video_subt.mp4" type="video/mp4" />
+          Tu navegador no soporta el video.
+        </video>
+      </div>
+      <div class="col-12 text-center q-mt-lg">
         <p class="subtitulo-responsivo text-primary q-px-xl">
           {{ t('SobreSpanish.tulug') }}
         </p>
@@ -27,38 +37,19 @@
         </p>
       </div>
 
-      <!-- Quién soy -->
-      <div class="col-12 text-center content-width">
+      <div class="col-12 q-my-md content-width">
         <p class="subtitulo-responsivo text-primary text-center">
           {{ t('SobreSpanish.quien') }}
         </p>
       </div>
-      <!-- video y texto -->
-      <div class="row q-my-md content-width items-center">
-        <div class="col-12 col-md-6 flex flex-center q-mb-md q-mb-none-md">
-          <video
-            src="/video/clases_espanol_video_subt.mp4"
-            controls
-            style="max-width: 100%; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)"
-            poster="/img/Home/logo.png"
-            preload="auto"
-            playsinline
-          >
-            Tu navegador no soporta el elemento de vídeo.
-          </video>
-        </div>
-        <div class="col-12 col-md-6 flex flex-center q-mb-md q-mb-none-md">
-          <div>
-            <p class="texto-responsivo">
-              {{ t('SobreSpanish.soy') }}
-            </p>
-            <div class="q-mb-md"></div>
-            <p class="texto-responsivo" v-html="t('SobreSpanish.tras')"></p>
-          </div>
-        </div>
+      <div class="col-12 q-my-md content-width">
+        <p class="texto-responsivo">
+          {{ t('SobreSpanish.soy') }}
+        </p>
+        <div class="q-mb-md"></div>
+        <p class="texto-responsivo" v-html="t('SobreSpanish.tras')"></p>
       </div>
       <div class="q-mb-lg"></div>
-
       <!-- Filosofía -->
       <div class="col-12 items-center text-center">
         <p class="subtitulo-responsivo" style="color: #851319">
@@ -87,17 +78,18 @@
         <div class="q-mb-md"></div>
         <p class="texto-responsivo" v-html="t('SobreSpanish.espero')"></p>
       </div>
-      <div class="col-12 items-center text-center q-my-xl">
-        <q-btn
-          color="primary"
-          :label="t('indexContactanos')"
-          icon="email"
-          @click="$router.push('/contacto')"
-        />
+      <div class="col-12 items-center text-center q-my-md">
+        <div class="video-responsive">
+          <video controls>
+            <source src="/video/clases_espanol_video_subt.mp4" type="video/mp4" />
+            Tu navegador no soporta el video.
+          </video>
+        </div>
       </div>
     </div>
   </q-page>
 </template>
+
 
 <script setup lang="ts">
 import '../css/pages/EstilosGenerales.css';
@@ -126,5 +118,20 @@ const { t } = useI18n();
   .content-width {
     width: 100%;
   }
+}
+
+.video-responsive {
+  max-width: 480px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .video-responsive {
+    max-width: 100%;
+  }
+}
+video {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 </style>

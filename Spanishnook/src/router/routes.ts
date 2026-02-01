@@ -64,16 +64,6 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false, layout: 'empty' },
   },
   {
-    path: '/EjerciciosEspañol',
-    component: () => import('pages/EjerciciosEspañol.vue'),
-    meta: { requiresAuth: false, layout: 'empty' },
-  },
-  {
-    path: '/ServiciosNook',
-    component: () => import('pages/ServiciosNook.vue'),
-    meta: { requiresAuth: false, layout: 'empty' },
-  },
-  {
     path: '/SobreSpanish',
     component: () => import('pages/SobreSpanish.vue'),
     meta: { requiresAuth: false, layout: 'empty' },

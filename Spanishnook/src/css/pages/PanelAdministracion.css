@@ -1,4 +1,3 @@
-<style scoped>
 
 /* ⬇️ CONTROLAR ANCHO MEDIANTE EL GRID */
 .calendario-grid {
@@ -264,4 +263,3 @@
 .seccion-contenido {
   min-height: 600px;
 }
-</style>

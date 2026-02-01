@@ -1,15 +1,14 @@
 <template>
   <q-page class="row items-center justify-evenly">
     <!-- Imagen cabecera Titulo texto  -->
-    <div class="row" style="width: 100%">
+    <div class="row cabecera-row">
       <div class="col-12 col-md-6">
         <q-img
-          style="width: 100%; height: auto"
+          class="cabecera-img"
           fit="cover"
           position="center"
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-baner.png"
-        >
-        </q-img>
+        />
       </div>
 
       <div class="col-12 col-md-6 text-center align-self-center q-pa-md">
@@ -50,18 +49,18 @@
     <div class="row full-width">
       <div class="col-12">
         <div v-intersect="onImgIntersect" class="animacion-banner">
-          <div v-if="showAnimatedImg" class="anim-group">
-            <q-btn
-              class="oval-btn q-mt-sm"
-              color="black"
-              unelevated
-              to="/TestNivel"
-              :label="$t('NuestrasClases.testDeNivel')"
-            />
+          <div v-if="showAnimatedImg" class="anim-group anim-group-col text-center">
             <img
               src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/test-nivel-spanish-cta.png"
               alt="Animación"
               class="anim-img"
+            />
+            <q-btn
+              class="oval-btn"
+              color="black"
+              unelevated
+              to="/TestNivel"
+              :label="$t('NuestrasClases.testDeNivel')"
             />
           </div>
         </div>
@@ -77,8 +76,8 @@
       <!-- Imagen izquierda -->
       <div class="col-12 col-md-5 flex justify-center">
         <q-img
-          src="/img/estudiantes_1024.jpg"
-          style="width: 100%; max-width: 500px; border-radius: 16px"
+          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
+          style="width: 100%; max-width: 400px; border-radius: 16px"
           fit="cover"
         />
       </div>
@@ -187,8 +186,8 @@
     <!--Seccion clases individuales-->
     <div id="clases-individuales" class="row full-width q-my-xl items-center">
       <!-- Banner rojo izquierdo -->
-      <div class="col-12 col-md-6 flex justify-center q-mx-xl">
-        <div class="banner-clases-grupales">
+      <div class="col-12 col-md-6 flex justify-center banner-individuales-col">
+        <div class="banner-clases-grupales banner-individuales">
           <p class="banner-clases-grupales__titulo titulo-responsivo text-center">
             {{ $t('NuestrasClases.clasesIndividualesPersonalizadas') }}
           </p>
@@ -198,8 +197,8 @@
       <!-- Imagen derecha -->
       <div class="col-12 col-md-5 flex justify-center">
         <q-img
-          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases_spanish-individuales.png"
-          style="width: 100%; max-width: 300px; border-radius: 16px"
+          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
+          style="width: 100%; max-width: 400px; border-radius: 16px"
           fit="cover"
         />
       </div>
@@ -208,7 +207,7 @@
     <!-- div de servicio clases individuales -->
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
-        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">          
+        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
           <q-card-section class="q-pt-lg">
             <div class="titulo-responsivo text-center">
               {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
@@ -231,36 +230,58 @@
             <div class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
-            <q-img
-              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/cursoA2_conv.png"
-              style="width: 70%; max-width: 300px; border-radius: 16px"
-              fit="cover"
-            />
-                  <div class="subtitulo-responsivo text-center q-mb-sm">
+                  <q-img
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/cursoA2_conv.png"
+                    style="width: 70%; max-width: 300px; border-radius: 16px"
+                    fit="cover"
+                  />
+                  <div class="subtitulo-responsivo text-center q-my-xl">
                     {{ $t('NuestrasClases.Modalidad1') }}
                   </div>
-                  <br />
                   <p
-                    class="text-body1 text-justify q-mb-none text-grey-8"
+                    class="text-body1 text-justify q-mt-lg text-grey-8"
                     style="font-weight: bold"
                   >
                     {{ $t('NuestrasClases.TextoModalidad1') }}
                   </p>
+                  <div class="q-mt-md flex flex-center">
+                    <q-btn
+                      color="primary"
+                      class="oval-btn oval-btn-lg"
+                      unelevated
+                      size="lg"
+                      :label="$t('NuestrasClases.botonClasesA1')"
+                      to="/Reservas"
+                    />
+                  </div>
                 </div>
               </div>
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
-                  <div class="subtitulo-responsivo text-center q-mb-sm">
+                  <q-img
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/modalidad-general2.png"
+                    style="width: 70%; max-width: 300px; border-radius: 16px"
+                    fit="cover"
+                  />
+                  <div class="subtitulo-responsivo text-center ">
                     {{ $t('NuestrasClases.Modalidad2') }}
                   </div>
-                  <br />
                   <p
-                    class="text-body1 text-justify q-mb-none text-grey-8"
+                    class="text-body1 text-justify q-mt-lg text-grey-8"
                     style="font-weight: bold"
                   >
                     {{ $t('NuestrasClases.TextoModalidad2') }}
                   </p>
-                  <br />
+                  <div class=" flex flex-center">
+                    <q-btn
+                      color="primary"
+                      class="oval-btn oval-btn-lg"
+                      unelevated
+                      size="lg"
+                      :label="$t('NuestrasClases.botonClasesA1')"
+                      to="/Reservas"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -282,28 +303,22 @@
         </q-card>
       </div>
     </div>
-
-    <!-- Tarjetas de clases individuales (puedes agregar más o cargar desde Supabase) -->
-    <div class="promocards-container">
+    <!-- tarjeta promo-->
+     <!-- PromoCard para Comprar Packs al final de la página -->
+  <div class="row justify-center q-my-xl">
+    <div class="col-12 col-md-6">
       <PromoCard
-        image-src="img/45sintitulo.webp"
-        :title="t('NuestrasClases.tituloClasesA1')"
-        :description="t('NuestrasClases.textoClasesA1')"
-        :button-text="t('NuestrasClases.botonClasesA1')"
+        image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/CTA_reserva.png"
+        :title="t('NuestrasClases.tituloPromoPacks', 'Ahorra con Packs de Créditos')"
+        :description="t('NuestrasClases.textoPromoPacks', 'Compra packs de créditos y disfruta de descuentos exclusivos en tus clases.')"
+        :button-text="t('NuestrasClases.botonPromoPacks', 'Comprar Packs')"
         :show-promo="false"
-        :promo-text="t('NuestrasClases.pruebaTuClaseGratis')"
-        to="/Reservas"
-      />
-      <PromoCard
-        image-src="img/44sintitulo.webp"
-        :title="t('NuestrasClases.tituloClasesB1')"
-        :description="t('NuestrasClases.textoClasesB1')"
-        :button-text="t('NuestrasClases.botonClasesB1')"
-        :show-promo="false"
-        :promo-text="t('NuestrasClases.pruebaTuClaseGratis')"
-        to="/Reservas"
+        :promo-text="t('NuestrasClases.promoPromoPacks', '¡Más créditos, más ahorro!')"
+        :show-price="false"
+        to="/ComprarPacks"
       />
     </div>
+  </div>
   </q-page>
 </template>
 
@@ -390,7 +405,6 @@ function onImgIntersect(entry: IntersectionObserverEntry) {
 }
 
 // Animación de conteo ascendente para los números
-
 
 async function cargarCursosPromo(): Promise<void> {
   const { data, error } = await supabase
@@ -522,19 +536,6 @@ watch(
   }
 }
 
-.numeros-div {
-  .numero {
-    font-size: 4rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .numero-item {
-    text-align: center;
-    min-width: 140px;
-  }
-}
-
 .modalidad-card {
   background: #fffbe6;
   border-radius: 12px;
@@ -549,5 +550,46 @@ watch(
 
 .lista-funcionamiento li + li {
   margin-top: 6px;
+}
+
+.anim-group-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 600px) {
+  .banner-individuales-col {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100vw !important;
+    width: 100vw !important;
+    overflow-x: hidden;
+  }
+  .banner-individuales {
+    max-width: 100vw !important;
+    width: 100vw !important;
+    box-sizing: border-box;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .cabecera-row {
+    width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow-x: hidden;
+  }
+  .cabecera-img {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    display: block;
+  }
+}
+.oval-btn-lg {
+  min-width: 220px;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 </style>

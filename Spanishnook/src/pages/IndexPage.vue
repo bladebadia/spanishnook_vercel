@@ -2,13 +2,7 @@
   <q-page>
     <!-- Banner principal OK-->
     <div>
-      <q-img
-        style="width: 100vw; height: 100vh; object-fit: cover; object-position: center; margin-left: calc(-50vw + 50%);"
-        fit="cover"
-        position="center"
-        src="/img/Home/banner_1920.webp"
-      >
-      </q-img>
+      <q-img fit="cover" position="center" src="/img/Home/banner_1920.webp"> </q-img>
     </div>
     <!-- Sección introductoria OK-->
     <div class="items-center text-center q-my-xl">
@@ -41,7 +35,13 @@
               <img
                 src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/inicio_principal_OK.png"
                 fit="cover"
-                style="width: 50%; height: auto; max-height: 300px; display: block; margin: 20px auto"
+                style="
+                  width: 50%;
+                  height: auto;
+                  max-height: 300px;
+                  display: block;
+                  margin: 20px auto;
+                "
               />
               <q-card-section class="subtitulo-responsivo text-center">{{
                 t('indexDescubreNuestrasClases')
@@ -128,7 +128,7 @@
           enter-active-class="animated fadeInUpBig slower "
         >
           <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 15%">
-            <p class="titulo-responsivo2" style="color: #fff">
+            <p class="titulo-responsivo" style="color: #fff">
               <strong>{{ t('indexDescubreTuPunto') }}</strong>
             </p>
             <p class="texto-responsivo" style="color: #fffdf8; margin-left: 1.45%; padding-left: 0">
@@ -153,7 +153,9 @@
             <q-item>
               <q-item-section avatar>
                 <q-avatar>
-                  <img src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-sobre-perfil.png" />
+                  <img
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-sobre-perfil.png"
+                  />
                 </q-avatar>
               </q-item-section>
               <q-item-label class="titulo-responsivo1 q-pa-md q-ma-md-lg text-bold">
@@ -196,7 +198,17 @@
 
           <!-- Carrusel de Opiniones -->
           <div class="carousel-container">
+            <template v-if="todasLasOpiniones.length === 0">
+              <div class="row justify-center full-height items-center">
+                <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 text-center q-pa-xl">
+                  <div class="texto-responsivo text-grey-7">
+                    {{ t('indexSeElPrimeroEnOpinar', 'Sé el primero en opinar') }}
+                  </div>
+                </div>
+              </div>
+            </template>
             <q-carousel
+              v-else
               v-model="currentSlide"
               transition-prev="slide-right"
               transition-next="slide-left"

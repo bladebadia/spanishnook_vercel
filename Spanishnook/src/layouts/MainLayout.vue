@@ -183,7 +183,7 @@
         color="green-6"
         icon="mdi-whatsapp"
         size="xl"
-        href="https://wa.me/34600000000"
+        href="https://wa.me/34694280178"
         target="_blank"
         rel="noopener"
         aria-label="WhatsApp"

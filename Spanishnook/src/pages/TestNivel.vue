@@ -40,10 +40,9 @@
     <div v-if="!testCompleted && currentQuestion > 0 && !showResults">
       <div class="row justify-center">
         <div class="col-12 col-md-10">
-          <q-card flat bordered class="question-card">
-            <q-card-section>
-              <!-- Progress Bar -->
-              <div class="q-mb-lg">
+          <q-card flat bordered class="question-card test-card-size fixed-test-card">
+            <q-card-section class="test-card-content">
+              <div class="test-card-progress">
                 <div class="row items-center q-mb-sm">
                   <div class="col">
                     <span class="text-body2 text-grey-6">
@@ -67,13 +66,12 @@
                   rounded
                 />
               </div>
-              <!-- Question -->
-              <h3 class="text-h6 text-weight-bold q-mb-lg pregunta-test">
-                {{ testQuestions[currentQuestion - 1]?.question }}
-              </h3>
-
-              <!-- Answer Options La expresión ${String.fromCharCode(65 + index)}. ${option} convierte el índice de la opción (0, 1, 2, 3, ...) en una letra del abecedario (A, B, C, D, ...), seguida de un punto y el texto de la opción.-->
-              <div class="q-gutter-sm q-mb-lg">
+              <div class="test-card-question">
+                <h3 class="text-h6 text-weight-bold pregunta-test">
+                  {{ testQuestions[currentQuestion - 1]?.question }}
+                </h3>
+              </div>
+              <div class="test-card-options q-gutter-sm">
                 <q-btn
                   v-for="(option, index) in testQuestions[currentQuestion - 1]?.options"
                   :key="index"
@@ -85,8 +83,7 @@
                   @click="selectAnswer(index)"
                 />
               </div>
-              <!-- Boton anterior -->
-              <div class="row justify-between">
+              <div class="test-card-actions row justify-between">
                 <q-btn
                   v-if="currentQuestion > 1"
                   :label="t('test.anterior')"
@@ -96,7 +93,6 @@
                   @click="previousQuestion"
                 />
                 <q-space />
-                <!-- Boton siguiente o finalizar -->
                 <q-btn
                   v-if="currentQuestion < testQuestions.length"
                   :label="t('test.siguiente')"
@@ -123,7 +119,7 @@
     <!-- Results Page -->
     <div class="row items-center full-width" v-if="showResults">
       <div class="column full-width items-center">
-        <q-card flat bordered class="results-card">
+        <q-card flat bordered class="results-card test-card-size fixed-test-card">
           <q-card-section class="text-center">
             <div style="font-size: 2.5rem; margin-bottom: 0.5rem">✅</div>
             <p class="text-h3 text-primary text-weight-bold q-mb-xl">
@@ -677,5 +673,59 @@ const previousQuestion = () => {
 /* Descripción del nivel en negro y justificado */
 .descripcion-nivel {
   text-align: justify;
+}
+
+/* Unificar tamaño de tarjetas del test de nivel */
+.test-card-size.fixed-test-card {
+  width: 600px;
+  height: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 24px 16px;
+}
+/* Unificar tamaño de tarjetas del test de nivel y fijar posiciones internas */
+.test-card-size.fixed-test-card {
+  min-width: 340px;
+  max-width: 500px;
+  height: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 24px 16px;
+}
+.test-card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.test-card-progress {
+  flex: 0 0 auto;
+  margin-bottom: 12px;
+}
+.test-card-question {
+  flex: 0 0 auto;
+  margin-bottom: 12px;
+}
+.test-card-options {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-y: auto;
+}
+.test-card-actions {
+  flex: 0 0 auto;
+  margin-top: auto;
 }
 </style>
