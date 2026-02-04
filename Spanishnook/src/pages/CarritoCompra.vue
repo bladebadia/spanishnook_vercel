@@ -16,7 +16,7 @@
         <div class="q-mt-sm text-right">
           <q-checkbox
             v-model="usarCreditosGlobal"
-            label="Utilizar créditos disponibles"
+            :label="t('carrito.utilizarCreditos')"
             color="green"
             dense
             class="checkbox-creditos"
@@ -106,7 +106,8 @@
               Total: {{ totalPagarDinero }}€
             </div>
             <div v-if="totalGastarCreditos > 0" class="text-caption text-green">
-              (Se canjearán {{ totalGastarCreditos }} créditos)
+              ({{ t('carrito.seCanjearan') }} {{ totalGastarCreditos }}
+              {{ t('carrito.credito', { count: totalGastarCreditos }) }})
             </div>
           </div>
         </div>
@@ -118,12 +119,14 @@
       </div>
 
       <div class="row q-gutter-md justify-end">
-        <q-btn color="grey" label="Seguir Reservando" to="/Reservas" outline />
+        <q-btn color="grey" :label="t('carrito.seguir')" to="/Reservas" outline />
 
         <q-btn
           color="primary"
           class="btn-confirmar"
-          :label="totalPagarDinero === 0 ? 'Confirmar Canje' : t('carrito.pagarYConfirmarReservas')"
+          :label="
+            totalPagarDinero === 0 ? t('carrito.canjear') : t('carrito.pagarYConfirmarReservas')
+          "
           @click="confirmarReservasHibridas"
           :disable="!usuarioLogueado || reservasConflictivas.length > 0"
           :loading="confirmando"

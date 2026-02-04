@@ -49,7 +49,7 @@
               header
               class="text-weight-bold text-uppercase text-grey-7 text-caption q-pt-md"
             >
-              Mis Clases
+              {{ t('personal.misclases') }}
             </q-item-label>
 
             <q-item
@@ -150,7 +150,7 @@
                   dense
                   color="primary"
                   icon="checklist"
-                  label="Gestionar"
+                  :label="t('personal.gestionar')"
                   @click="modoSeleccion = true"
                 />
                 <div v-else class="row q-gutter-sm">
@@ -230,7 +230,7 @@
                       target="_blank"
                       color="primary"
                       icon="videocam"
-                      label="ENTRAR"
+                      :label="t('personal.entrar')"
                       unelevated
                     />
                     <q-chip
@@ -360,7 +360,7 @@
 
               <div class="row justify-end q-mt-sm">
                 <q-btn
-                  label="Guardar Cambios"
+                  :label="t('personal.guardarCambios')"
                   color="primary"
                   unelevated
                   @click="enviarDatosPersonales"
@@ -379,18 +379,23 @@
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="formDatos.nombre"
-                    label="Nombre"
+                    :label="t('personal.nombre')"
                     dense
                     outlined
                     class="q-mb-md"
                   />
-                  <q-input v-model="formDatos.apellido1" label="Apellido" dense outlined />
+                  <q-input
+                    v-model="formDatos.apellido1"
+                    :label="t('personal.apellido')"
+                    dense
+                    outlined
+                  />
                 </div>
                 <div class="col-12 col-md-6">
                   <q-select
                     v-model="formDatos.idioma_nativo"
                     :options="idiomasComunes"
-                    label="Idioma Nativo"
+                    :label="t('personal.idiomaNativo')"
                     dense
                     outlined
                     class="q-mb-md"
@@ -409,17 +414,17 @@
               </div>
 
               <div class="q-mt-lg">
-                <div class="text-subtitle2 text-primary q-mb-xs">Tu Perfil de Estudiante</div>
+                <div class="text-subtitle2 text-primary q-mb-xs">{{ t('personal.tuPerfil') }}</div>
                 <q-separator class="q-mb-md" />
                 <div class="row q-gutter-md">
                   <div>
-                    <div class="text-caption text-grey">Nivel</div>
+                    <div class="text-caption text-grey">{{ t('personal.nivel') }}</div>
                     <q-chip color="secondary" text-color="white" icon="leaderboard">{{
                       formDatos.nivel_estimado || 'Sin definir'
                     }}</q-chip>
                   </div>
                   <div>
-                    <div class="text-caption text-grey">Intereses</div>
+                    <div class="text-caption text-grey">{{ t('personal.intereses') }}</div>
                     <template v-if="formDatos.intereses && formDatos.intereses.length > 0">
                       <q-chip
                         v-for="tag in formDatos.intereses"
@@ -429,9 +434,9 @@
                         >{{ tag }}</q-chip
                       >
                     </template>
-                    <span v-else class="text-grey text-caption text-italic"
-                      >Sin intereses seleccionados</span
-                    >
+                    <span v-else class="text-grey text-caption text-italic">{{
+                      t('personal.sinIntereses')
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -441,49 +446,55 @@
           <q-card class="shadow-1 rounded-borders">
             <q-card-section>
               <div class="text-h6 text-primary flex items-center">
-                <q-icon name="security" class="q-mr-sm" /> Seguridad
+                <q-icon name="security" class="q-mr-sm" /> {{ t('personal.seguridad') }}
               </div>
             </q-card-section>
             <q-separator />
             <q-card-section>
               <q-form @submit="verificarYCambiarPassword" class="row q-col-gutter-md items-end">
                 <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Contraseña Actual</div>
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                    {{ t('personal.contraseñaActual') }}
+                  </div>
                   <q-input
                     v-model="passForm.current"
                     type="password"
                     dense
                     outlined
-                    placeholder="Introduce tu contraseña actual"
-                    :rules="[(val) => !!val || 'Requerida']"
+                    :placeholder="t('personal.introduceContraseñaActual')"
+                    :rules="[(val) => !!val || t('personal.requerida')]"
                   />
                 </div>
                 <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Nueva Contraseña</div>
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                    {{ t('personal.introduceNuevaContraseña') }}
+                  </div>
                   <q-input
                     v-model="passForm.new"
                     type="password"
                     dense
                     outlined
-                    placeholder="Mínimo 6 caracteres"
-                    :rules="[(val) => val.length >= 6 || 'Mínimo 6 caracteres']"
+                    :placeholder="t('personal.minimo6')"
+                    :rules="[(val) => val.length >= 6 || t('personal.minimo6')]"
                   />
                 </div>
                 <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Confirmar Nueva</div>
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                    {{ t('personal.repiteNueva') }}
+                  </div>
                   <q-input
                     v-model="passForm.confirm"
                     type="password"
                     dense
                     outlined
-                    placeholder="Repite la nueva"
-                    :rules="[(val) => val === passForm.new || 'No coinciden']"
+                    :placeholder="t('personal.repiteNueva')"
+                    :rules="[(val) => val === passForm.new || t('personal.noCoinciden')]"
                   />
                 </div>
 
                 <div class="col-12 flex justify-end">
                   <q-btn
-                    label="Actualizar Contraseña"
+                    :label="t('personal.actualizarContraseña')"
                     color="primary"
                     unelevated
                     type="submit"
@@ -542,7 +553,7 @@
                   bg-color="white"
                 />
                 <q-btn
-                  label="Eliminar definitivamente"
+                  :label="t('personal.eliminarDefinitivamente')"
                   type="submit"
                   color="negative"
                   icon="delete_forever"

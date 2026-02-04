@@ -21,27 +21,26 @@
       </q-card-section>
 
       <q-card-section class="q-py-lg">
-        <p class="text-body1 text-grey-8">
-          Hemos enviado un enlace de confirmación a tu correo electrónico. Para activar tu cuenta,
-          solo tienes que hacer clic en él.
+        <p class="text-responsivo2 text-center text-grey-8">
+          {{ $t('checkEmail.hemosenviado') }}
         </p>
 
         <q-banner dense rounded class="bg-orange-1 text-brown-9 q-mt-md text-left border-orange">
           <template v-slot:avatar>
             <q-icon name="info" color="orange-9" />
           </template>
-          <span class="text-caption text-weight-bold" style="font-size: 0.9em">
-            ¿No lo encuentras? </span
+          <span class="text-responsivo2 text-weight-bold" style="font-size: 0.9em">
+            {{ $t('checkEmail.noloEncuentras') }} </span
           ><br />
-          <span class="text-caption">
-            Revisa tu carpeta de <b>Spam</b> o <b>Correo no deseado</b>. A veces se esconde ahí.
+          <span class="text-responsivo2">
+            {{ $t('checkEmail.revisatuCarpeta') }}
           </span>
         </q-banner>
       </q-card-section>
 
       <q-card-actions align="center" class="column q-gutter-sm q-mt-sm">
         <q-btn
-          label="Ir a Iniciar Sesión"
+          :label="$t('checkEmail.iniciar')"
           to="/Acceder"
           color="primary"
           unelevated
@@ -50,7 +49,7 @@
           icon-right="login"
         />
 
-        <q-btn label="Volver al inicio" to="/" color="grey-7" flat class="full-width" />
+        <q-btn :label="$t('checkEmail.volver')" to="/" color="grey-7" flat class="full-width" />
       </q-card-actions>
     </q-card>
   </q-page>

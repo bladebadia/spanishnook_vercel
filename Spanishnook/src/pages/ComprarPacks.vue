@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-lg bg-grey-1">
     <div class="text-center q-mb-xl">
-      <h4 class="text-weight-bold text-primary q-mb-sm">💎 Packs de Créditos</h4>
+      <h4 class="text-weight-bold text-primary q-mb-sm">{{ $t('comprarPacks.packsCreditos') }}</h4>
       <p class="text-grey-8 text-subtitle1">
-        Compra clases por adelantado, ahorra dinero y gasta tus créditos cuando quieras.
+        {{ $t('comprarPacks.compraClases') }}
       </p>
     </div>
 
@@ -17,8 +17,8 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="normal" label="Clases Particulares" icon="school" />
-        <q-tab name="conversacion" label="Conversación" icon="forum" />
+        <q-tab name="normal" :label="$t('comprarPacks.clasesGenerales')" icon="school" />
+        <q-tab name="conversacion" :label="$t('comprarPacks.clasesConversacion')" icon="forum" />
       </q-tabs>
     </div>
 
@@ -179,7 +179,7 @@ const packsNormales: PackCreditos[] = [
     precio: 145,
     precioOriginal: 160,
     descripcion: 'Ideal para probar.',
-    ahorro: 'Ahorras 15€',
+    ahorro: '- 12€',
     tipo: 'normal',
   },
   {
@@ -189,7 +189,7 @@ const packsNormales: PackCreditos[] = [
     precio: 260,
     precioOriginal: 320,
     descripcion: 'Para estudiantes constantes.',
-    ahorro: 'Ahorras 60€',
+    ahorro: '- 48€',
     mejorOpcion: true,
     tipo: 'normal',
   },
