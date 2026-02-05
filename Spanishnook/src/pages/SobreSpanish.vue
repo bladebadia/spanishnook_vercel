@@ -9,14 +9,13 @@
       </div>
       <!-- Descripción  -->
       <div class="col-12 items-center text-center" style="width: 70%">
-        <p class="texto-responsivo q-pb-xl q-pb-xl" v-html="t('SobreSpanish.intro')"></p>
+        <p class="texto-responsivo q-pb-xl q-pb-xl">
+          <strong>{{ t('SobreSpanish.intro') }}</strong>
+        </p>
       </div>
       <!-- Video de presentación -->
       <div class="col-12 items-center text-center q-my-md video-responsive">
-        <video
-          controls
-          style=" border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)"
-        >
+        <video controls style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)">
           <source src="/video/clases_espanol_video_subt.mp4" type="video/mp4" />
           Tu navegador no soporta el video.
         </video>
@@ -47,7 +46,11 @@
           {{ t('SobreSpanish.soy') }}
         </p>
         <div class="q-mb-md"></div>
-        <p class="texto-responsivo" v-html="t('SobreSpanish.tras')"></p>
+        <p class="texto-responsivo">
+          {{ t('SobreSpanish.tras1') }}
+          <br /><br />
+          {{ t('SobreSpanish.tras2') }}
+        </p>
       </div>
       <div class="q-mb-lg"></div>
       <!-- Filosofía -->
@@ -57,7 +60,7 @@
         </p>
       </div>
       <div class="col-12 text-center q-my-md content-width">
-        <p class="texto-responsivo text-justify" v-html="t('SobreSpanish.mipropuesta')"></p>
+        <p class="texto-responsivo text-justify">{{ t('SobreSpanish.mipropuesta') }}</p>
       </div>
       <div class="col-12 items-center text-center q-my-md" style="width: 70%">
         <p class="subtitulo-responsivo" style="color: #851319">
@@ -66,17 +69,28 @@
       </div>
       <div class="col-12 text-center q-my-md content-width">
         <ul class="texto-responsivo text-justify">
-          <li v-html="t('SobreSpanish.cercania')"></li>
-          <li v-html="t('SobreSpanish.flexibilidad')"></li>
-          <li v-html="t('SobreSpanish.confianza')"></li>
+          <li>
+            <strong>{{ t('SobreSpanish.cercaniaBold') }}</strong
+            >: {{ t('SobreSpanish.cercania') }}
+          </li>
+          <li>
+            <strong>{{ t('SobreSpanish.flexibilidadBold') }}</strong
+            >: {{ t('SobreSpanish.flexibilidad') }}
+          </li>
+          <li>
+            <strong>{{ t('SobreSpanish.confianzaBold') }}</strong
+            >: {{ t('SobreSpanish.confianza') }}
+          </li>
         </ul>
       </div>
       <div class="q-mb-xl"></div>
       <div class="col-12 text-center q-mt-xl content-width">
-        <p class="texto-responsivo" v-html="t('SobreSpanish.ojalá')"></p>
+        <p class="texto-responsivo">{{ t('SobreSpanish.ojalá') }}</p>
         <div class="q-mb-md"></div>
         <div class="q-mb-md"></div>
-        <p class="texto-responsivo" v-html="t('SobreSpanish.espero')"></p>
+        <p class="texto-responsivo">
+          <strong>{{ t('SobreSpanish.espero') }}</strong>
+        </p>
       </div>
       <div class="col-12 items-center text-center q-my-md">
         <div class="video-responsive">
@@ -89,7 +103,6 @@
     </div>
   </q-page>
 </template>
-
 
 <script setup lang="ts">
 import '../css/pages/EstilosGenerales.css';
@@ -132,6 +145,6 @@ const { t } = useI18n();
 video {
   width: 100%;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 </style>

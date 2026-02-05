@@ -34,9 +34,12 @@
       </q-card-section>
       <q-card-actions class="actions flex flex-center">
         <q-btn
-          color="primary"
+          :color="buttonColor"
           :to="to || buttonLink"
           class="oval-btn"
+          :class="{ 'text-weight-regular': !buttonBold }"
+          :no-caps="buttonNoCaps"
+          :size="buttonSize"
           unelevated
           @click="handleButtonClick"
         >
@@ -68,6 +71,10 @@ interface Props {
   price?: string;
   originalPrice?: string;
   fechaInicio?: string;
+  buttonColor?: string;
+  buttonNoCaps?: boolean;
+  buttonBold?: boolean;
+  buttonSize?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,6 +83,10 @@ const props = withDefaults(defineProps<Props>(), {
   showPrice: false,
   price: ' ',
   originalPrice: '',
+  buttonColor: 'primary',
+  buttonNoCaps: false,
+  buttonBold: true,
+  buttonSize: 'md',
 });
 
 const emit = defineEmits<{
@@ -203,7 +214,7 @@ const onImageError = (event: Event) => {
   overflow: hidden;
   background-color: #f5f5f5;
   padding: 8px;
-  margin-top:20px;
+  margin-top: 20px;
 }
 
 /* Título: corte seguro */
