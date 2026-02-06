@@ -244,6 +244,9 @@ export default {
     uneteALa:'Join the waiting list, fill out the form, and we\'ll let you know you when your group opens.',
     comoFunciona:'How does it work?',
     queLograras: 'What will you achieve?',
+    comprarPacks: 'Buy class packs',
+    nuestrosPacks: 'Our class packs',
+    ahorra: 'Save money by buying packs of individual classes in advance and enjoy exclusive discounts. Use your credits whenever you want.',
 
   },
   personal:{
@@ -389,7 +392,7 @@ export default {
     creditos2: '10 credits',
     idealGen: 'Ideal to try and start with your general classes.',
     idealConv: 'Start gaining confidence with your Spanish.',
-    ideal2Gen: 'Perfect to commit to your learning and be consistent',
+    ideal2Gen: 'Perfect to commit to your learning and be consistent.',
     ideal2Conv: 'Great to progress regularly and improve your fluency.',
     comprar: 'Buy pack',
     saleA1: 'Only 30€ / class!',

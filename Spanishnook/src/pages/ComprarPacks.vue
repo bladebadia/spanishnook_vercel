@@ -1,10 +1,10 @@
 <template>
   <q-page class="q-pa-lg bg-grey-1">
     <div class="text-center q-mb-xl">
-      <h4 class="text-weight-bold q-mb-sm" style="color: #469fcf">
+      <h4 class="text-weight-bold q-mb-sm">
         {{ t('comprarPacks.packsCreditos') }}
       </h4>
-      <p class="text-subtitle1" style="color: #469fcf; opacity: 0.8">
+      <p class="text-subtitle1">
         {{ t('comprarPacks.compraClases') }}
       </p>
     </div>
@@ -77,11 +77,11 @@
                   {{ pack.precio }}€
                 </div>
 
-                <div class="text-caption q-mb-md text-weight-bold" style="color: #469fcf">
+                <div class="text-caption q-mb-md text-weight-bold sale-text">
                   {{ pack.saleATexto }}
                 </div>
 
-                <div class="text-caption q-mb-md text-weight-bold" style="color: #469fcf">
+                <div class="text-caption q-mb-md text-weight-bold">
                   {{ pack.descripcion }}
                 </div>
               </q-card-section>
@@ -147,11 +147,11 @@
                   {{ pack.precio }}€
                 </div>
 
-                <div class="text-caption q-mb-md text-weight-bold" style="color: #a479bcff">
+                <div class="text-caption q-mb-md text-weight-bold sale-text">
                   {{ pack.saleATexto }}
                 </div>
 
-                <div class="text-caption q-mb-md text-weight-bold" style="color: #a479bcff">
+                <div class="text-caption q-mb-md text-weight-bold">
                   {{ pack.descripcion }}
                 </div>
               </q-card-section>
@@ -323,5 +323,9 @@ const comprarPack = async (pack: PackCreditos) => {
 }
 .text-strike {
   text-decoration: line-through;
+}
+
+.sale-text {
+  font-size: 0.95rem;
 }
 </style>

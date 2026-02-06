@@ -337,14 +337,10 @@
       <div class="col-12 col-md-6">
         <PromoCard
           image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/CTA_reserva.png"
-          :title="t('NuestrasClases.tituloPromoPacks', 'Ahorra con Packs de Créditos')"
-          :description="
-            t(
-              'NuestrasClases.textoPromoPacks',
-              'Compra packs de créditos y disfruta de descuentos exclusivos en tus clases.',
-            )
-          "
-          :button-text="t('NuestrasClases.botonPromoPacks', 'Comprar Packs')"
+          :title="t('NuestrasClases.nuestrosPacks')"
+          :description="t('NuestrasClases.ahorra')"
+          :button-text="t('NuestrasClases.comprarPacks')"
+          description-class="description-small-bold"
           :show-promo="false"
           :promo-text="t('NuestrasClases.promoPromoPacks', '¡Más créditos, más ahorro!')"
           :show-price="false"

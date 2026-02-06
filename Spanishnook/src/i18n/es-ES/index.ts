@@ -250,6 +250,10 @@ export default {
     uneteALa:'Únete a la lista de espera, rellena el formulario y te avisaremos cuando se abra tu grupo.',
     comoFunciona:'¿Cómo funciona?',
     queLograras: '¿Qué lograrás?',
+    comprarPacks: 'Comprar packs de clases',
+    nuestrosPacks: 'Nuestros packs de clases',
+    ahorra: 'Ahorra dinero comprando packs de clases individuales por adelantado y disfruta de descuentos exclusivos. Gasta tus créditos cuando quieras.',
+    
 
   },
   personal: {
@@ -392,7 +396,7 @@ export default {
     creditos2: '10 créditos',
     idealGen: 'Ideal para probar y empezar con tus clases generales.',
     idealConv: 'Empieza a ganar confianza con tu español.',
-    ideal2Gen: 'Perfecto para comprometerte con tu aprendizaje y ser constante',
+    ideal2Gen: 'Perfecto para comprometerte con tu aprendizaje y ser constante.',
     ideal2Conv: 'Genial para avanzar con regularidad y mejorar tu fluidez.',
     comprar: 'Comprar pack',
     saleA1: '¡Sale a 30€ / clase!',

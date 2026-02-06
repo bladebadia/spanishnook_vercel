@@ -29,7 +29,7 @@
       <q-card-section v-if="fechaInicio" class="fecha-inicio text-caption text-grey-8">
         {{ $t('NuestrasClases.inicio') }}: {{ formatFecha(fechaInicio) }}
       </q-card-section>
-      <q-card-section class="description texto-responsivo">
+      <q-card-section class="description texto-responsivo" :class="descriptionClass">
         <div v-html="formattedDescription"></div>
       </q-card-section>
       <q-card-actions class="actions flex flex-center">
@@ -75,6 +75,7 @@ interface Props {
   buttonNoCaps?: boolean;
   buttonBold?: boolean;
   buttonSize?: string;
+  descriptionClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -87,6 +88,7 @@ const props = withDefaults(defineProps<Props>(), {
   buttonNoCaps: false,
   buttonBold: true,
   buttonSize: 'md',
+  descriptionClass: '',
 });
 
 const emit = defineEmits<{
@@ -242,6 +244,11 @@ const onImageError = (event: Event) => {
   text-overflow: clip;
   max-width: 100%;
   margin: 0 auto;
+}
+
+.description-small-bold {
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
 /* Acciones: al final, sin posición absoluta */

@@ -13,6 +13,7 @@
           :label="t('wallet.comprarPacks')"
           to="/ComprarPacks"
           icon-right="chevron_right"
+          class="comprar-packs-btn"
         />
       </div>
 
@@ -60,5 +61,10 @@ const { t } = useI18n();
 <style scoped>
 .border-gray {
   border: 1px solid #e0e0e0;
+}
+
+.comprar-packs-btn {
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 </style>
