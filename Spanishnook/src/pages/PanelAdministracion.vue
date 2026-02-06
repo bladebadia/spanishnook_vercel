@@ -1828,8 +1828,8 @@ const TARIFAS_DISPONIBLES = [
   },
   {
     label: 'Curso Niveles',
-    precio_display: '70',
-    stripe_id: 'price_1SXvZ6LFUAzgw0DDUBrvyDSQ',
+    precio_display: '75',
+    stripe_id: 'price_1SxcqELFUAzgw0DDiTwVF5Np',
     descripcion: 'Acceso a las clases por niveles',
   },
   {

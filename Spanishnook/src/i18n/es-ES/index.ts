@@ -76,6 +76,7 @@ export default {
   indexOpinionesVerificadas: 'Opiniones verificadas ⭐',
   indexConoceExperiencias: 'Conoce las experiencias de nuestros estudiantes',
   indexVerMasOpiniones: 'Ver más reseñas.',
+  indexSeElPrimeroEnOpinar: 'Sé el primero en opinar',
   // Agregar a src/i18n/es-ES/index.ts
   indexDanosTuOpinion: 'Déjanos tu opinión',
   indexRegistroRequerido: 'Registro requerido',
@@ -398,10 +399,10 @@ export default {
     saleA2: '¡Sale a 27€ / clase!',
     saleA3: '¡Sale a 25€ / clase!',
     saleA4: '¡Sale a 23€ / clase!',
-    ahorras1Gen: 'Ahorras 12€',
-    ahorras2Gen: 'Ahorras 48€',
-    ahorras1Conv: 'Ahorras 7€',
-    ahorras2Conv: 'Ahorras 40€',
+    ahorras1gen: 'Ahorras 12€',
+    ahorras2gen: 'Ahorras 48€',
+    ahorras1conv: 'Ahorras 7€',
+    ahorras2conv: 'Ahorras 40€',
   },
 
   accederForm:{

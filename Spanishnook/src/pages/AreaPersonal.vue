@@ -817,7 +817,7 @@ const formatHorarioIndividual = (horaInicio: string) => {
   if (isNaN(h) || isNaN(m)) return limpia;
   const fecha = new Date();
   fecha.setHours(h, m, 0, 0);
-  fecha.setMinutes(fecha.getMinutes() + 90);
+  fecha.setMinutes(fecha.getMinutes() + 60);
   const hFin = fecha.getHours().toString().padStart(2, '0');
   const mFin = fecha.getMinutes().toString().padStart(2, '0');
   return `${limpia} - ${hFin}:${mFin}`;

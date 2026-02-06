@@ -80,6 +80,7 @@ export default {
   indexOpinionesVerificadas: 'Verified Reviews ⭐',
   indexConoceExperiencias: 'Get to know the experiences of our students',
   indexVerMasOpiniones: 'See more reviews',
+  indexSeElPrimeroEnOpinar: 'Be the first one to leave a review',
   // Agregar a src/i18n/en-US/index.ts
   indexDanosTuOpinion: 'Leave us your opinion',
   indexRegistroRequerido: 'Registration required',

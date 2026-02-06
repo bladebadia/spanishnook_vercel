@@ -18,7 +18,7 @@
 
       <div class="row q-col-gutter-sm">
         <div class="col-6">
-          <q-card flat class="bg-primary text-white text-center q-py-xs">
+          <q-card flat class="text-white text-center q-py-xs" style="background-color: #60aad8ff">
             <div v-if="loading" class="flex flex-center" style="height: 24px">
               <q-spinner-dots size="1em" />
             </div>
@@ -30,7 +30,7 @@
         </div>
 
         <div class="col-6">
-          <q-card flat class="bg-secondary text-white text-center q-py-xs">
+          <q-card flat class="text-white text-center q-py-xs" style="background-color: #b897cbff">
             <div v-if="loading" class="flex flex-center" style="height: 24px">
               <q-spinner-dots size="1em" />
             </div>
@@ -48,7 +48,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
-// Definimos qué datos necesita este componente para funcionar
 defineProps({
   saldoNormal: { type: Number, default: 0 },
   saldoConversacion: { type: Number, default: 0 },

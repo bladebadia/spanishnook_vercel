@@ -1,9 +1,11 @@
 <template>
   <q-page class="q-pa-lg bg-grey-1">
     <div class="text-center q-mb-xl">
-      <h4 class="text-weight-bold text-primary q-mb-sm">{{ $t('comprarPacks.packsCreditos') }}</h4>
-      <p class="text-grey-8 text-subtitle1">
-        {{ $t('comprarPacks.compraClases') }}
+      <h4 class="text-weight-bold q-mb-sm" style="color: #469fcf">
+        {{ t('comprarPacks.packsCreditos') }}
+      </h4>
+      <p class="text-subtitle1" style="color: #469fcf; opacity: 0.8">
+        {{ t('comprarPacks.compraClases') }}
       </p>
     </div>
 
@@ -11,14 +13,23 @@
       <q-tabs
         v-model="tab"
         dense
-        class="text-grey"
-        active-color="primary"
-        indicator-color="primary"
         align="justify"
         narrow-indicator
+        indicator-color="transparent"
+        class="text-grey-5"
       >
-        <q-tab name="normal" :label="$t('comprarPacks.clasesGenerales')" icon="school" />
-        <q-tab name="conversacion" :label="$t('comprarPacks.clasesConversacion')" icon="forum" />
+        <q-tab
+          name="normal"
+          :label="t('comprarPacks.clasesGenerales')"
+          icon="school"
+          :style="tab === 'normal' ? 'color: #469fcf; font-weight: 900' : ''"
+        />
+        <q-tab
+          name="conversacion"
+          :label="t('comprarPacks.clasesConversacion')"
+          icon="forum"
+          :style="tab === 'conversacion' ? 'color: #a479bcff; font-weight: 900' : ''"
+        />
       </q-tabs>
     </div>
 
@@ -27,9 +38,12 @@
         <div class="row q-col-gutter-lg justify-center">
           <div class="col-12 col-md-4" v-for="pack in packsNormales" :key="pack.id">
             <q-card class="card-pack column">
-              <div class="pack-header bg-primary text-white q-pa-md text-center">
+              <div
+                class="pack-header text-white q-pa-md text-center"
+                style="background-color: #60aad8"
+              >
                 <div class="text-h5 text-weight-bold">{{ pack.nombre }}</div>
-                <div class="text-subtitle2">{{ pack.creditos }} Créditos</div>
+                <div class="text-subtitle2">{{ pack.creditosTexto }}</div>
               </div>
 
               <q-card-section
@@ -39,43 +53,50 @@
                   v-if="pack.ahorro"
                   color="red"
                   floating
-                  transparent
-                  style="top: 10px; right: 10px; font-size: 0.8rem; font-weight: bold"
+                  rounded
+                  style="
+                    top: 10px;
+                    right: 10px;
+                    font-size: 0.8rem;
+                    font-weight: bold;
+                    transform: rotate(5deg);
+                  "
                 >
                   {{ pack.ahorro }}
                 </q-badge>
 
                 <div
                   v-if="pack.precioOriginal"
-                  class="text-grey-6 text-strike q-mt-md"
+                  class="text-grey-5 text-strike q-mt-md"
                   style="font-size: 1.2rem"
                 >
                   {{ pack.precioOriginal }}€
                 </div>
 
-                <div class="text-h3 text-weight-bolder q-mb-sm text-primary">
+                <div class="text-h3 text-weight-bolder q-mb-sm" style="color: #469fcf">
                   {{ pack.precio }}€
                 </div>
 
-                <div class="text-caption text-grey-7 q-mb-md">
-                  Sale a <b>{{ (pack.precio / pack.creditos).toFixed(1) }}€</b> / clase
+                <div class="text-caption q-mb-md text-weight-bold" style="color: #469fcf">
+                  {{ pack.saleATexto }}
                 </div>
 
-                <div class="text-grey-8 text-body2">
+                <div class="text-caption q-mb-md text-weight-bold" style="color: #469fcf">
                   {{ pack.descripcion }}
                 </div>
               </q-card-section>
 
               <q-card-section>
                 <q-btn
-                  color="primary"
-                  label="Comprar Pack"
+                  :label="t('comprarPacks.comprar')"
                   class="full-width shadow-2"
                   size="lg"
                   :loading="loading === pack.id"
                   @click="comprarPack(pack)"
                   icon="shopping_cart"
                   unelevated
+                  text-color="white"
+                  style="background-color: #60aad8"
                 />
               </q-card-section>
             </q-card>
@@ -87,9 +108,12 @@
         <div class="row q-col-gutter-lg justify-center">
           <div class="col-12 col-md-4" v-for="pack in packsConversacion" :key="pack.id">
             <q-card class="card-pack column">
-              <div class="pack-header bg-secondary text-white q-pa-md text-center">
+              <div
+                class="pack-header text-white q-pa-md text-center"
+                style="background-color: #b897cbff"
+              >
                 <div class="text-h5 text-weight-bold">{{ pack.nombre }}</div>
-                <div class="text-subtitle2">{{ pack.creditos }} Créditos</div>
+                <div class="text-subtitle2">{{ pack.creditosTexto }}</div>
               </div>
 
               <q-card-section
@@ -99,43 +123,50 @@
                   v-if="pack.ahorro"
                   color="red"
                   floating
-                  transparent
-                  style="top: 10px; right: 10px; font-size: 0.8rem; font-weight: bold"
+                  rounded
+                  style="
+                    top: 10px;
+                    right: 10px;
+                    font-size: 0.8rem;
+                    font-weight: bold;
+                    transform: rotate(5deg);
+                  "
                 >
                   {{ pack.ahorro }}
                 </q-badge>
 
                 <div
                   v-if="pack.precioOriginal"
-                  class="text-grey-6 text-strike q-mt-md"
+                  class="text-grey-5 text-strike q-mt-md"
                   style="font-size: 1.2rem"
                 >
                   {{ pack.precioOriginal }}€
                 </div>
 
-                <div class="text-h3 text-weight-bolder q-mb-sm text-secondary">
+                <div class="text-h3 text-weight-bolder q-mb-sm" style="color: #a479bcff">
                   {{ pack.precio }}€
                 </div>
 
-                <div class="text-caption text-grey-7 q-mb-md">
-                  Sale a <b>{{ (pack.precio / pack.creditos).toFixed(1) }}€</b> / clase
+                <div class="text-caption q-mb-md text-weight-bold" style="color: #a479bcff">
+                  {{ pack.saleATexto }}
                 </div>
 
-                <div class="text-grey-8 text-body2">
+                <div class="text-caption q-mb-md text-weight-bold" style="color: #a479bcff">
                   {{ pack.descripcion }}
                 </div>
               </q-card-section>
 
               <q-card-section>
                 <q-btn
-                  color="secondary"
-                  label="Comprar Pack"
+                  :label="t('comprarPacks.comprar')"
                   class="full-width shadow-2"
                   size="lg"
                   :loading="loading === pack.id"
                   @click="comprarPack(pack)"
                   icon="shopping_cart"
                   unelevated
+                  text-color="white"
+                  style="background-color: #b897cbff"
                 />
               </q-card-section>
             </q-card>
@@ -147,82 +178,89 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
-// 1. DEFINIMOS LA INTERFAZ PARA EVITAR ANY
+const { t } = useI18n();
+const { user } = useAuth();
+const $q = useQuasar();
+
+const tab = ref('normal');
+const loading = ref<string | null>(null);
+
 interface PackCreditos {
   id: string;
   nombre: string;
   creditos: number;
+  creditosTexto: string;
   precio: number;
   precioOriginal?: number;
   descripcion: string;
   ahorro?: string;
-  mejorOpcion?: boolean;
+  saleATexto: string;
   tipo: 'normal' | 'conversacion';
 }
 
-const tab = ref('normal');
-const loading = ref<string | null>(null);
-const { user } = useAuth();
-const $q = useQuasar();
-
-// 2. TUS DATOS REALES DE STRIPE Y DISEÑO
-const packsNormales: PackCreditos[] = [
+const packsNormales = computed<PackCreditos[]>(() => [
   {
-    id: 'price_1SvnLpLFUAzgw0DDFRC5kZ8e',
-    nombre: 'Pack Inicio (5 Clases)',
+    id: 'price_1SxcvuLFUAzgw0DD3CYqrL2E',
+    nombre: t('comprarPacks.pack5Gen'),
     creditos: 5,
-    precio: 145,
+    creditosTexto: t('comprarPacks.creditos1'),
+    precio: 148,
     precioOriginal: 160,
-    descripcion: 'Ideal para probar.',
-    ahorro: '- 12€',
+    descripcion: t('comprarPacks.idealGen'),
+    ahorro: t('comprarPacks.ahorras1gen'),
+    saleATexto: t('comprarPacks.saleA1'),
     tipo: 'normal',
   },
   {
-    id: 'price_1SvnMcLFUAzgw0DDKHgGGSJM',
-    nombre: 'Pack Pro (10 Clases)',
+    id: 'price_1SxcwsLFUAzgw0DDzuCzeCXF',
+    nombre: t('comprarPacks.pack10Gen'),
     creditos: 10,
-    precio: 260,
+    creditosTexto: t('comprarPacks.creditos2'),
+    precio: 272,
     precioOriginal: 320,
-    descripcion: 'Para estudiantes constantes.',
-    ahorro: '- 48€',
-    mejorOpcion: true,
+    descripcion: t('comprarPacks.ideal2Gen'),
+    ahorro: t('comprarPacks.ahorras2gen'),
+    saleATexto: t('comprarPacks.saleA2'),
     tipo: 'normal',
   },
-];
+]);
 
-const packsConversacion: PackCreditos[] = [
+const packsConversacion = computed<PackCreditos[]>(() => [
   {
-    id: 'price_1SvnOFLFUAzgw0DDywhQyqd5',
-    nombre: 'Pack Charla 5',
+    id: 'price_1SxcyKLFUAzgw0DD0ImH5iZB',
+    nombre: t('comprarPacks.pack5Conv'),
     creditos: 5,
+    creditosTexto: t('comprarPacks.creditos1'),
     precio: 125,
     precioOriginal: 135,
-    descripcion: '5 sesiones de conversación.',
-    ahorro: 'Ahorras 10€',
+    descripcion: t('comprarPacks.idealConv'),
+    ahorro: t('comprarPacks.ahorras1conv'),
+    saleATexto: t('comprarPacks.saleA3'),
     tipo: 'conversacion',
   },
   {
-    id: 'price_1SvnP3LFUAzgw0DD5duLB3mi',
-    nombre: 'Pack Fluidez',
+    id: 'price_1SxczzLFUAzgw0DD7G8AXvUD',
+    nombre: t('comprarPacks.pack10Conv'),
     creditos: 10,
-    precio: 215,
+    creditosTexto: t('comprarPacks.creditos2'),
+    precio: 230,
     precioOriginal: 270,
-    descripcion: 'El más popular para ganar soltura.',
-    ahorro: 'Ahorras 55€',
-    mejorOpcion: true,
+    descripcion: t('comprarPacks.ideal2Conv'),
+    ahorro: t('comprarPacks.ahorras2conv'),
+    saleATexto: t('comprarPacks.saleA4'),
     tipo: 'conversacion',
   },
-];
+]);
 
-// 3. FUNCIÓN DE COMPRA (Tipada correctamente)
 const comprarPack = async (pack: PackCreditos) => {
   if (!user.value) {
-    $q.notify({ type: 'warning', message: 'Debes iniciar sesión para comprar.' });
+    $q.notify({ type: 'warning', message: t('comprarPacks.loginRequired') });
     return;
   }
 
@@ -233,7 +271,6 @@ const comprarPack = async (pack: PackCreditos) => {
       data: { session },
     } = await supabase.auth.getSession();
 
-    // Llamada a la función específica de Bonos
     const response = await fetch(
       'https://zleqsdfpjepdangitcxv.supabase.co/functions/v1/create-bono-checkout',
       {
@@ -256,21 +293,14 @@ const comprarPack = async (pack: PackCreditos) => {
 
     const data = await response.json();
 
-    if (!response.ok) throw new Error(data.error || 'Error al conectar con Stripe');
+    if (!response.ok) throw new Error(data.error || 'Error de conexión');
     if (data.url) {
       window.location.href = data.url;
     }
   } catch (error: unknown) {
     console.error(error);
-
-    // Manejo seguro del error sin any
     let mensaje = 'Error desconocido';
-    if (error instanceof Error) {
-      mensaje = error.message;
-    } else if (typeof error === 'object' && error !== null && 'message' in error) {
-      mensaje = String((error as { message: string }).message);
-    }
-
+    if (error instanceof Error) mensaje = error.message;
     $q.notify({ type: 'negative', message: mensaje });
   } finally {
     loading.value = null;
