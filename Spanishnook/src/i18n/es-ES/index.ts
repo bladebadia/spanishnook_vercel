@@ -156,6 +156,7 @@ export default {
 
   // Sección nuestras clases
   NuestrasClases: {
+    promoPromoPacks:'¡Más créditos, más ahorro!',
     nuestrasClases: 'Nuestras Clases',
     textoNuestrasClases: 'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
     botonClasesIndividuales: 'CLASES INDIVIDUALES',

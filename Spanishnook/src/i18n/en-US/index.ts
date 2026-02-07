@@ -148,6 +148,7 @@ export default {
 
   },
   NuestrasClases: {
+    promoPromoPacks:'More credits, more saving!',
     nuestrasClases: 'Our Classes',
     textoNuestrasClases: 'At SpanishNook, there isn\'t just one path: every student has their own goals, schedule, and way of learning. That\'s why we offer flexible options, so you can choose what fits you best: private classes or small group courses.',
     botonClasesIndividuales: 'PRIVATE CLASSES',

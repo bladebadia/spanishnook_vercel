@@ -205,10 +205,17 @@
                     <q-item-label class="text-weight-bold text-subtitle1">{{
                       formatFecha(reserva.fecha)
                     }}</q-item-label>
+
                     <q-item-label class="text-primary q-mb-xs">
-                      <q-icon name="schedule" /> {{ t('personal.aLas') || 'de' }}
-                      {{ formatHorarioIndividual(reserva.hora) }}
+                      <q-icon name="schedule" class="q-mr-xs" />
+                      <span class="text-weight-bold" style="font-size: 1.1em">
+                        {{ formatoHorarioLocal(reserva.fecha, reserva.hora) }}
+                      </span>
+                      <span class="text-caption text-grey-7 q-ml-sm">
+                        (🇪🇸 {{ formatHorarioIndividual(reserva.hora) }} Madrid)
+                      </span>
                     </q-item-label>
+
                     <q-badge outline color="grey-7" class="q-mt-xs self-start">{{
                       getTipoClaseTexto(reserva)
                     }}</q-badge>
@@ -518,10 +525,14 @@
                     <q-item-label class="text-weight-bold">{{
                       formatFecha(reserva.fecha)
                     }}</q-item-label>
-                    <q-item-label caption
-                      >{{ t('personal.aLas') || 'a las' }}
-                      {{ formatHorarioIndividual(reserva.hora) }}</q-item-label
-                    >
+                    <q-item-label caption>
+                      <span class="text-weight-bold text-black">
+                        {{ formatoHorarioLocal(reserva.fecha, reserva.hora) }}
+                      </span>
+                      <span class="q-ml-xs">
+                        (🇪🇸 {{ formatHorarioIndividual(reserva.hora) }})
+                      </span>
+                    </q-item-label>
                   </q-item-section>
                   <q-item-section side>
                     <q-badge color="grey-4" text-color="grey-8">Finalizada</q-badge>
@@ -626,7 +637,6 @@ interface Suscripcion {
   current_period_end: string;
   cancel_at_period_end: boolean;
   created_at: string;
-  // 🔥 CORRECCIÓN: HACEMOS ESTO OPCIONAL
   cursos_grupales?: {
     nombre_curso: string;
     dias_semana: string[];
@@ -637,7 +647,6 @@ interface Suscripcion {
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
 
-// 🔥 INTERFAZ ACTUALIZADA
 interface DatosUsuario {
   nombre: string;
   apellido1: string;
@@ -790,37 +799,106 @@ const formatearFechaSuscripcion = (fecha: string | number) => {
   return 'Fecha inválida';
 };
 
+// --- FUNCIÓN LOCAL SEGURA PARA CURSOS (90 MINUTOS) ---
 const formatHorarios = (horarios?: string[]) => {
-  if (!horarios || horarios.length === 0) return '';
+  if (!horarios || !Array.isArray(horarios) || horarios.length === 0) return 'Por definir';
+
   const horaInicio = horarios[0];
-  if (!horaInicio) return '';
-  const partes = horaInicio.split(':');
-  if (partes.length < 2) return horaInicio;
-  const h = Number(partes[0]);
-  const m = Number(partes[1]);
-  if (isNaN(h) || isNaN(m)) return horaInicio;
-  const fecha = new Date();
-  fecha.setHours(h, m, 0, 0);
-  fecha.setMinutes(fecha.getMinutes() + 90);
-  const hFin = fecha.getHours().toString().padStart(2, '0');
-  const mFin = fecha.getMinutes().toString().padStart(2, '0');
-  return `${horaInicio} - ${hFin}:${mFin}`;
+  if (!horaInicio) return 'Por definir';
+
+  try {
+    // CORRECCIÓN: Separar y comprobar antes de convertir
+    const partes = horaInicio.split(':');
+    if (partes.length < 2) return horaInicio;
+
+    const h = Number(partes[0]);
+    const m = Number(partes[1]);
+
+    if (isNaN(h) || isNaN(m)) return horaInicio;
+
+    // Calcular offset Madrid
+    const now = new Date();
+    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
+    const dateMadrid = new Date(strMadrid);
+    const diff = now.getTime() - dateMadrid.getTime();
+
+    // Fecha base con la hora del curso
+    const base = new Date();
+    base.setHours(h, m, 0, 0);
+
+    // Ajustar a hora local usuario
+    const localStart = new Date(base.getTime() + diff);
+    // Sumar 90 minutos
+    const localEnd = new Date(localStart.getTime() + 90 * 60000);
+
+    const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return `${fmt(localStart)} - ${fmt(localEnd)}`;
+  } catch (e) {
+    console.warn(e); // Usar 'e' para que el linter no se queje
+    return horaInicio;
+  }
 };
 
+// --- FUNCIÓN LOCAL SEGURA PARA CLASES INDIVIDUALES (60 MINUTOS) ---
+const formatoHorarioLocal = (fechaStr: string | undefined, horaStr: string | undefined) => {
+  if (!fechaStr || !horaStr) return '...';
+
+  try {
+    // CORRECCIÓN: Separar y comprobar antes de convertir
+    const partes = horaStr.split(':');
+    if (partes.length < 2) return horaStr;
+
+    const h = Number(partes[0]);
+    const m = Number(partes[1]);
+
+    if (isNaN(h) || isNaN(m)) return horaStr;
+
+    // Calcular offset Madrid
+    const now = new Date();
+    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
+    const dateMadrid = new Date(strMadrid);
+    const diff = now.getTime() - dateMadrid.getTime();
+
+    // Fecha base
+    const base = new Date(fechaStr);
+    base.setHours(h, m, 0, 0);
+
+    // Ajustar a hora local usuario
+    const localStart = new Date(base.getTime() + diff);
+    // Sumar 60 minutos
+    const localEnd = new Date(localStart.getTime() + 60 * 60000);
+
+    const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return `${fmt(localStart)} - ${fmt(localEnd)}`;
+  } catch (e) {
+    console.warn(e); // Usar 'e'
+    return horaStr;
+  }
+};
+
+// --- FORMATO SIMPLE PARA MOSTRAR LA HORA DE MADRID (TEXTO) ---
 const formatHorarioIndividual = (horaInicio: string) => {
   if (!horaInicio) return '';
   const limpia = horaInicio.slice(0, 5);
   const partes = limpia.split(':');
   if (partes.length < 2) return limpia;
+
   const h = Number(partes[0]);
   const m = Number(partes[1]);
+
   if (isNaN(h) || isNaN(m)) return limpia;
-  const fecha = new Date();
-  fecha.setHours(h, m, 0, 0);
-  fecha.setMinutes(fecha.getMinutes() + 60);
-  const hFin = fecha.getHours().toString().padStart(2, '0');
-  const mFin = fecha.getMinutes().toString().padStart(2, '0');
-  return `${limpia} - ${hFin}:${mFin}`;
+
+  // Cálculo simple manual
+  const mTotal = h * 60 + m + 60; // +60 minutos duración
+  const hFin = Math.floor(mTotal / 60) % 24;
+  const mFin = mTotal % 60;
+
+  const hFinStr = hFin.toString().padStart(2, '0');
+  const mFinStr = mFin.toString().padStart(2, '0');
+
+  return `${limpia} - ${hFinStr}:${mFinStr}`;
 };
 
 const eliminarCuenta = async () => {
@@ -1017,24 +1095,25 @@ const seleccionarMenu = (menu: string) => {
 };
 
 const diasSemanaMap: Record<string, Record<string, string>> = {
-  lunes: { 'es-ES': 'lunes', 'en-US': 'Monday' },
-  martes: { 'es-ES': 'martes', 'en-US': 'Tuesday' },
-  miercoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
-  miércoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
-  jueves: { 'es-ES': 'jueves', 'en-US': 'Thursday' },
-  viernes: { 'es-ES': 'viernes', 'en-US': 'Friday' },
-  sabado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
-  sábado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
-  domingo: { 'es-ES': 'domingo', 'en-US': 'Sunday' },
+  Lunes: { 'es-ES': 'Lunes', 'en-US': 'Monday' },
+  Martes: { 'es-ES': 'Martes', 'en-US': 'Tuesday' },
+  Miercoles: { 'es-ES': 'Miércoles', 'en-US': 'Wednesday' },
+  Jueves: { 'es-ES': 'Jueves', 'en-US': 'Thursday' },
+  Viernes: { 'es-ES': 'Viernes', 'en-US': 'Friday' },
+  Sabado: { 'es-ES': 'Sábado', 'en-US': 'Saturday' },
+  Doming: { 'es-ES': 'Domingo', 'en-US': 'Sunday' },
 };
 
-const formatFecha = (fecha: string) =>
-  new Date(fecha).toLocaleDateString(locale.value, {
+const formatFecha = (fecha: string) => {
+  const fechaFormateada = new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
+  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+};
 
 const traducirDiasSemana = (dias?: string[]) => {
   if (!dias || dias.length === 0) return '';
