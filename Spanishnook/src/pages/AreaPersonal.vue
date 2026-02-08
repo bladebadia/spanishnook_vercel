@@ -158,7 +158,7 @@
                     flat
                     dense
                     color="grey"
-                    label="Cancelar"
+                    :label="t('personal.cancelar2')"
                     @click="
                       modoSeleccion = false;
                       seleccionadas = [];
@@ -166,7 +166,7 @@
                   />
                   <q-btn
                     color="negative"
-                    :label="`Borrar (${seleccionadas.length})`"
+                    :label="`${t('personal.borrar')} (${seleccionadas.length})`"
                     :disable="seleccionadas.length === 0"
                     :loading="cargandoOperacion"
                     @click="cancelarSeleccionadas"
@@ -187,9 +187,9 @@
                       :val="reserva.id"
                       :disable="!puedeCancelar(reserva)"
                     >
-                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative"
-                        >Menos de 24h</q-tooltip
-                      >
+                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative">{{
+                        t('personal.noSePuedeCancelar')
+                      }}</q-tooltip>
                     </q-checkbox>
                   </q-item-section>
 
@@ -427,7 +427,7 @@
                   <div>
                     <div class="text-caption text-grey">{{ t('personal.nivel') }}</div>
                     <q-chip color="secondary" text-color="white" icon="leaderboard">{{
-                      formDatos.nivel_estimado || 'Sin definir'
+                      formDatos.nivel_estimado || t('personal.sinDefinir')
                     }}</q-chip>
                   </div>
                   <div>
@@ -535,11 +535,13 @@
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side>
-                    <q-badge color="grey-4" text-color="grey-8">Finalizada</q-badge>
+                    <q-badge color="grey-4" text-color="grey-8">{{
+                      t('personal.finalizada')
+                    }}</q-badge>
                   </q-item-section>
                 </q-item>
               </q-list>
-              <div v-else class="text-center text-grey q-pa-lg">No tienes clases pasadas</div>
+              <div v-else class="text-center text-grey q-pa-lg">{{ t('personal.noHay') }}</div>
             </q-card-section>
           </q-card>
         </div>
@@ -548,9 +550,7 @@
           <q-card class="bg-red-1 shadow-1" style="border: 1px solid #ef9a9a">
             <q-card-section>
               <div class="text-h6 text-negative">{{ t('personal.eliminarCuenta') }}</div>
-              <p class="text-grey-9 q-mt-sm">
-                Esta acción es irreversible. Se borrarán todos tus datos y reservas.
-              </p>
+              <p class="text-grey-9 q-mt-sm text-bold">⚠️ {{ t('personal.estaAccion') }}</p>
             </q-card-section>
             <q-card-section>
               <q-form @submit="eliminarCuenta" class="row items-end q-gutter-md">
@@ -691,11 +691,11 @@ const cancelarSeleccionadas = () => {
 
   $q.dialog({
     title: t('personal.cancelarReserva') || 'Cancelar Clases',
-    message: `Vas a cancelar ${seleccionadas.value.length} clase(s). <br>Se devolverán los créditos si faltan más de 24h.`,
+    message: `${t('personal.vasA')} ${seleccionadas.value.length} ${t('personal.clase')}. <br>${t('personal.seDevolvera')}`,
     html: true,
     cancel: true,
     persistent: true,
-    ok: { label: 'Confirmar', color: 'negative' },
+    ok: { label: t('personal.confirmar'), color: 'negative' },
   }).onOk(() => {
     void (async () => {
       cargandoOperacion.value = true;
@@ -706,14 +706,14 @@ const cancelarSeleccionadas = () => {
 
         if (error) throw error;
 
-        const mensaje = `Hecho: ${data.canceladas} canceladas.`;
+        const mensaje = `${t('personal.hecho')} ${data.canceladas} ${t('personal.canceladas')}.`;
         $q.notify({ type: data.canceladas > 0 ? 'positive' : 'warning', message: mensaje });
 
         seleccionadas.value = [];
         modoSeleccion.value = false;
         await Promise.all([cargarDatosPersonales(), cargarReservasConfirmadas()]);
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'Error desconocido';
+        const msg = e instanceof Error ? e.message : t('personal.errorDesconocido');
         $q.notify({ type: 'negative', message: msg });
       } finally {
         cargandoOperacion.value = false;

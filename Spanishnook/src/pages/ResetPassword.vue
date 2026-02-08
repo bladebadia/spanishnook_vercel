@@ -2,15 +2,15 @@
   <q-page class="flex flex-center bg-grey-2">
     <q-card class="q-pa-none shadow-2 my-card" bordered style="width: 100%; max-width: 450px">
       <q-card-section class="q-pt-xl q-pb-md text-center">
-        <div class="text-h5 text-primary text-weight-bold">Restablecer Contraseña</div>
-        <div class="text-caption text-grey-7">Introduce tu nueva contraseña</div>
+        <div class="text-h5 text-primary text-weight-bold">{{ $t('flecos.restablecer') }}</div>
+        <div class="text-caption text-grey-7">{{ $t('flecos.introducir') }}</div>
       </q-card-section>
 
       <q-card-section class="q-px-lg">
         <form @submit.prevent="resetPassword" class="q-gutter-md">
           <q-input
             v-model="nuevaPassword"
-            label="Nueva Contraseña"
+            :label="$t('flecos.nueva')"
             :type="mostrarPassword ? 'text' : 'password'"
             outlined
             dense
@@ -34,7 +34,7 @@
 
           <q-input
             v-model="confirmarPassword"
-            label="Confirmar Nueva Contraseña"
+            :label="$t('flecos.confirmarNueva')"
             type="password"
             outlined
             dense
@@ -63,13 +63,13 @@
             class="text-center q-pa-md bg-green-1 text-positive rounded-borders q-mt-md"
           >
             <q-icon name="check_circle" size="sm" />
-            <div class="text-weight-bold q-mt-xs">¡Contraseña restablecida!</div>
-            <div class="text-caption">Redirigiendo al login...</div>
+            <div class="text-weight-bold q-mt-xs">{{ $t('flecos.contraseña') }}</div>
+            <div class="text-caption">{{ $t('flecos.redirigiendoInicio') }}</div>
           </div>
 
           <div class="q-mt-lg q-mb-md">
             <q-btn
-              label="Guardar Nueva Contraseña"
+              :label="$t('flecos.guardar')"
               color="primary"
               type="submit"
               :loading="loading"

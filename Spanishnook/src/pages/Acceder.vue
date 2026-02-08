@@ -89,7 +89,7 @@
 
         <q-card-section class="q-pt-lg">
           <p class="text-body2 text-grey-8 q-mb-md">
-            Introduce tu email y te enviaremos un enlace para restablecerla.
+            {{ t('accederForm.introduceTuCorreo') }}
           </p>
           <q-input
             outlined

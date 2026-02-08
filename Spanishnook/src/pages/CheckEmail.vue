@@ -16,8 +16,10 @@
       </div>
 
       <q-card-section class="q-pa-none">
-        <div class="text-h5 text-primary text-weight-bold q-mb-xs">¡Registro casi listo!</div>
-        <div class="text-subtitle1 text-grey-7">Almost there!</div>
+        <div class="text-h5 text-primary text-weight-bold q-mb-xs">
+          {{ $t('checkEmail.registroCasi') }}
+        </div>
+        <div class="text-subtitle1 text-grey-7">{{ $t('checkEmail.soloFalta') }}</div>
       </q-card-section>
 
       <q-card-section class="q-py-lg">
