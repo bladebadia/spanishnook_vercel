@@ -1,7 +1,7 @@
 // app global css in SCSS form
 @font-face {
   font-family: 'nunitosans';
-  src: url('fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf') format('truetype');
+  src: url('/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: 'Montserrat-ExtraBold';
-  src: url('fonts/Montserrat-ExtraBold.ttf') format('truetype');
+  src: url('/fonts/Montserrat-ExtraBold.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -22,7 +22,7 @@
 
 @font-face {
   font-family: 'Montserrat-Bold';
-  src: url('fonts/Montserrat-Bold.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -32,7 +32,7 @@
 
 @font-face {
   font-family: 'Montserrat-SemiBold';
-  src: url('fonts/Montserrat-SemiBold.ttf') format('truetype');
+  src: url('/fonts/Montserrat-SemiBold.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -42,7 +42,7 @@
 
 @font-face {
   font-family: 'Montserrat-Medium';
-  src: url('fonts/Montserrat-Medium.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Medium.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -52,7 +52,7 @@
 
 @font-face {
   font-family: 'Montserrat-regular';
-  src: url('fonts/Montserrat-Regular.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -62,7 +62,7 @@
 
 @font-face {
   font-family: 'Montserrat-thin';
-  src: url('fonts/Montserrat-Thin.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Thin.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -71,7 +71,7 @@
 }
 @font-face {
   font-family: 'Montserrat-Light';
-  src: url('fonts/Montserrat-Light.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Light.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }
@@ -80,7 +80,7 @@
 }
 @font-face {
   font-family: 'Anton';
-  src: url('fonts/Anton-Regular.ttf') format('truetype');
+  src: url('/fonts/Anton-Regular.ttf') format('truetype');
   font-style: normal;
   font-display: swap;
 }

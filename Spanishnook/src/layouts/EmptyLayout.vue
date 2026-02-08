@@ -278,9 +278,8 @@ watch(
   () => route.path,
   (newPath) => {
     if (newPath === '/') activeButton.value = 'inicio';
-    else if (newPath === '/ClasesIndividuales' || newPath === '/ClasesGrupales')
-      activeButton.value = 'clases';
-    else if (newPath === '/TestNivel') activeButton.value = 'testNivel';
+    else if ( newPath === '/Clases'   ) { activeButton.value = 'clases';
+    } else if (newPath === '/TestNivel') activeButton.value = 'testNivel';
     else if (newPath === '/sobreSpanish') activeButton.value = 'sobreSpanish';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
     else activeButton.value = '';

@@ -6,7 +6,7 @@
         <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
           {{ t('SobreSpanish.conoce') }}
         </p>
-      </div> 
+      </div>
       <!-- Descripción  -->
       <div class="col-12 items-center text-center" style="width: 70%">
         <p class="texto-responsivo q-pb-xl q-pb-xl">
@@ -107,7 +107,41 @@
 <script setup lang="ts">
 import '../css/pages/EstilosGenerales.css';
 import { useI18n } from 'vue-i18n';
+import { useMeta } from 'quasar';
 const { t } = useI18n();
+
+useMeta(() => ({
+  title: 'Sobre SpanishNook | Conoce quién hay detrás',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Descubre la historia, filosofía y valores de SpanishNook. Conoce a la persona detrás del proyecto y cómo nació la idea de enseñar español online.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'sobre SpanishNook, quién hay detrás, historia SpanishNook, filosofía, valores, español online, profesor nativo',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Sobre SpanishNook | Conoce quién hay detrás',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Conoce la historia y la filosofía de SpanishNook, el proyecto de clases de español online.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: 'https://spanishnook.com/img/Home/banner_1920.webp',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 </script>
 
 <style scoped>

@@ -135,6 +135,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { supabase } from 'src/supabaseClient';
 import '../css/pages/EstilosGenerales.css';
+import { useMeta } from 'quasar';
 
 const { t } = useI18n();
 
@@ -188,6 +189,39 @@ const onSubmit = async () => {
     isSubmitting.value = false;
   }
 };
+
+useMeta(() => ({
+  title: 'Contacto | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Formulario de contacto para consultas, dudas y sugerencias sobre clases de español online en SpanishNook.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'contacto, clases de español, consultas, dudas, SpanishNook, profesores nativos, español online',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Contacto | SpanishNook',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        '¿Tienes dudas o quieres más información sobre nuestras clases de español? Contáctanos aquí.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 </script>
 
 <style scoped>

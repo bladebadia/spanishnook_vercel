@@ -94,14 +94,14 @@
               :button-text="t('indexQuieroMiClase')"
               :to="{ path: '/Clases', hash: '#clases-individuales' }"
             />
-            <!-- Componente 2: Clases Grupales -->
+            <!-- Componente 2: Clases Grupales 
             <PromoCard
               :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-grupo.png'"
               :title="t('indexClasesGrupales')"
               :description="t('indexAprendeEspañol')"
               :button-text="t('indexAprenderEnGrupo')"
               :to="{ path: '/Clases', hash: '#clases-conversacion' }"
-            />
+            />   -->
             <!-- Componente 3: Clases de Conversación -->
             <PromoCard
               :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-conversacion.png'"
@@ -206,7 +206,7 @@
               <div class="row justify-center full-height items-center">
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 text-center q-pa-xl">
                   <div class="texto-responsivo text-grey-7">
-                    {{ t('indexSeElPrimeroEnOpinar', 'Sé el primero en opinar') }}
+                    {{ t('indexSeElPrimeroEnOpinar', 'Sé el primero en dejar tu reseña') }}
                   </div>
                 </div>
               </div>
@@ -529,21 +529,27 @@ useMeta(() => ({
       name: 'description',
       content: 'Mejora tu español con clases en vivo, individuales y grupales.',
     },
+    keywords: {
+      name: 'keywords',
+      content:
+        'español online, clases de español, profesores nativos, clases grupales, clases individuales, aprender español, SpanishNook',
+    },
     ogTitle: {
       property: 'og:title',
       content: 'SpanishNook',
     },
     ogDescription: {
       property: 'og:description',
-      content: 'Clases en vivo con profesores nativos.',
+      content: 'Clases de español online con profesores nativos.',
     },
     ogImage: {
       property: 'og:image',
-      content: 'https://tusitio.com/og-image.jpg',
+      content:
+        'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png',
     },
     robots: {
       name: 'robots',
-      content: 'noindex,nofollow',
+      content: 'index,follow',
     },
   },
 }));

@@ -1,18 +1,49 @@
 <template>
-<component :is="layoutComponent">
-  <router-view />
-</component>
+  <component :is="layoutComponent">
+    <router-view />
+  </component>
 </template>
 
 <script setup lang="ts">
+import MainLayout from 'layouts/MainLayout.vue';
+import EmptyLayout from 'layouts/EmptyLayout.vue';
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { useMeta } from 'quasar';
 
-import MainLayout from 'layouts/MainLayout.vue'
-import EmptyLayout from 'layouts/EmptyLayout.vue'
-import {useRoute} from 'vue-router'
-import { computed } from 'vue'
+const route = useRoute();
+const layoutComponent = computed(() => (route.meta.layout === 'empty' ? EmptyLayout : MainLayout));
 
-const route = useRoute()
-const layoutComponent = computed(() => route.meta.layout === 'empty' ? EmptyLayout : MainLayout)
-
+useMeta(() => ({
+  title: 'SpanishNook | Clases de español online',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Clases de español online con profesores nativos. Reserva clases particulares y grupales, aprende desde cualquier lugar con SpanishNook.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'español online, clases de español, profesores nativos, clases grupales, clases individuales, aprender español, SpanishNook',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'SpanishNook | Clases de español online',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Reserva clases particulares y grupales de español online. Aprende con profesores nativos y grupos reducidos.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: '/img/Logo_rectangular_320.png',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 </script>
-

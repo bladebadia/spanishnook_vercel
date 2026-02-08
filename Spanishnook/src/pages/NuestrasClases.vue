@@ -47,7 +47,7 @@
     </div>
 
     <!-- Animación: imagen que entra desde la izquierda y queda a la derecha -->
-    <div class="row full-width">
+    <div class="row full-width q-mb-lg q-mb-xl">
       <div class="col-12">
         <div v-intersect="onImgIntersect" class="animacion-banner">
           <div v-if="showAnimatedImg" class="anim-group anim-group-col text-center">
@@ -79,7 +79,7 @@
       <div class="col-12 col-md-5 flex justify-center">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
-          style="width: 100%; max-width: 400px; border-radius: 16px"
+          style="width: 100%; max-width: 300px; border-radius: 16px"
           fit="cover"
         />
       </div>
@@ -249,7 +249,7 @@
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
                   <q-img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/cursoA2_conv.png"
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/modalidad-conversacion2.png"
                     style="width: 70%; max-width: 300px; border-radius: 16px"
                     fit="cover"
                   />
@@ -365,32 +365,39 @@ const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 const { t } = useI18n();
 
-const pageTitle = 'Clases particulares y grupales de español online | SpanishNook';
-const pageDescription =
-  'Reserva clases particulares 1:1 y grupales de conversación en vivo con SpanishNook. Profesores nativos, grupos reducidos y horarios flexibles para avanzar en tu español.';
-const pageUrl = 'https://spanishnook.com/NuestrasClases';
-const pageImage = 'https://spanishnook.com/img/estudiante_1024.jpg';
-
 useMeta(() => ({
-  title: pageTitle,
+  title: 'Nuestras Clases | SpanishNook',
   meta: {
-    description: { name: 'description', content: pageDescription },
+    description: {
+      name: 'description',
+      content:
+        'Clases particulares y grupales de español online. Reserva tu clase, aprende con profesores nativos y grupos reducidos en SpanishNook.',
+    },
     keywords: {
       name: 'keywords',
       content:
-        'clases particulares español online, clases grupales español, clases conversación, profesor nativo español, grupos reducidos, clases 1 a 1',
+        'clases particulares español online, clases grupales español, clases conversación, profesor nativo español, grupos reducidos, clases 1 a 1, SpanishNook',
     },
-    ogTitle: { property: 'og:title', content: pageTitle },
-    ogDescription: { property: 'og:description', content: pageDescription },
-    ogImage: { property: 'og:image', content: pageImage },
-    ogUrl: { property: 'og:url', content: pageUrl },
-    ogType: { property: 'og:type', content: 'website' },
-    twitterCard: { name: 'twitter:card', content: 'summary_large_image' },
-    twitterTitle: { name: 'twitter:title', content: pageTitle },
-    twitterDescription: { name: 'twitter:description', content: pageDescription },
-    twitterImage: { name: 'twitter:image', content: pageImage },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Nuestras Clases | SpanishNook',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Reserva clases particulares y grupales de español online. Aprende con profesores nativos y grupos reducidos.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: '/img/Logo_rectangular_320.png',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
   },
 }));
+
 const showAnimatedImg = ref(false);
 
 function scrollDirecto(hash: string, offset = 80) {

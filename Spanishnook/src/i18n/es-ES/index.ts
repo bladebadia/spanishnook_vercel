@@ -76,7 +76,7 @@ export default {
   indexOpinionesVerificadas: 'Opiniones verificadas ⭐',
   indexConoceExperiencias: 'Conoce las experiencias de nuestros estudiantes',
   indexVerMasOpiniones: 'Ver más reseñas.',
-  indexSeElPrimeroEnOpinar: 'Sé el primero en opinar',
+  indexSeElPrimeroEnOpinar: 'Sé el primero en dejar tu reseña',
   // Agregar a src/i18n/es-ES/index.ts
   indexDanosTuOpinion: 'Déjanos tu opinión',
   indexRegistroRequerido: 'Registro requerido',
