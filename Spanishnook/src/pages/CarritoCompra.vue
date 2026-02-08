@@ -332,18 +332,30 @@ const totalGastarCreditos = computed(() => carrito.value.filter((c) => c.usarCre
 
 // --- PAGO Y CONFIRMACIÓN ---
 const confirmarReservasHibridas = async () => {
+  // 1. Verificaciones iniciales
   if (!usuarioLogueado.value || reservasConflictivas.value.length > 0) return;
+
+  // 2. RE-VERIFICACIÓN DE SEGURIDAD
+  await verificarDisponibilidad();
+  if (reservasConflictivas.value.length > 0) {
+    $q.notify({ type: 'warning', message: '¡Vaya! Alguien se ha adelantado en una clase.' });
+    confirmando.value = false;
+    return;
+  }
+
   confirmando.value = true;
 
   try {
     const itemsConCredito = carrito.value.filter((i) => i.usarCredito);
     const itemsConTarjeta = carrito.value.filter((i) => !i.usarCredito);
 
-    const reservasParaEmail: { fecha: string; hora: string; tipo: string }[] = [];
+    const reservasParaEmail: { fecha: string; hora: string; tipo: string; meet_link?: string }[] =
+      [];
 
     // A. PAGAR CON CRÉDITOS
     if (itemsConCredito.length > 0) {
       for (const item of itemsConCredito) {
+        // A.1. Crear reserva en BBDD (RPC)
         const { data, error } = await supabase.rpc('reservar_con_credito', {
           p_user_id: user.value!.id,
           p_tipo_clase: item.tipo,
@@ -357,28 +369,54 @@ const confirmarReservasHibridas = async () => {
           throw new Error(data?.message || error?.message || 'Error desconocido');
         }
 
+        // A.2. Generar Link de Google Meet
         const nuevaReservaId = data.reserva_id;
+        let linkGenerado = null;
+
         if (nuevaReservaId) {
-          await supabase.functions.invoke('crear-meet', {
-            body: { reservaId: nuevaReservaId },
-          });
+          try {
+            // 1. Invocamos la función para que genere el link y lo guarde en DB
+            await supabase.functions.invoke('crear-meet', {
+              body: { reservaId: nuevaReservaId },
+            });
+
+            // 2. RECUPERACIÓN SEGURA: Leemos la reserva de la BBDD para obtener el link real
+            // Esto asegura que tenemos el link aunque la función 'crear-meet' no lo devuelva en el body
+            const { data: reservaActualizada } = await supabase
+              .from('reservas')
+              .select('meet_link')
+              .eq('id', nuevaReservaId)
+              .single();
+
+            if (reservaActualizada && reservaActualizada.meet_link) {
+              linkGenerado = reservaActualizada.meet_link;
+            }
+          } catch (e) {
+            console.error('Error generando meet:', e);
+            // No bloqueamos el flujo, pero el link irá vacío
+          }
         }
 
+        // A.3. Añadir a la lista de emails con el link recuperado
         reservasParaEmail.push({
           fecha: item.fecha,
           hora: item.hora,
           tipo: item.tipo === 'normal' ? 'individual' : 'conversacion',
+          meet_link: linkGenerado || undefined,
         });
       }
 
+      // A.4. Enviar Email Resumen
       if (reservasParaEmail.length > 0) {
         try {
+          console.log('📨 Enviando resumen con links:', reservasParaEmail);
           await supabase.functions.invoke('send-booking-email', {
             body: {
               reservas: reservasParaEmail,
               userId: user.value!.id,
             },
           });
+          console.log('✅ Email enviado.');
         } catch (e) {
           console.error('Error no bloqueante enviando email:', e);
         }
@@ -392,6 +430,8 @@ const confirmarReservasHibridas = async () => {
       $q.notify({ type: 'positive', message: '¡Reservas confirmadas! 📧' });
       carrito.value = [];
       guardarCarrito();
+
+      // Navegación suave
       await router.push('/AreaPersonal');
     }
   } catch (err: unknown) {
