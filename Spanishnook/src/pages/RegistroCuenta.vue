@@ -79,7 +79,7 @@
 
             <q-checkbox
               v-model="aceptoPrivacidad"
-              label="Acepto la política de privacidad"
+              :label="$t('registroCuenta.aceptar')"
               dense
               class="q-mt-sm"
             />
@@ -99,10 +99,10 @@
             </div>
           </q-form>
 
-          <div class="text-center q-mt-lg">
-            <router-link to="/Acceder" class="text-primary link-sin-subrayar"
-              >¿Ya tienes cuenta? Entra aquí</router-link
-            >
+          <div class="texto-responsivo2 text-center q-mt-lg">
+            <router-link to="/Acceder" class="text-primary link-sin-subrayar">{{
+              $t('registroCuenta.yatienescuenta')
+            }}</router-link>
           </div>
         </q-step>
 
@@ -173,10 +173,11 @@
                     Antes de tu primera clase... / Before we start...
                   </div>
                   <div class="text-caption text-grey-9" style="line-height: 1.4">
-                    Queremos conocerte para adaptar la clase. No es un examen, solo sé honesto/a
-                    😊<br />
+                    Queremos conocerte un poco más para ofrecerte la mejor experiencia. No es un
+                    examen, solo responde de forma honesto/a 😊<br />
                     <i class="text-grey-7"
-                      >We want to tailor the lesson for you. It's not a test, just be honest!</i
+                      >We’d like to get to know you a little better so we can offer you the best
+                      experience. It's not a test, just answer honestly.</i
                     >
                   </div>
                 </div>
@@ -186,7 +187,7 @@
             <div class="q-mb-xl">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
                 <q-icon name="equalizer" color="primary" class="q-mr-sm" size="sm" /> 1. ¿Qué nivel
-                crees que tienes? / Current level?
+                crees que tienes de Español? / What's your current Spanish level?
               </div>
               <q-btn-toggle
                 v-model="form.nivelEstimado"
@@ -209,7 +210,7 @@
             <div class="q-mb-xl">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
                 <q-icon name="history_edu" color="primary" class="q-mr-sm" size="sm" /> 2. ¿Has
-                estudiado español antes? / Studied before?
+                estudiado español antes? / Have you studied Spanish before?
               </div>
               <div class="q-gutter-md q-ml-none">
                 <q-radio
@@ -222,7 +223,7 @@
                 <q-radio
                   v-model="form.haEstudiadoAntes"
                   :val="false"
-                  label="No, nunca"
+                  label="No, nunca / No, never"
                   color="primary"
                   keep-color
                 />
@@ -232,7 +233,7 @@
                 <div v-if="form.haEstudiadoAntes" class="q-mt-md">
                   <q-input
                     v-model="form.detallesEstudio"
-                    label="¿Dónde y cuánto tiempo? / Where and how long?"
+                    label="¿Dónde y cuánto tiempo? / Where and for how long?"
                     outlined
                     dense
                     bg-color="white"
@@ -246,9 +247,9 @@
             <div class="q-mb-xl">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
                 <q-icon name="interests" color="primary" class="q-mr-sm" size="sm" /> 3. ¿Qué te
-                interesa? / Interests
+                interesa aprender? / What are your areas of interest?
                 <span class="text-caption text-grey-6 q-ml-sm"
-                  >(Selecciona varias / Select all that apply)</span
+                  >(Selecciona todas las que apliquen / Select all that apply)</span
                 >
               </div>
 

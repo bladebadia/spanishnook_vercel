@@ -29,14 +29,17 @@
       <q-card-section v-if="fechaInicio" class="fecha-inicio text-caption text-grey-8">
         {{ $t('NuestrasClases.inicio') }}: {{ formatFecha(fechaInicio) }}
       </q-card-section>
-      <q-card-section class="description texto-responsivo">
+      <q-card-section class="description texto-responsivo" :class="descriptionClass">
         <div v-html="formattedDescription"></div>
       </q-card-section>
       <q-card-actions class="actions flex flex-center">
         <q-btn
-          color="primary"
+          :color="buttonColor"
           :to="to || buttonLink"
           class="oval-btn"
+          :class="{ 'text-weight-regular': !buttonBold }"
+          :no-caps="buttonNoCaps"
+          :size="buttonSize"
           unelevated
           @click="handleButtonClick"
         >
@@ -68,6 +71,11 @@ interface Props {
   price?: string;
   originalPrice?: string;
   fechaInicio?: string;
+  buttonColor?: string;
+  buttonNoCaps?: boolean;
+  buttonBold?: boolean;
+  buttonSize?: string;
+  descriptionClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,6 +84,11 @@ const props = withDefaults(defineProps<Props>(), {
   showPrice: false,
   price: ' ',
   originalPrice: '',
+  buttonColor: 'primary',
+  buttonNoCaps: false,
+  buttonBold: true,
+  buttonSize: 'md',
+  descriptionClass: '',
 });
 
 const emit = defineEmits<{
@@ -203,7 +216,7 @@ const onImageError = (event: Event) => {
   overflow: hidden;
   background-color: #f5f5f5;
   padding: 8px;
-  margin-top:20px;
+  margin-top: 20px;
 }
 
 /* Título: corte seguro */
@@ -231,6 +244,11 @@ const onImageError = (event: Event) => {
   text-overflow: clip;
   max-width: 100%;
   margin: 0 auto;
+}
+
+.description-small-bold {
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
 /* Acciones: al final, sin posición absoluta */

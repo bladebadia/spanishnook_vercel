@@ -20,7 +20,9 @@
               <li class="q-mb-sm">
                 {{ t('test.cadaPreguntaTiene') }}
               </li>
-              <li class="q-mb-sm" v-html="t('test.alCompletar')"></li>
+              <li class="q-mb-sm">
+                {{ t('test.alCompletar') }} <strong>{{ t('test.esteTest') }}</strong>
+              </li>
               <li class="q-mb-sm">{{ t('test.elTestToma') }}</li>
             </ul>
           </div>

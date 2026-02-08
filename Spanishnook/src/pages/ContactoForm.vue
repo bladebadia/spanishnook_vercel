@@ -101,13 +101,15 @@
               />
 
               <!-- Botón de Enviar -->
-              <div class="text-center q-mt-md">
+              <div class="text-center q-mt-md text-bold">
                 <q-btn
                   :label="t('Contacto.enviar')"
                   color="primary"
                   type="submit"
                   :disable="isSubmitting"
                   :loading="isSubmitting"
+                  no-caps
+                  class="text-weight-bold"
                 />
               </div>
 

@@ -222,7 +222,16 @@ const cargarReservasExistentes = async () => {
   };
   const quitarDelCarrito = (i: number) => { carrito.value.splice(i, 1); guardarCarrito(); };
 
-  const formatFecha = (f: string) => new Date(f).toLocaleDateString(locale.value || 'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const formatFecha = (f: string) => {
+    if (!f) return '';
+    const fecha = new Date(f).toLocaleDateString(locale.value || 'es-ES', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    return fecha.charAt(0).toUpperCase() + fecha.slice(1);
+  };
   const getTipoClaseTexto = (r: ReservaConfirmada) => r.tipo === 'normal' ? 'General' : 'Conversación';
   const getPrecioClase = (r: ReservaConfirmada) => {
     const precio = r.precio ?? (r.tipo === 'normal' ? 32 : 27);

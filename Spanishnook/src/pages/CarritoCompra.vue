@@ -16,7 +16,7 @@
         <div class="q-mt-sm text-right">
           <q-checkbox
             v-model="usarCreditosGlobal"
-            label="Utilizar créditos disponibles"
+            :label="t('carrito.utilizarCreditos')"
             color="green"
             dense
             class="checkbox-creditos"
@@ -50,8 +50,20 @@
 
             <div class="col-grow">
               <div class="resumen-fecha" :class="{ 'text-white': esReservaConflictiva(reserva) }">
-                {{ formatFecha(reserva.fecha) }} - {{ reserva.hora }}
+                <div>{{ formatFecha(reserva.fecha) }}</div>
+
+                <div class="text-weight-bold" style="font-size: 1.3rem; line-height: 1.2">
+                  {{ obtenerRangoLocalSeguro(reserva.fecha, reserva.hora) }}
+                </div>
+
+                <div
+                  class="text-caption"
+                  style="opacity: 0.8; font-weight: normal; font-size: 0.85rem"
+                >
+                  (🇪🇸 {{ formatHorarioMadrid(reserva.hora) }} Madrid)
+                </div>
               </div>
+
               <div class="text-caption" :class="{ 'text-white': esReservaConflictiva(reserva) }">
                 {{
                   reserva.tipo === 'normal'
@@ -106,7 +118,8 @@
               Total: {{ totalPagarDinero }}€
             </div>
             <div v-if="totalGastarCreditos > 0" class="text-caption text-green">
-              (Se canjearán {{ totalGastarCreditos }} créditos)
+              ({{ t('carrito.seCanjearan') }} {{ totalGastarCreditos }}
+              {{ t('carrito.credito', { count: totalGastarCreditos }) }})
             </div>
           </div>
         </div>
@@ -118,12 +131,14 @@
       </div>
 
       <div class="row q-gutter-md justify-end">
-        <q-btn color="grey" label="Seguir Reservando" to="/Reservas" outline />
+        <q-btn color="grey" :label="t('carrito.seguir')" to="/Reservas" outline />
 
         <q-btn
           color="primary"
           class="btn-confirmar"
-          :label="totalPagarDinero === 0 ? 'Confirmar Canje' : t('carrito.pagarYConfirmarReservas')"
+          :label="
+            totalPagarDinero === 0 ? t('carrito.canjear') : t('carrito.pagarYConfirmarReservas')
+          "
           @click="confirmarReservasHibridas"
           :disable="!usuarioLogueado || reservasConflictivas.length > 0"
           :loading="confirmando"
@@ -145,10 +160,82 @@ import { useAuth } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import SaldoWallet from 'components/SaldoWallet.vue';
+import { useRouter } from 'vue-router';
+// ELIMINADO: import { useHorarios } from 'src/composables/useHorarios';
 
 const { t, locale } = useI18n();
 const { user } = useAuth();
 const $q = useQuasar();
+const router = useRouter(); // 2. Inicializar
+
+// --- 1. FUNCIÓN LOCAL SEGURA (Sustituye a useHorarios) ---
+// Calcula hora local usuario = Hora Madrid + Offset Real. Duración 60 min.
+const obtenerRangoLocalSeguro = (fechaStr: string, horaStr: string) => {
+  if (!fechaStr || !horaStr) return '...';
+
+  try {
+    // 1. Validar y parsear hora (HH:MM)
+    const partes = horaStr.split(':');
+    if (partes.length < 2) return horaStr;
+
+    const h = Number(partes[0]);
+    const m = Number(partes[1]);
+
+    if (isNaN(h) || isNaN(m)) return horaStr;
+
+    // 2. Calcular diferencia horaria con Madrid
+    const now = new Date();
+    // Forzamos interpretación en Madrid para saber qué hora es allí
+    const strEnMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
+    const fechaEnMadrid = new Date(strEnMadrid);
+
+    // Diferencia en ms (Local - Madrid)
+    const diffMs = now.getTime() - fechaEnMadrid.getTime();
+
+    // 3. Crear fecha base usando la fecha de la reserva y la hora seleccionada
+    const fechaBase = new Date(fechaStr);
+    fechaBase.setHours(h, m, 0, 0);
+
+    // 4. Aplicar la diferencia para obtener la hora de inicio local
+    const fechaLocalInicio = new Date(fechaBase.getTime() + diffMs);
+
+    // 5. Calcular fin (+60 minutos para clases individuales)
+    const fechaLocalFin = new Date(fechaLocalInicio.getTime() + 60 * 60000);
+
+    // 6. Formatear
+    const fmt = (d: Date) =>
+      d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+    return `${fmt(fechaLocalInicio)} - ${fmt(fechaLocalFin)}`;
+  } catch (e) {
+    console.warn('Error calculando rango local:', e);
+    return horaStr;
+  }
+};
+
+// --- FORMATO MADRID (Para referencia visual) ---
+const formatHorarioMadrid = (horaInicio: string) => {
+  if (!horaInicio) return '';
+  const limpia = horaInicio.slice(0, 5);
+  const partes = limpia.split(':');
+
+  if (partes.length < 2) return limpia;
+
+  const h = Number(partes[0]);
+  const m = Number(partes[1]);
+
+  if (isNaN(h) || isNaN(m)) return limpia;
+
+  // Calculamos fin (+60 minutos matemáticamente)
+  const totalMinutos = h * 60 + m + 60;
+  const hFin = Math.floor(totalMinutos / 60) % 24;
+  const mFin = totalMinutos % 60;
+
+  const hFinStr = hFin.toString().padStart(2, '0');
+  const mFinStr = mFin.toString().padStart(2, '0');
+
+  return `${limpia} - ${hFinStr}:${mFinStr}`;
+};
 
 interface ReservaCarrito {
   fecha: string;
@@ -170,7 +257,7 @@ const reservasConflictivas = ref<ReservaCarrito[]>([]);
 const saldoNormal = ref(0);
 const saldoConversacion = ref(0);
 const cargandoSaldo = ref(false);
-const usarCreditosGlobal = ref(false); // Checkbox único
+const usarCreditosGlobal = ref(false);
 const usuarioLogueado = computed(() => !!user.value?.id);
 
 const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
@@ -180,7 +267,7 @@ const getIconoPersonalizado = (tipo: string | undefined) => {
   return `${BUCKET_URL}iconoindiv.svg`;
 };
 
-// --- 1. CARGA INICIAL ---
+// --- CARGA INICIAL ---
 onMounted(async () => {
   cargarCarrito();
   if (user.value?.id) {
@@ -205,22 +292,18 @@ onMounted(async () => {
   void verificarDisponibilidad();
 });
 
-// --- 2. LÓGICA DE DISTRIBUCIÓN AUTOMÁTICA ---
+// --- LÓGICA DE CRÉDITOS ---
 const recalcularAplicacionCreditos = () => {
-  // 1. Limpiamos todo primero
   carrito.value.forEach((item) => (item.usarCredito = false));
 
-  // Si el check está apagado, nos vamos (todo queda en false)
   if (!usarCreditosGlobal.value) {
     guardarCarrito();
     return;
   }
 
-  // 2. Contadores temporales para simular el gasto
   let disponiblesNormal = saldoNormal.value;
   let disponiblesConv = saldoConversacion.value;
 
-  // 3. Asignar créditos inteligentemente
   carrito.value.forEach((item) => {
     if (item.tipo === 'normal') {
       if (disponiblesNormal > 0) {
@@ -238,7 +321,6 @@ const recalcularAplicacionCreditos = () => {
   guardarCarrito();
 };
 
-// --- 3. TOTALES ---
 const totalPagarDinero = computed(() => {
   return carrito.value.reduce((sum, reserva) => {
     if (reserva.usarCredito) return sum;
@@ -248,7 +330,7 @@ const totalPagarDinero = computed(() => {
 
 const totalGastarCreditos = computed(() => carrito.value.filter((c) => c.usarCredito).length);
 
-// --- 4. PAGO Y BASE DE DATOS ---
+// --- PAGO Y CONFIRMACIÓN ---
 const confirmarReservasHibridas = async () => {
   if (!usuarioLogueado.value || reservasConflictivas.value.length > 0) return;
   confirmando.value = true;
@@ -262,7 +344,6 @@ const confirmarReservasHibridas = async () => {
     // A. PAGAR CON CRÉDITOS
     if (itemsConCredito.length > 0) {
       for (const item of itemsConCredito) {
-        // 1. SQL
         const { data, error } = await supabase.rpc('reservar_con_credito', {
           p_user_id: user.value!.id,
           p_tipo_clase: item.tipo,
@@ -276,7 +357,6 @@ const confirmarReservasHibridas = async () => {
           throw new Error(data?.message || error?.message || 'Error desconocido');
         }
 
-        // 2. Meet
         const nuevaReservaId = data.reserva_id;
         if (nuevaReservaId) {
           await supabase.functions.invoke('crear-meet', {
@@ -284,7 +364,6 @@ const confirmarReservasHibridas = async () => {
           });
         }
 
-        // 3. Acumular para email
         reservasParaEmail.push({
           fecha: item.fecha,
           hora: item.hora,
@@ -292,21 +371,16 @@ const confirmarReservasHibridas = async () => {
         });
       }
 
-      // 🔥 4. ENVÍO DE EMAIL (CON AWAIT) 🔥
-      // Esperamos a que termine antes de redirigir, si no, el navegador cancela la petición.
       if (reservasParaEmail.length > 0) {
         try {
-          console.log('📨 Enviando resumen...');
           await supabase.functions.invoke('send-booking-email', {
             body: {
               reservas: reservasParaEmail,
               userId: user.value!.id,
             },
           });
-          console.log('✅ Email enviado.');
         } catch (e) {
           console.error('Error no bloqueante enviando email:', e);
-          // No hacemos throw para que el usuario no pierda la redirección
         }
       }
     }
@@ -318,11 +392,7 @@ const confirmarReservasHibridas = async () => {
       $q.notify({ type: 'positive', message: '¡Reservas confirmadas! 📧' });
       carrito.value = [];
       guardarCarrito();
-
-      // Pequeño delay de seguridad visual antes de irse
-      setTimeout(() => {
-        window.location.href = '/AreaPersonal';
-      }, 500);
+      await router.push('/AreaPersonal');
     }
   } catch (err: unknown) {
     console.error('Error pago:', err);
@@ -334,8 +404,6 @@ const confirmarReservasHibridas = async () => {
 };
 
 const irAStripe = async (items: ReservaCarrito[]) => {
-  // IMPORTANTE: Aquí NO cambiamos nada del código anterior de Stripe
-  // Se usa la misma lógica: Metadata + Redirección
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -387,7 +455,7 @@ const guardarCarrito = () => {
 const quitarDelCarrito = (index: number) => {
   const reservaEliminada = carrito.value[index];
   carrito.value.splice(index, 1);
-  recalcularAplicacionCreditos(); // IMPORTANTE: Recalcular si borran algo
+  recalcularAplicacionCreditos();
 
   if (reservaEliminada) {
     reservasConflictivas.value = reservasConflictivas.value.filter(
@@ -397,15 +465,15 @@ const quitarDelCarrito = (index: number) => {
 };
 
 const formatFecha = (fecha: string) => {
-  return new Date(fecha).toLocaleDateString(locale.value, {
+  const fechaFormateada = new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
 };
 
-// RPC Segura para ver ocupación
 const verificarDisponibilidad = async () => {
   try {
     if (carrito.value.length === 0) {
@@ -448,15 +516,12 @@ const esReservaConflictiva = (reserva: ReservaCarrito) => {
 .strike-through {
   text-decoration: line-through;
 }
-/* Separador sutil entre items */
 .separator > div:not(:last-child) {
   border-bottom: 1px solid #eeeeee;
 }
-/* Reducir tamaño del texto del checkbox de créditos */
 :deep(.checkbox-creditos .q-checkbox__label) {
   font-size: 0.875rem;
 }
-/* Estilo para la fecha en el resumen */
 .resumen-fecha {
   font-size: 1.1rem;
   font-weight: bold;
@@ -465,22 +530,18 @@ const esReservaConflictiva = (reserva: ReservaCarrito) => {
 .resumen-fecha.text-white {
   color: white !important;
 }
-/* Estilo para el título "Resumen del Pedido" */
 .resumen-titulo {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   margin: 0 0 1rem 0;
 }
-/* Número de reservas */
 .numero-reservas {
   font-size: 1.1rem;
   font-weight: 500;
 }
-/* Total y precio */
 .total-precio {
   font-size: 1.3rem;
 }
-/* Botón confirmar reservas */
 :deep(.btn-confirmar .q-btn__content) {
   font-weight: bold;
 }

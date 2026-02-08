@@ -13,7 +13,7 @@
       <p class="texto-responsivo text-justify" style="margin-left: 13%; margin-right: 13%">
         {{ t('indexAprenderEspañolPuede') }}
       </p>
-      <q-btn class="oval-btn" items-center color="primary" unelevated to="/Clases">
+      <q-btn class="oval-btn" no-caps items-center color="primary" unelevated to="/Clases">
         {{ t('indexCreaTuEspacio') }}
       </q-btn>
     </div>
@@ -50,7 +50,7 @@
                 {{ t('indexDescubreNuestrasClasesTexto') }}
               </q-card-section>
               <q-card-actions class="flex justify-center">
-                <q-btn color="primary" to="/Clases" unelevated class="cuadrado-btn">
+                <q-btn color="primary" to="/Clases" unelevated class="text-weight-bold">
                   {{ t('indexEncuentraTusClases') }}
                 </q-btn>
               </q-card-actions>
@@ -79,7 +79,7 @@
               {{ t('indexDiferentesCaminos') }}
             </p>
 
-            <p class="texto-responsivo text-center">
+            <p class="texto-responsivo text-center text-bold" style="color: #525553">
               {{ t('indexAprendeEnDirecto') }}
             </p>
           </div>
@@ -128,7 +128,7 @@
           enter-active-class="animated fadeInUpBig slower "
         >
           <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 15%">
-            <p class="titulo-responsivo" style="color: #fff">
+            <p class="titulo-responsivo1" style="color: #fff">
               <strong>{{ t('indexDescubreTuPunto') }}</strong>
             </p>
             <p class="texto-responsivo" style="color: #fffdf8; margin-left: 1.45%; padding-left: 0">
@@ -165,7 +165,11 @@
             <q-separator />
             <q-item class="flex flex-justify q-pa-md">
               <q-item-label class="text-justify" style="width: 100%; font-size: 1rem">
-                <span v-html="t('indexDetrasDeSpanishnook')"></span>
+                {{ t('indexDetrasDeSpanishnook1') }}
+                <br /><br />
+                {{ t('indexDetrasDeSpanishnook2') }}
+                <br /><br />
+                <strong>{{ t('indexDetrasDeSpanishnook3') }}</strong>
               </q-item-label>
             </q-item>
             <q-card-actions class="flex flex-center">
@@ -174,7 +178,7 @@
                 to="/SobreSpanish"
                 size="lg"
                 unelevated
-                class="cuadrado-btn"
+                class="text-weight-bold"
                 style="font-size: 1rem"
                 >{{ t('indexMasSobreSpanishnook') }}</q-btn
               >
@@ -384,7 +388,7 @@
       <p class="texto-responsivo">
         {{ t('indexEstamosAlOtroLado') }}
       </p>
-      <q-btn color="primary" size="lg" unelevated to="/Contacto" class="oval-btn">
+      <q-btn color="primary" size="lg" unelevated to="/Contacto" class="oval-btn" no-caps>
         {{ t('indexContactanos') }}
       </q-btn>
     </div>

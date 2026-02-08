@@ -3,7 +3,7 @@
     <q-spinner v-if="loading" color="primary" size="50px" />
     <div v-else>
       <div v-if="error" class="text-negative">{{ error }}</div>
-      <div v-else class="text-positive">¡Autenticación completada! Redirigiendo...</div>
+      <div v-else class="text-positive">{{ $t('authCallback.autenticacion') }}</div>
     </div>
   </q-page>
 </template>

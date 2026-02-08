@@ -15,10 +15,9 @@
         <h2 class="text-h4 text-primary text-weight-bold q-mb-md">
           {{ t('NuestrasClases.nuestrasClases') }}
         </h2>
-        <p
-          class="texto-responsivo text-justify"
-          v-html="t('NuestrasClases.textoNuestrasClases')"
-        ></p>
+        <p class="texto-responsivo text-justify">
+          {{ t('NuestrasClases.textoNuestrasClases') }}
+        </p>
       </div>
     </div>
 
@@ -29,6 +28,7 @@
         items-center
         color="primary"
         unelevated
+        style="font-weight: 800"
         @click="scrollToSection('clases-conversacion')"
       >
         {{ t('NuestrasClases.botonClasesConversacion') }}
@@ -39,6 +39,7 @@
         items-center
         color="primary"
         unelevated
+        style="font-weight: 800"
         @click="scrollToSection('clases-individuales')"
       >
         {{ t('NuestrasClases.botonClasesIndividuales') }}
@@ -57,7 +58,8 @@
             />
             <q-btn
               class="oval-btn"
-              color="black"
+              color="grey-7"
+              size="md"
               unelevated
               to="/TestNivel"
               :label="$t('NuestrasClases.testDeNivel')"
@@ -132,11 +134,26 @@
             <q-card>
               <q-card-section class="texto-responsivo text-justify">
                 <ul class="q-pl-md text-justify">
-                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos1')"></li>
-                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos2')"></li>
-                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos3')"></li>
-                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos4')"></li>
-                  <li v-html="$t('NuestrasClases.ListaComoFuncionanGrupos5')"></li>
+                  <li>
+                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos1Bold') }}</strong>
+                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos1') }}
+                  </li>
+                  <li>
+                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos2Bold') }}</strong>
+                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos2') }}
+                  </li>
+                  <li>
+                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos3Bold') }}</strong>
+                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos3') }}
+                  </li>
+                  <li>
+                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos4Bold') }}</strong>
+                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos4') }}
+                  </li>
+                  <li>
+                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos5Bold') }}</strong>
+                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos5') }}
+                  </li>
                 </ul>
               </q-card-section>
             </q-card>
@@ -150,12 +167,12 @@
             <q-card>
               <q-card-section class="texto-responsivo text-justify">
                 <ul class="q-pl-md">
-                  <li v-html="$t('NuestrasClases.Logro1Grupales')"></li>
-                  <li v-html="$t('NuestrasClases.Logro2Grupales')"></li>
-                  <li v-html="$t('NuestrasClases.Logro3Grupales')"></li>
-                  <li v-html="$t('NuestrasClases.Logro4Grupales')"></li>
-                  <li v-html="$t('NuestrasClases.Logro5Grupales')"></li>
-                  <li v-html="$t('NuestrasClases.Logro6Grupales')"></li>
+                  <li>{{ $t('NuestrasClases.Logro1Grupales') }}</li>
+                  <li>{{ $t('NuestrasClases.Logro2Grupales') }}</li>
+                  <li>{{ $t('NuestrasClases.Logro3Grupales') }}</li>
+                  <li>{{ $t('NuestrasClases.Logro4Grupales') }}</li>
+                  <li>{{ $t('NuestrasClases.Logro5Grupales') }}</li>
+                  <li>{{ $t('NuestrasClases.Logro6Grupales') }}</li>
                 </ul>
               </q-card-section>
             </q-card>
@@ -213,10 +230,11 @@
               {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
             </div>
             <br />
-            <p
-              class="texto-responsivo text-justify q-mb-none"
-              v-html="$t('NuestrasClases.IntroIndividuales')"
-            ></p>
+            <p class="texto-responsivo text-justify q-mb-none">
+              <strong>{{ $t('NuestrasClases.IntroIndividuales1Bold') }}</strong>
+              <br /><br />
+              {{ $t('NuestrasClases.IntroIndividuales2') }}
+            </p>
           </q-card-section>
           <q-separator spaced />
           <q-card-section>
@@ -238,19 +256,17 @@
                   <div class="subtitulo-responsivo text-center q-my-xl">
                     {{ $t('NuestrasClases.Modalidad1') }}
                   </div>
-                  <p
-                    class="text-body1 text-justify q-mt-lg text-grey-8"
-                    style="font-weight: bold"
-                  >
+                  <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
                     {{ $t('NuestrasClases.TextoModalidad1') }}
                   </p>
                   <div class="q-mt-md flex flex-center">
                     <q-btn
                       color="primary"
-                      class="oval-btn oval-btn-lg"
+                      class="oval-btn oval-btn-md"
                       unelevated
-                      size="lg"
-                      :label="$t('NuestrasClases.botonClasesA1')"
+                      size="md"
+                      :label="$t('NuestrasClases.botonClasesA2')"
+                      no-caps
                       to="/Reservas"
                     />
                   </div>
@@ -263,22 +279,20 @@
                     style="width: 70%; max-width: 300px; border-radius: 16px"
                     fit="cover"
                   />
-                  <div class="subtitulo-responsivo text-center ">
+                  <div class="subtitulo-responsivo text-center">
                     {{ $t('NuestrasClases.Modalidad2') }}
                   </div>
-                  <p
-                    class="text-body1 text-justify q-mt-lg text-grey-8"
-                    style="font-weight: bold"
-                  >
+                  <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
                     {{ $t('NuestrasClases.TextoModalidad2') }}
                   </p>
-                  <div class=" flex flex-center">
+                  <div class="flex flex-center">
                     <q-btn
                       color="primary"
-                      class="oval-btn oval-btn-lg"
+                      class="oval-btn oval-btn-md"
                       unelevated
-                      size="lg"
+                      size="md"
                       :label="$t('NuestrasClases.botonClasesA1')"
+                      no-caps
                       to="/Reservas"
                     />
                   </div>
@@ -293,32 +307,47 @@
             </div>
             <br />
             <ul class="texto-responsivo text-justify q-pl-md lista-funcionamiento">
-              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd1')"></li>
-              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd2')"></li>
-              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd3')"></li>
-              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd4')"></li>
-              <li v-html="$t('NuestrasClases.ListaComoFuncionanInd5')"></li>
+              <li>
+                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd1Bold') }}</strong>
+                {{ $t('NuestrasClases.ListaComoFuncionanInd1') }}
+              </li>
+              <li>
+                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd2Bold') }}</strong>
+                {{ $t('NuestrasClases.ListaComoFuncionanInd2') }}
+              </li>
+              <li>
+                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd3Bold') }}</strong>
+                {{ $t('NuestrasClases.ListaComoFuncionanInd3') }}
+              </li>
+              <li>
+                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd4Bold') }}</strong>
+                {{ $t('NuestrasClases.ListaComoFuncionanInd4') }}
+              </li>
+              <li>
+                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd5') }}</strong>
+              </li>
             </ul>
           </q-card-section>
         </q-card>
       </div>
     </div>
     <!-- tarjeta promo-->
-     <!-- PromoCard para Comprar Packs al final de la página -->
-  <div class="row justify-center q-my-xl">
-    <div class="col-12 col-md-6">
-      <PromoCard
-        image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/CTA_reserva.png"
-        :title="t('NuestrasClases.tituloPromoPacks', 'Ahorra con Packs de Créditos')"
-        :description="t('NuestrasClases.textoPromoPacks', 'Compra packs de créditos y disfruta de descuentos exclusivos en tus clases.')"
-        :button-text="t('NuestrasClases.botonPromoPacks', 'Comprar Packs')"
-        :show-promo="false"
-        :promo-text="t('NuestrasClases.promoPromoPacks', '¡Más créditos, más ahorro!')"
-        :show-price="false"
-        to="/ComprarPacks"
-      />
+    <!-- PromoCard para Comprar Packs al final de la página -->
+    <div class="row justify-center q-my-xl">
+      <div class="col-12 col-md-6">
+        <PromoCard
+          image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/CTA_reserva.png"
+          :title="t('NuestrasClases.nuestrosPacks')"
+          :description="t('NuestrasClases.ahorra')"
+          :button-text="t('NuestrasClases.comprarPacks')"
+          description-class="description-small-bold"
+          :show-promo="false"
+          :promo-text="t('NuestrasClases.promoPromoPacks', '¡Más créditos, más ahorro!')"
+          :show-price="false"
+          to="/ComprarPacks"
+        />
+      </div>
     </div>
-  </div>
   </q-page>
 </template>
 

@@ -49,7 +49,7 @@
               header
               class="text-weight-bold text-uppercase text-grey-7 text-caption q-pt-md"
             >
-              Mis Clases
+              {{ t('personal.misclases') }}
             </q-item-label>
 
             <q-item
@@ -150,7 +150,7 @@
                   dense
                   color="primary"
                   icon="checklist"
-                  label="Gestionar"
+                  :label="t('personal.gestionar')"
                   @click="modoSeleccion = true"
                 />
                 <div v-else class="row q-gutter-sm">
@@ -158,7 +158,7 @@
                     flat
                     dense
                     color="grey"
-                    label="Cancelar"
+                    :label="t('personal.cancelar2')"
                     @click="
                       modoSeleccion = false;
                       seleccionadas = [];
@@ -166,7 +166,7 @@
                   />
                   <q-btn
                     color="negative"
-                    :label="`Borrar (${seleccionadas.length})`"
+                    :label="`${t('personal.borrar')} (${seleccionadas.length})`"
                     :disable="seleccionadas.length === 0"
                     :loading="cargandoOperacion"
                     @click="cancelarSeleccionadas"
@@ -187,9 +187,9 @@
                       :val="reserva.id"
                       :disable="!puedeCancelar(reserva)"
                     >
-                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative"
-                        >Menos de 24h</q-tooltip
-                      >
+                      <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative">{{
+                        t('personal.noSePuedeCancelar')
+                      }}</q-tooltip>
                     </q-checkbox>
                   </q-item-section>
 
@@ -205,10 +205,17 @@
                     <q-item-label class="text-weight-bold text-subtitle1">{{
                       formatFecha(reserva.fecha)
                     }}</q-item-label>
+
                     <q-item-label class="text-primary q-mb-xs">
-                      <q-icon name="schedule" /> {{ t('personal.aLas') || 'de' }}
-                      {{ formatHorarioIndividual(reserva.hora) }}
+                      <q-icon name="schedule" class="q-mr-xs" />
+                      <span class="text-weight-bold" style="font-size: 1.1em">
+                        {{ formatoHorarioLocal(reserva.fecha, reserva.hora) }}
+                      </span>
+                      <span class="text-caption text-grey-7 q-ml-sm">
+                        (🇪🇸 {{ formatHorarioIndividual(reserva.hora) }} Madrid)
+                      </span>
                     </q-item-label>
+
                     <q-badge outline color="grey-7" class="q-mt-xs self-start">{{
                       getTipoClaseTexto(reserva)
                     }}</q-badge>
@@ -230,7 +237,7 @@
                       target="_blank"
                       color="primary"
                       icon="videocam"
-                      label="ENTRAR"
+                      :label="t('personal.entrar')"
                       unelevated
                     />
                     <q-chip
@@ -360,7 +367,7 @@
 
               <div class="row justify-end q-mt-sm">
                 <q-btn
-                  label="Guardar Cambios"
+                  :label="t('personal.guardarCambios')"
                   color="primary"
                   unelevated
                   @click="enviarDatosPersonales"
@@ -379,18 +386,23 @@
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="formDatos.nombre"
-                    label="Nombre"
+                    :label="t('personal.nombre')"
                     dense
                     outlined
                     class="q-mb-md"
                   />
-                  <q-input v-model="formDatos.apellido1" label="Apellido" dense outlined />
+                  <q-input
+                    v-model="formDatos.apellido1"
+                    :label="t('personal.apellido')"
+                    dense
+                    outlined
+                  />
                 </div>
                 <div class="col-12 col-md-6">
                   <q-select
                     v-model="formDatos.idioma_nativo"
                     :options="idiomasComunes"
-                    label="Idioma Nativo"
+                    :label="t('personal.idiomaNativo')"
                     dense
                     outlined
                     class="q-mb-md"
@@ -409,17 +421,17 @@
               </div>
 
               <div class="q-mt-lg">
-                <div class="text-subtitle2 text-primary q-mb-xs">Tu Perfil de Estudiante</div>
+                <div class="text-subtitle2 text-primary q-mb-xs">{{ t('personal.tuPerfil') }}</div>
                 <q-separator class="q-mb-md" />
                 <div class="row q-gutter-md">
                   <div>
-                    <div class="text-caption text-grey">Nivel</div>
+                    <div class="text-caption text-grey">{{ t('personal.nivel') }}</div>
                     <q-chip color="secondary" text-color="white" icon="leaderboard">{{
-                      formDatos.nivel_estimado || 'Sin definir'
+                      formDatos.nivel_estimado || t('personal.sinDefinir')
                     }}</q-chip>
                   </div>
                   <div>
-                    <div class="text-caption text-grey">Intereses</div>
+                    <div class="text-caption text-grey">{{ t('personal.intereses') }}</div>
                     <template v-if="formDatos.intereses && formDatos.intereses.length > 0">
                       <q-chip
                         v-for="tag in formDatos.intereses"
@@ -429,9 +441,9 @@
                         >{{ tag }}</q-chip
                       >
                     </template>
-                    <span v-else class="text-grey text-caption text-italic"
-                      >Sin intereses seleccionados</span
-                    >
+                    <span v-else class="text-grey text-caption text-italic">{{
+                      t('personal.sinIntereses')
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -441,49 +453,55 @@
           <q-card class="shadow-1 rounded-borders">
             <q-card-section>
               <div class="text-h6 text-primary flex items-center">
-                <q-icon name="security" class="q-mr-sm" /> Seguridad
+                <q-icon name="security" class="q-mr-sm" /> {{ t('personal.seguridad') }}
               </div>
             </q-card-section>
             <q-separator />
             <q-card-section>
               <q-form @submit="verificarYCambiarPassword" class="row q-col-gutter-md items-end">
                 <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Contraseña Actual</div>
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                    {{ t('personal.contraseñaActual') }}
+                  </div>
                   <q-input
                     v-model="passForm.current"
                     type="password"
                     dense
                     outlined
-                    placeholder="Introduce tu contraseña actual"
-                    :rules="[(val) => !!val || 'Requerida']"
+                    :placeholder="t('personal.introduceContraseñaActual')"
+                    :rules="[(val) => !!val || t('personal.requerida')]"
                   />
                 </div>
                 <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Nueva Contraseña</div>
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                    {{ t('personal.introduceNuevaContraseña') }}
+                  </div>
                   <q-input
                     v-model="passForm.new"
                     type="password"
                     dense
                     outlined
-                    placeholder="Mínimo 6 caracteres"
-                    :rules="[(val) => val.length >= 6 || 'Mínimo 6 caracteres']"
+                    :placeholder="t('personal.minimo6')"
+                    :rules="[(val) => val.length >= 6 || t('personal.minimo6')]"
                   />
                 </div>
                 <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">Confirmar Nueva</div>
+                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                    {{ t('personal.repiteNueva') }}
+                  </div>
                   <q-input
                     v-model="passForm.confirm"
                     type="password"
                     dense
                     outlined
-                    placeholder="Repite la nueva"
-                    :rules="[(val) => val === passForm.new || 'No coinciden']"
+                    :placeholder="t('personal.repiteNueva')"
+                    :rules="[(val) => val === passForm.new || t('personal.noCoinciden')]"
                   />
                 </div>
 
                 <div class="col-12 flex justify-end">
                   <q-btn
-                    label="Actualizar Contraseña"
+                    :label="t('personal.actualizarContraseña')"
                     color="primary"
                     unelevated
                     type="submit"
@@ -507,17 +525,23 @@
                     <q-item-label class="text-weight-bold">{{
                       formatFecha(reserva.fecha)
                     }}</q-item-label>
-                    <q-item-label caption
-                      >{{ t('personal.aLas') || 'a las' }}
-                      {{ formatHorarioIndividual(reserva.hora) }}</q-item-label
-                    >
+                    <q-item-label caption>
+                      <span class="text-weight-bold text-black">
+                        {{ formatoHorarioLocal(reserva.fecha, reserva.hora) }}
+                      </span>
+                      <span class="q-ml-xs">
+                        (🇪🇸 {{ formatHorarioIndividual(reserva.hora) }})
+                      </span>
+                    </q-item-label>
                   </q-item-section>
                   <q-item-section side>
-                    <q-badge color="grey-4" text-color="grey-8">Finalizada</q-badge>
+                    <q-badge color="grey-4" text-color="grey-8">{{
+                      t('personal.finalizada')
+                    }}</q-badge>
                   </q-item-section>
                 </q-item>
               </q-list>
-              <div v-else class="text-center text-grey q-pa-lg">No tienes clases pasadas</div>
+              <div v-else class="text-center text-grey q-pa-lg">{{ t('personal.noHay') }}</div>
             </q-card-section>
           </q-card>
         </div>
@@ -526,9 +550,7 @@
           <q-card class="bg-red-1 shadow-1" style="border: 1px solid #ef9a9a">
             <q-card-section>
               <div class="text-h6 text-negative">{{ t('personal.eliminarCuenta') }}</div>
-              <p class="text-grey-9 q-mt-sm">
-                Esta acción es irreversible. Se borrarán todos tus datos y reservas.
-              </p>
+              <p class="text-grey-9 q-mt-sm text-bold">⚠️ {{ t('personal.estaAccion') }}</p>
             </q-card-section>
             <q-card-section>
               <q-form @submit="eliminarCuenta" class="row items-end q-gutter-md">
@@ -542,7 +564,7 @@
                   bg-color="white"
                 />
                 <q-btn
-                  label="Eliminar definitivamente"
+                  :label="t('personal.eliminarDefinitivamente')"
                   type="submit"
                   color="negative"
                   icon="delete_forever"
@@ -615,7 +637,6 @@ interface Suscripcion {
   current_period_end: string;
   cancel_at_period_end: boolean;
   created_at: string;
-  // 🔥 CORRECCIÓN: HACEMOS ESTO OPCIONAL
   cursos_grupales?: {
     nombre_curso: string;
     dias_semana: string[];
@@ -626,7 +647,6 @@ interface Suscripcion {
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
 
-// 🔥 INTERFAZ ACTUALIZADA
 interface DatosUsuario {
   nombre: string;
   apellido1: string;
@@ -671,11 +691,11 @@ const cancelarSeleccionadas = () => {
 
   $q.dialog({
     title: t('personal.cancelarReserva') || 'Cancelar Clases',
-    message: `Vas a cancelar ${seleccionadas.value.length} clase(s). <br>Se devolverán los créditos si faltan más de 24h.`,
+    message: `${t('personal.vasA')} ${seleccionadas.value.length} ${t('personal.clase')}. <br>${t('personal.seDevolvera')}`,
     html: true,
     cancel: true,
     persistent: true,
-    ok: { label: 'Confirmar', color: 'negative' },
+    ok: { label: t('personal.confirmar'), color: 'negative' },
   }).onOk(() => {
     void (async () => {
       cargandoOperacion.value = true;
@@ -686,14 +706,14 @@ const cancelarSeleccionadas = () => {
 
         if (error) throw error;
 
-        const mensaje = `Hecho: ${data.canceladas} canceladas.`;
+        const mensaje = `${t('personal.hecho')} ${data.canceladas} ${t('personal.canceladas')}.`;
         $q.notify({ type: data.canceladas > 0 ? 'positive' : 'warning', message: mensaje });
 
         seleccionadas.value = [];
         modoSeleccion.value = false;
         await Promise.all([cargarDatosPersonales(), cargarReservasConfirmadas()]);
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'Error desconocido';
+        const msg = e instanceof Error ? e.message : t('personal.errorDesconocido');
         $q.notify({ type: 'negative', message: msg });
       } finally {
         cargandoOperacion.value = false;
@@ -779,37 +799,106 @@ const formatearFechaSuscripcion = (fecha: string | number) => {
   return 'Fecha inválida';
 };
 
+// --- FUNCIÓN LOCAL SEGURA PARA CURSOS (90 MINUTOS) ---
 const formatHorarios = (horarios?: string[]) => {
-  if (!horarios || horarios.length === 0) return '';
+  if (!horarios || !Array.isArray(horarios) || horarios.length === 0) return 'Por definir';
+
   const horaInicio = horarios[0];
-  if (!horaInicio) return '';
-  const partes = horaInicio.split(':');
-  if (partes.length < 2) return horaInicio;
-  const h = Number(partes[0]);
-  const m = Number(partes[1]);
-  if (isNaN(h) || isNaN(m)) return horaInicio;
-  const fecha = new Date();
-  fecha.setHours(h, m, 0, 0);
-  fecha.setMinutes(fecha.getMinutes() + 90);
-  const hFin = fecha.getHours().toString().padStart(2, '0');
-  const mFin = fecha.getMinutes().toString().padStart(2, '0');
-  return `${horaInicio} - ${hFin}:${mFin}`;
+  if (!horaInicio) return 'Por definir';
+
+  try {
+    // CORRECCIÓN: Separar y comprobar antes de convertir
+    const partes = horaInicio.split(':');
+    if (partes.length < 2) return horaInicio;
+
+    const h = Number(partes[0]);
+    const m = Number(partes[1]);
+
+    if (isNaN(h) || isNaN(m)) return horaInicio;
+
+    // Calcular offset Madrid
+    const now = new Date();
+    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
+    const dateMadrid = new Date(strMadrid);
+    const diff = now.getTime() - dateMadrid.getTime();
+
+    // Fecha base con la hora del curso
+    const base = new Date();
+    base.setHours(h, m, 0, 0);
+
+    // Ajustar a hora local usuario
+    const localStart = new Date(base.getTime() + diff);
+    // Sumar 90 minutos
+    const localEnd = new Date(localStart.getTime() + 90 * 60000);
+
+    const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return `${fmt(localStart)} - ${fmt(localEnd)}`;
+  } catch (e) {
+    console.warn(e); // Usar 'e' para que el linter no se queje
+    return horaInicio;
+  }
 };
 
+// --- FUNCIÓN LOCAL SEGURA PARA CLASES INDIVIDUALES (60 MINUTOS) ---
+const formatoHorarioLocal = (fechaStr: string | undefined, horaStr: string | undefined) => {
+  if (!fechaStr || !horaStr) return '...';
+
+  try {
+    // CORRECCIÓN: Separar y comprobar antes de convertir
+    const partes = horaStr.split(':');
+    if (partes.length < 2) return horaStr;
+
+    const h = Number(partes[0]);
+    const m = Number(partes[1]);
+
+    if (isNaN(h) || isNaN(m)) return horaStr;
+
+    // Calcular offset Madrid
+    const now = new Date();
+    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
+    const dateMadrid = new Date(strMadrid);
+    const diff = now.getTime() - dateMadrid.getTime();
+
+    // Fecha base
+    const base = new Date(fechaStr);
+    base.setHours(h, m, 0, 0);
+
+    // Ajustar a hora local usuario
+    const localStart = new Date(base.getTime() + diff);
+    // Sumar 60 minutos
+    const localEnd = new Date(localStart.getTime() + 60 * 60000);
+
+    const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return `${fmt(localStart)} - ${fmt(localEnd)}`;
+  } catch (e) {
+    console.warn(e); // Usar 'e'
+    return horaStr;
+  }
+};
+
+// --- FORMATO SIMPLE PARA MOSTRAR LA HORA DE MADRID (TEXTO) ---
 const formatHorarioIndividual = (horaInicio: string) => {
   if (!horaInicio) return '';
   const limpia = horaInicio.slice(0, 5);
   const partes = limpia.split(':');
   if (partes.length < 2) return limpia;
+
   const h = Number(partes[0]);
   const m = Number(partes[1]);
+
   if (isNaN(h) || isNaN(m)) return limpia;
-  const fecha = new Date();
-  fecha.setHours(h, m, 0, 0);
-  fecha.setMinutes(fecha.getMinutes() + 90);
-  const hFin = fecha.getHours().toString().padStart(2, '0');
-  const mFin = fecha.getMinutes().toString().padStart(2, '0');
-  return `${limpia} - ${hFin}:${mFin}`;
+
+  // Cálculo simple manual
+  const mTotal = h * 60 + m + 60; // +60 minutos duración
+  const hFin = Math.floor(mTotal / 60) % 24;
+  const mFin = mTotal % 60;
+
+  const hFinStr = hFin.toString().padStart(2, '0');
+  const mFinStr = mFin.toString().padStart(2, '0');
+
+  return `${limpia} - ${hFinStr}:${mFinStr}`;
 };
 
 const eliminarCuenta = async () => {
@@ -1006,24 +1095,25 @@ const seleccionarMenu = (menu: string) => {
 };
 
 const diasSemanaMap: Record<string, Record<string, string>> = {
-  lunes: { 'es-ES': 'lunes', 'en-US': 'Monday' },
-  martes: { 'es-ES': 'martes', 'en-US': 'Tuesday' },
-  miercoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
-  miércoles: { 'es-ES': 'miércoles', 'en-US': 'Wednesday' },
-  jueves: { 'es-ES': 'jueves', 'en-US': 'Thursday' },
-  viernes: { 'es-ES': 'viernes', 'en-US': 'Friday' },
-  sabado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
-  sábado: { 'es-ES': 'sábado', 'en-US': 'Saturday' },
-  domingo: { 'es-ES': 'domingo', 'en-US': 'Sunday' },
+  Lunes: { 'es-ES': 'Lunes', 'en-US': 'Monday' },
+  Martes: { 'es-ES': 'Martes', 'en-US': 'Tuesday' },
+  Miercoles: { 'es-ES': 'Miércoles', 'en-US': 'Wednesday' },
+  Jueves: { 'es-ES': 'Jueves', 'en-US': 'Thursday' },
+  Viernes: { 'es-ES': 'Viernes', 'en-US': 'Friday' },
+  Sabado: { 'es-ES': 'Sábado', 'en-US': 'Saturday' },
+  Doming: { 'es-ES': 'Domingo', 'en-US': 'Sunday' },
 };
 
-const formatFecha = (fecha: string) =>
-  new Date(fecha).toLocaleDateString(locale.value, {
+const formatFecha = (fecha: string) => {
+  const fechaFormateada = new Date(fecha).toLocaleDateString(locale.value, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
+  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+};
 
 const traducirDiasSemana = (dias?: string[]) => {
   if (!dias || dias.length === 0) return '';
