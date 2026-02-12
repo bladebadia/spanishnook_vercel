@@ -18,9 +18,10 @@
       </q-btn>
     </div>
     <!--Tarjeta descubre nuestras clases y lista OK-->
-    <div v-intersect="onPromoIntersect" class="row justify-center q-my-xl">
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div v-if="showPromoCard" class="row align-center">
+    <q-no-ssr>
+      <div v-intersect="onPromoIntersect" class="row justify-center q-my-xl">
+        <transition enter-active-class="animated fadeInUpBig slower ">
+          <div v-if="showPromoCard" class="row align-center">
           <div class="col-12 col-md-6 items-center flex flex-center column">
             <q-card
               class=""
@@ -67,13 +68,15 @@
               <li class="q-py-xs">{{ t('indexAmbienteRelajado') }}</li>
             </ul>
           </div>
-        </div>
-      </transition>
-    </div>
+          </div>
+        </transition>
+      </div>
+    </q-no-ssr>
     <!-- Tarjetas de promoción de clases OK -->
-    <div v-intersect="onPromoIntersect1" class="q-my-xs row justify-center bg-grey-2">
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
+    <q-no-ssr>
+      <div v-intersect="onPromoIntersect1" class="q-my-xs row justify-center bg-grey-2">
+        <transition enter-active-class="animated fadeInUpBig slower ">
+          <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
           <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
             <p class="titulo-responsivo2 text-center q-mb-md" text-color="#851319">
               {{ t('indexDiferentesCaminos') }}
@@ -110,23 +113,25 @@
               :button-text="t('indexUneteALaLista')"
               :to="{ path: '/Clases', hash: '#clases-conversacion' }"
             />
+            </div>
           </div>
-        </div>
-      </transition>
-    </div>
+        </transition>
+      </div>
+    </q-no-ssr>
     <!-- Banner promocional test nivel que aparece al hacer scroll OK-->
-    <div
-      v-intersect="onPromoIntersect2"
-      class="q-mt-xl q-mb-xl row degradado-fondo"
-      style="min-height: 300px; width: 100%"
-    >
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div
-          v-if="showPromoCard2"
-          class="row"
-          style="width: 100%; position: relative"
-          enter-active-class="animated fadeInUpBig slower "
-        >
+    <q-no-ssr>
+      <div
+        v-intersect="onPromoIntersect2"
+        class="q-mt-xl q-mb-xl row degradado-fondo"
+        style="min-height: 300px; width: 100%"
+      >
+        <transition enter-active-class="animated fadeInUpBig slower ">
+          <div
+            v-if="showPromoCard2"
+            class="row"
+            style="width: 100%; position: relative"
+            enter-active-class="animated fadeInUpBig slower "
+          >
           <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 15%">
             <p class="titulo-responsivo1" style="color: #fff">
               <strong>{{ t('indexDescubreTuPunto') }}</strong>
@@ -138,17 +143,19 @@
               t('indexHacerTest')
             }}</q-btn>
           </div>
-        </div>
-      </transition>
-    </div>
+          </div>
+        </transition>
+      </div>
+    </q-no-ssr>
     <!-- Tarjeta sobre quién hay detrás de Spanishnook OK-->
-    <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div
-          v-if="showPromoCard4"
-          class="row justify-center"
-          enter-active-class="animated fadeInUpBig slower "
-        >
+    <q-no-ssr>
+      <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
+        <transition enter-active-class="animated fadeInUpBig slower ">
+          <div
+            v-if="showPromoCard4"
+            class="row justify-center"
+            enter-active-class="animated fadeInUpBig slower "
+          >
           <q-card class="items-center tarjeta-quien">
             <q-item>
               <q-item-section avatar>
@@ -180,28 +187,31 @@
                 unelevated
                 class="text-weight-bold"
                 style="font-size: 1rem"
-                >{{ t('indexMasSobreSpanishnook') }}</q-btn
               >
+                {{ t('indexMasSobreSpanishnook') }}
+              </q-btn>
             </q-card-actions>
           </q-card>
-        </div>
-      </transition>
-    </div>
+          </div>
+        </transition>
+      </div>
+    </q-no-ssr>
     <!-- Sección de Opiniones Verificadas - CARRUSEL -->
-    <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
-      <transition enter-active-class="animated fadeInUpBig slower">
-        <div v-if="showOpiniones" class="q-py-xl q-px-md">
-          <div class="text-center q-mb-xl">
+    <q-no-ssr>
+      <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
+        <transition enter-active-class="animated fadeInUpBig slower">
+          <div v-if="showOpiniones" class="q-py-xl q-px-md">
+            <div class="text-center q-mb-xl">
             <p class="subtitulo-responsivo" style="color: #851319">
               {{ t('indexOpinionesVerificadas') }}
             </p>
             <p class="texto-responsivo">
               {{ t('indexConoceExperiencias') }}
             </p>
-          </div>
+            </div>
 
-          <!-- Carrusel de Opiniones -->
-          <div class="carousel-container">
+            <!-- Carrusel de Opiniones -->
+            <div class="carousel-container">
             <template v-if="todasLasOpiniones.length === 0">
               <div class="row justify-center full-height items-center">
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 text-center q-pa-xl">
@@ -311,10 +321,11 @@
                 {{ t('indexDanosTuOpinion') }}
               </q-btn>
             </div>
+            </div>
           </div>
-        </div>
-      </transition>
-    </div>
+        </transition>
+      </div>
+    </q-no-ssr>
 
     <!-- Sección de FAQs -->
     <div class="faqs-section">
@@ -565,6 +576,13 @@ const router = useRouter();
 const $q = useQuasar();
 const { user } = useAuth();
 
+console.log('[SSR][IndexPage] user:', user?.value);
+console.log('[SSR][IndexPage] supabase:', typeof supabase);
+console.log(
+  '[SSR][IndexPage] process:',
+  typeof process !== 'undefined' ? process.env.NODE_ENV : 'no-process',
+);
+
 const defaultAvatar = 'https://cdn.quasar.dev/img/avatar.png';
 
 // Estados para los diálogos
@@ -594,17 +612,21 @@ const handleDarOpinion = () => {
 // Redirigir a registro
 const irARegistro = () => {
   showLoginDialog.value = false;
-  void router.push('/RegistroCuenta');
+  if (typeof window !== 'undefined') {
+    void router.push('/RegistroCuenta');
+  }
 };
 
 // Enviar opinión a Supabase
 const enviarOpinion = async () => {
   if (!nuevaOpinion.value.comment || !nuevaOpinion.value.country || !nuevaOpinion.value.name) {
-    $q.notify({
-      type: 'warning',
-      message: t('indexCompletaTodosLosCampos'),
-      position: 'top',
-    });
+    if (typeof window !== 'undefined') {
+      $q.notify({
+        type: 'warning',
+        message: t('indexCompletaTodosLosCampos'),
+        position: 'top',
+      });
+    }
     return;
   }
 
@@ -654,11 +676,13 @@ const enviarOpinion = async () => {
 
     if (error) throw error;
 
-    $q.notify({
-      type: 'positive',
-      message: t('indexOpinionEnviada'),
-      position: 'top',
-    });
+    if (typeof window !== 'undefined') {
+      $q.notify({
+        type: 'positive',
+        message: t('indexOpinionEnviada'),
+        position: 'top',
+      });
+    }
 
     nuevaOpinion.value = {
       rating: 5,
@@ -669,11 +693,13 @@ const enviarOpinion = async () => {
     showOpinionDialog.value = false;
   } catch (error) {
     console.error('Error al enviar opinión:', error);
-    $q.notify({
-      type: 'negative',
-      message: t('indexErrorEnviarOpinion'),
-      position: 'top',
-    });
+    if (typeof window !== 'undefined') {
+      $q.notify({
+        type: 'negative',
+        message: t('indexErrorEnviarOpinion'),
+        position: 'top',
+      });
+    }
   } finally {
     enviandoOpinion.value = false;
   }
@@ -709,16 +735,22 @@ const fetchOpiniones = async () => {
       }));
   } catch (error) {
     console.error('Error al obtener opiniones:', error);
-    $q.notify({
-      type: 'negative',
-      message: t('indexErrorEnviarOpinion'),
-      position: 'top',
-    });
+    if (typeof window !== 'undefined') {
+      $q.notify({
+        type: 'negative',
+        message: t('indexErrorEnviarOpinion'),
+        position: 'top',
+      });
+    }
   }
 };
 
 onMounted(() => {
-  void fetchOpiniones();
+  try {
+    void fetchOpiniones();
+  } catch (err) {
+    console.error('[SSR][IndexPage] Error en onMounted:', err);
+  }
 });
 
 function onPromoIntersect(entry: IntersectionObserverEntry): boolean {

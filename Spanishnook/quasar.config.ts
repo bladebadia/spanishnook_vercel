@@ -75,6 +75,12 @@ export default defineConfig((ctx) => {
             port: 9000,
           },
         };
+        // Alias explícito para pages (como objeto, compatible con Vite)
+        viteConf.resolve = viteConf.resolve || {};
+        viteConf.resolve.alias = {
+          ...(viteConf.resolve.alias || {}),
+          pages: fileURLToPath(new URL('./src/pages', import.meta.url)),
+        };
       },
       // viteVuePluginOptions: {},
 
@@ -132,7 +138,7 @@ export default defineConfig((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Dialog','Notify'],
+      plugins: ['Dialog','Notify','Meta'],
       cssAddon: true
     },
 

@@ -79,7 +79,7 @@
 
             <q-checkbox
               v-model="aceptoPrivacidad"
-              :label="$t('registroCuenta.aceptar')"
+              :label="t('registroCuenta.aceptar')"
               dense
               class="q-mt-sm"
             />
@@ -101,7 +101,7 @@
 
           <div class="texto-responsivo2 text-center q-mt-lg">
             <router-link to="/Acceder" class="text-primary link-sin-subrayar">{{
-              $t('registroCuenta.yatienescuenta')
+              t('registroCuenta.yatienescuenta')
             }}</router-link>
           </div>
         </q-step>
@@ -313,9 +313,11 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const $q = useQuasar();
 const router = useRouter();
+const { t } = useI18n();
 
 const step = ref(1);
 const cargando = ref(false); // Para el registro final

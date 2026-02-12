@@ -7,15 +7,15 @@
         <q-space></q-space>
         <!-- Boton Area Personal -->
         <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior"
-          >{{ $t('areaPersonal') }}
+          >{{ t('areaPersonal') }}
         </q-btn>
         <!-- Boton Acceder / Carrito -->
         <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior"
-          >{{ $t('acceder') }}
+          >{{ t('acceder') }}
         </q-btn>
         <!-- NUEVO: Botón Cerrar sesión -->
         <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
-          {{ $t('cerrarSesion') }}
+          {{ t('cerrarSesion') }}
         </q-btn>
         <!-- Boton Acceder / Carrito -->
         <q-btn
@@ -59,7 +59,7 @@
 
       <q-toolbar>
         <q-btn
-          v-if="$q.screen.lt.md"
+          v-if="q && q.screen.lt.md"
           flat
           round
           icon="menu"
@@ -74,7 +74,7 @@
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
         </div>
         <!-- Navegación con botones -->
-        <div class="nav-container" v-if="$q.screen.gt.sm">
+        <div class="nav-container" v-if="q && q.screen.gt.sm">
           <q-btn
             flat
             :to="'/'"
@@ -82,14 +82,14 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'inicio' }"
           >
-            {{ $t('inicio') }}
+            {{ t('inicio') }}
           </q-btn>
 
           <q-btn
             flat
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
-            :label="$t('clases')"
+            :label="t('clases')"
             to="/Clases"
           >
           </q-btn>
@@ -101,7 +101,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
           >
-            {{ $t('testNivel') }}
+            {{ t('testNivel') }}
           </q-btn>
 
           <q-btn
@@ -111,7 +111,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
           >
-            {{ $t('sobre') }}
+            {{ t('sobre') }}
           </q-btn>
 
           <q-btn
@@ -121,7 +121,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'contacto' }"
           >
-            {{ $t('contacto') }}
+            {{ t('contacto') }}
           </q-btn>
         </div>
       </q-toolbar>
@@ -204,13 +204,13 @@
     </q-page-sticky>
     <q-footer class="bg-black text-white">
       <div class="footer-legal-bar">
-        <div class="footer-legal-text">{{ $t('footerDerechosReservados') }}</div>
+        <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
         <div class="footer-legal-links">
-          <router-link to="/Aviso" class="foot-link">{{ $t('footerAvisoLegal') }}</router-link>
-          <router-link to="/Privacidad" class="foot-link">{{ $t('footerPrivacidad') }}</router-link>
-          <router-link to="/Cookies" class="foot-link">{{ $t('footerCookies') }}</router-link>
+          <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
+          <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
+          <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
           <router-link to="/Condiciones" class="foot-link">{{
-            $t('footerCondiciones')
+            t('footerCondiciones')
           }}</router-link>
         </div>
       </div>
@@ -220,6 +220,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { useQuasar } from 'quasar';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
 import { useI18n } from 'vue-i18n';
 import { useAuth } from 'src/stores/auth';
@@ -230,11 +231,14 @@ const { user } = useAuth();
 const { locale, t } = useI18n();
 const router = useRouter();
 const { logout } = useAuth();
+const q = typeof window !== 'undefined' ? useQuasar() : undefined;
 
 // Banner de cookies
 const showCookiesBanner = ref(false);
 function aceptarCookies() {
-  localStorage.setItem('cookies_accepted', 'true');
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('cookies_accepted', 'true');
+  }
   showCookiesBanner.value = false;
 }
 
@@ -243,7 +247,10 @@ const carritoCount = ref(0);
 
 // Cargar carrito desde localStorage
 const cargarCarrito = () => {
-  const carritoGuardado = localStorage.getItem('carritoReservas');
+  let carritoGuardado = null;
+  if (typeof window !== 'undefined') {
+    carritoGuardado = localStorage.getItem('carritoReservas');
+  }
   if (carritoGuardado) {
     const carrito = JSON.parse(carritoGuardado);
     carritoCount.value = carrito.length;
@@ -254,20 +261,24 @@ const cargarCarrito = () => {
 
 // Escuchar cambios en el localStorage (para actualizar en tiempo real)
 const setupCarritoListener = () => {
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'carritoReservas') {
-      cargarCarrito();
-    }
-  });
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'carritoReservas') {
+        cargarCarrito();
+      }
+    });
+  }
 };
 
 // Temporizador para verificar cambios (por si las páginas están en la misma pestaña)
 const temporizadorCarrito = ref<number | null>(null);
 
 const iniciarTemporizadorCarrito = () => {
-  temporizadorCarrito.value = window.setInterval(() => {
-    cargarCarrito();
-  }, 1000); // Verificar cada segundo
+  if (typeof window !== 'undefined') {
+    temporizadorCarrito.value = window.setInterval(() => {
+      cargarCarrito();
+    }, 1000); // Verificar cada segundo
+  }
 };
 
 const activeButton = ref('');
@@ -278,7 +289,8 @@ watch(
   () => route.path,
   (newPath) => {
     if (newPath === '/') activeButton.value = 'inicio';
-    else if ( newPath === '/Clases'   ) { activeButton.value = 'clases';
+    else if (newPath === '/Clases') {
+      activeButton.value = 'clases';
     } else if (newPath === '/TestNivel') activeButton.value = 'testNivel';
     else if (newPath === '/sobreSpanish') activeButton.value = 'sobreSpanish';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
@@ -288,8 +300,10 @@ watch(
 );
 
 onMounted(() => {
-  showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
-  localStorage.removeItem('carritoReservas');
+  if (typeof window !== 'undefined') {
+    showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
+    localStorage.removeItem('carritoReservas');
+  }
   carritoCount.value = 0;
   cargarCarrito();
   setupCarritoListener();
@@ -347,13 +361,18 @@ const cerrarSesion = async () => {
   try {
     await supabase.auth.signOut({ scope: 'global' }); // o al menos maneja error
     await logout(); // asegura user = null
-    localStorage.removeItem('carritoReservas');
-    carritoCount.value = 0;
-    await router.replace('/').catch(() => {});
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('carritoReservas');
+      carritoCount.value = 0;
+      await router.replace('/').catch(() => {});
+    }
   } catch (e) {
     console.error('Error al cerrar sesión:', e);
   }
 };
+// Al final del script setup, exponer t para el template
+// No es necesario return en <script setup>, pero sí exponer explícitamente:
+defineExpose({ t });
 </script>
 
 <style lang="scss">

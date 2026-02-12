@@ -7,15 +7,15 @@
         <q-space></q-space>
         <!-- Boton Area Personal -->
         <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior"
-          >{{ $t('areaPersonal') }}
+          >{{ t('areaPersonal') }}
         </q-btn>
         <!-- Boton Acceder / Carrito -->
         <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior"
-          >{{ $t('acceder') }}
+          >{{ t('acceder') }}
         </q-btn>
         <!-- NUEVO: Botón Cerrar sesión -->
         <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
-          {{ $t('cerrarSesion') }}
+          {{ t('cerrarSesion') }}
         </q-btn>
         <!-- Botón Carrito de Compra -->
         <q-btn
@@ -59,7 +59,7 @@
 
       <q-toolbar>
         <q-btn
-          v-if="$q.screen.lt.md"
+          v-if="$q && $q.screen.lt.md"
           flat
           round
           icon="menu"
@@ -74,7 +74,7 @@
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
         </div>
         <!-- Navegación con botones -->
-        <div class="nav-container" v-if="$q.screen.gt.sm">
+        <div class="nav-container" v-if="$q && $q.screen.gt.sm">
           <q-btn
             flat
             :to="'/'"
@@ -82,7 +82,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'inicio' }"
           >
-            {{ $t('inicio') }}
+            {{ t('inicio') }}
           </q-btn>
 
           <q-btn
@@ -90,7 +90,7 @@
             :to="'/Clases'"
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'clases' }"
-            :label="$t('clases')"
+            :label="t('clases')"
           >
           </q-btn>
 
@@ -101,7 +101,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
           >
-            {{ $t('testNivel') }}
+            {{ t('testNivel') }}
           </q-btn>
 
           <q-btn
@@ -111,7 +111,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
           >
-            {{ $t('sobre') }}
+            {{ t('sobre') }}
           </q-btn>
 
           <q-btn
@@ -121,7 +121,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'contacto' }"
           >
-            {{ $t('contacto') }}
+            {{ t('contacto') }}
           </q-btn>
         </div>
       </q-toolbar>
@@ -197,14 +197,14 @@
         </div>
 
         <div
-          v-if="$q.screen.gt.sm"
+          v-if="$q && $q.screen.gt.sm"
           class="col-12 col-md-3 flex column items-center q-pa-none q-ma-none"
         >
           <p class="text-bold footer-titulo q-py-none q-mt-none q-mb-md">SpanishNook</p>
-          <p class="q-mx-md text-body2">{{ $t('footerSpanishnookEs') }}</p>
+          <p class="q-mx-md text-body2">{{ t('footerSpanishnookEs') }}</p>
           <div class="">
             <p class="text-bold footer-titulo items-center q-pa-none q-my-none">
-              {{ $t('footerRedes') }}
+              {{ t('footerRedes') }}
             </p>
             <q-btn
               icon="mdi-youtube"
@@ -232,31 +232,31 @@
         <!-- Columna Mapa del sitio -->
         <div class="col-12 col-md-3 flex column items-center">
           <div class="text-bold q-mx-xs">
-            <p class="text-bold footer-titulo items-center">{{ $t('footerMapa') }}</p>
+            <p class="text-bold footer-titulo items-center">{{ t('footerMapa') }}</p>
           </div>
           <div class="text-center">
             <div class="text-center">
-              <router-link to="/" class="foot-link">{{ $t('inicio') }}</router-link>
+              <router-link to="/" class="foot-link">{{ t('inicio') }}</router-link>
             </div>
             <div class="text-center">
-              <router-link to="/Clases" class="foot-link">{{ $t('clases') }}</router-link>
+              <router-link to="/Clases" class="foot-link">{{ t('clases') }}</router-link>
             </div>
             <div class="text-center">
-              <router-link to="/TestNivel" class="foot-link">{{ $t('testNivel') }}</router-link>
+              <router-link to="/TestNivel" class="foot-link">{{ t('testNivel') }}</router-link>
             </div>
             <div class="text-center">
-              <router-link to="/sobreSpanish" class="foot-link">{{ $t('sobre') }}</router-link>
+              <router-link to="/sobreSpanish" class="foot-link">{{ t('sobre') }}</router-link>
             </div>
             <div class="text-center">
-              <router-link to="/Contacto" class="foot-link">{{ $t('contacto') }}</router-link>
+              <router-link to="/Contacto" class="foot-link">{{ t('contacto') }}</router-link>
             </div>
           </div>
         </div>
         <!-- Columna Enlaces de interés -->
-        <div v-if="$q.screen.gt.sm" class="col-12 col-md-3 flex column items-center">
+        <div v-if="$q && $q.screen.gt.sm" class="col-12 col-md-3 flex column items-center">
           <div class="text-bold q-mx-xs">
             <p class="text-bold items-center footer-titulo">
-              {{ $t('footerEnlacesInteres') }}
+              {{ t('footerEnlacesInteres') }}
             </p>
           </div>
           <div class="text-center">
@@ -266,7 +266,7 @@
                 target="_blank"
                 rel="noopener"
                 class="foot-link q-mt-md"
-                >{{ $t('footerInstitutoCervantes') }}
+                >{{ t('footerInstitutoCervantes') }}
               </a>
             </div>
             <div class="text-center">
@@ -281,13 +281,13 @@
         </div>
       </div>
       <div class="footer-legal-bar">
-        <div class="footer-legal-text">{{ $t('footerDerechosReservados') }}</div>
+        <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
         <div class="footer-legal-links">
-          <router-link to="/Aviso" class="foot-link">{{ $t('footerAvisoLegal') }}</router-link>
-          <router-link to="/Privacidad" class="foot-link">{{ $t('footerPrivacidad') }}</router-link>
-          <router-link to="/Cookies" class="foot-link">{{ $t('footerCookies') }}</router-link>
+          <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
+          <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
+          <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
           <router-link to="/Condiciones" class="foot-link">{{
-            $t('footerCondiciones')
+            t('footerCondiciones')
           }}</router-link>
         </div>
       </div>
@@ -302,16 +302,20 @@ import { useI18n } from 'vue-i18n';
 import { useAuth } from 'src/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
+import { useQuasar } from 'quasar';
 
 const { user } = useAuth();
 const { locale, t } = useI18n();
 const router = useRouter();
 const { logout } = useAuth();
+const $q = typeof window !== 'undefined' ? useQuasar() : undefined;
 
 // Banner de cookies
 const showCookiesBanner = ref(false);
 function aceptarCookies() {
-  localStorage.setItem('cookies_accepted', 'true');
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('cookies_accepted', 'true');
+  }
   showCookiesBanner.value = false;
 }
 
@@ -320,7 +324,10 @@ const carritoCount = ref(0);
 
 // Cargar carrito desde localStorage
 const cargarCarrito = () => {
-  const carritoGuardado = localStorage.getItem('carritoReservas');
+  let carritoGuardado = null;
+  if (typeof window !== 'undefined') {
+    carritoGuardado = localStorage.getItem('carritoReservas');
+  }
   if (carritoGuardado) {
     const carrito = JSON.parse(carritoGuardado);
     carritoCount.value = carrito.length;
@@ -331,20 +338,24 @@ const cargarCarrito = () => {
 
 // Escuchar cambios en el localStorage (para actualizar en tiempo real)
 const setupCarritoListener = () => {
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'carritoReservas') {
-      cargarCarrito();
-    }
-  });
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'carritoReservas') {
+        cargarCarrito();
+      }
+    });
+  }
 };
 
 // Temporizador para verificar cambios (por si las páginas están en la misma pestaña)
 const temporizadorCarrito = ref<number | null>(null);
 
 const iniciarTemporizadorCarrito = () => {
-  temporizadorCarrito.value = window.setInterval(() => {
-    cargarCarrito();
-  }, 1000); // Verificar cada segundo
+  if (typeof window !== 'undefined') {
+    temporizadorCarrito.value = window.setInterval(() => {
+      cargarCarrito();
+    }, 1000); // Verificar cada segundo
+  }
 };
 
 const activeButton = ref('');
@@ -366,8 +377,10 @@ watch(
 );
 
 onMounted(() => {
-  showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
-  localStorage.removeItem('carritoReservas');
+  if (typeof window !== 'undefined') {
+    showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
+    localStorage.removeItem('carritoReservas');
+  }
   carritoCount.value = 0;
   cargarCarrito();
   setupCarritoListener();
@@ -424,13 +437,16 @@ const cerrarSesion = async (): Promise<void> => {
   try {
     await supabase.auth.signOut({ scope: 'global' }); // o al menos maneja error
     await logout(); // asegura user = null
-    localStorage.removeItem('carritoReservas');
-    carritoCount.value = 0;
-    await router.replace('/').catch(() => {});
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('carritoReservas');
+      carritoCount.value = 0;
+      await router.replace('/').catch(() => {});
+    }
   } catch (e) {
     console.error('Error al cerrar sesión:', e);
   }
 };
+defineExpose({ $q, t });
 </script>
 
 <style lang="scss">

@@ -62,7 +62,7 @@
               size="md"
               unelevated
               to="/TestNivel"
-              :label="$t('NuestrasClases.testDeNivel')"
+              :label="t('NuestrasClases.testDeNivel')"
             />
           </div>
         </div>
@@ -88,7 +88,7 @@
       <div class="col-12 col-md-6 flex justify-center">
         <div class="banner-clases-grupales">
           <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center">
-            {{ $t('NuestrasClases.clasesGrupalesConversacion') }}
+            {{ t('NuestrasClases.clasesGrupalesConversacion') }}
           </h2>
         </div>
       </div>
@@ -99,35 +99,35 @@
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
           <div class="titulo-responsivo text-justify-center">
-            {{ $t('NuestrasClases.nuestrasClasesConversacion') }}
+            {{ t('NuestrasClases.nuestrasClasesConversacion') }}
           </div>
           <br />
           <div>
             <p class="texto-responsivo text-justify text-weight-bold">
-              {{ $t('NuestrasClases.tePasaQue') }}
+              {{ t('NuestrasClases.tePasaQue') }}
             </p>
             <br />
             <p class="texto-responsivo text-justify text-weight-bold" style="color: #851319">
-              {{ $t('NuestrasClases.esteCursoEsParaTi') }}
+              {{ t('NuestrasClases.esteCursoEsParaTi') }}
             </p>
             <br />
             <p class="texto-responsivo text-justify">
-              {{ $t('NuestrasClases.cadaSemanaNos') }}
+              {{ t('NuestrasClases.cadaSemanaNos') }}
             </p>
             <p class="texto-responsivo text-justify">
-              {{ $t('NuestrasClases.aquiHablamos') }}
+              {{ t('NuestrasClases.aquiHablamos') }}
             </p>
             <p class="texto-responsivo text-justify">
-              {{ $t('NuestrasClases.esUnPrograma') }}
+              {{ t('NuestrasClases.esUnPrograma') }}
             </p>
             <br />
             <p class="texto-responsivo text-justify text-weight-bold" style="color: #851319">
-              {{ $t('NuestrasClases.uneteALa') }}
+              {{ t('NuestrasClases.uneteALa') }}
             </p>
           </div>
 
           <q-expansion-item
-            :label="$t('NuestrasClases.TextoNuestrosCursosGrupo1')"
+            :label="t('NuestrasClases.TextoNuestrosCursosGrupo1')"
             header-class="bg-primary text-white subtitulo-responsivo"
             class="q-my-xl"
           >
@@ -135,24 +135,24 @@
               <q-card-section class="texto-responsivo text-justify">
                 <ul class="q-pl-md text-justify">
                   <li>
-                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos1Bold') }}</strong>
-                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos1') }}
+                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos1Bold') }}</strong>
+                    {{ t('NuestrasClases.ListaComoFuncionanGrupos1') }}
                   </li>
                   <li>
-                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos2Bold') }}</strong>
-                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos2') }}
+                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos2Bold') }}</strong>
+                    {{ t('NuestrasClases.ListaComoFuncionanGrupos2') }}
                   </li>
                   <li>
-                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos3Bold') }}</strong>
-                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos3') }}
+                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos3Bold') }}</strong>
+                    {{ t('NuestrasClases.ListaComoFuncionanGrupos3') }}
                   </li>
                   <li>
-                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos4Bold') }}</strong>
-                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos4') }}
+                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos4Bold') }}</strong>
+                    {{ t('NuestrasClases.ListaComoFuncionanGrupos4') }}
                   </li>
                   <li>
-                    <strong>{{ $t('NuestrasClases.ListaComoFuncionanGrupos5Bold') }}</strong>
-                    {{ $t('NuestrasClases.ListaComoFuncionanGrupos5') }}
+                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos5Bold') }}</strong>
+                    {{ t('NuestrasClases.ListaComoFuncionanGrupos5') }}
                   </li>
                 </ul>
               </q-card-section>
@@ -160,19 +160,19 @@
           </q-expansion-item>
 
           <q-expansion-item
-            :label="$t('NuestrasClases.queLograras')"
+            :label="t('NuestrasClases.queLograras')"
             header-class="bg-primary text-white subtitulo-responsivo"
             class="q-my-lg"
           >
             <q-card>
               <q-card-section class="texto-responsivo text-justify">
                 <ul class="q-pl-md">
-                  <li>{{ $t('NuestrasClases.Logro1Grupales') }}</li>
-                  <li>{{ $t('NuestrasClases.Logro2Grupales') }}</li>
-                  <li>{{ $t('NuestrasClases.Logro3Grupales') }}</li>
-                  <li>{{ $t('NuestrasClases.Logro4Grupales') }}</li>
-                  <li>{{ $t('NuestrasClases.Logro5Grupales') }}</li>
-                  <li>{{ $t('NuestrasClases.Logro6Grupales') }}</li>
+                  <li>{{ t('NuestrasClases.Logro1Grupales') }}</li>
+                  <li>{{ t('NuestrasClases.Logro2Grupales') }}</li>
+                  <li>{{ t('NuestrasClases.Logro3Grupales') }}</li>
+                  <li>{{ t('NuestrasClases.Logro4Grupales') }}</li>
+                  <li>{{ t('NuestrasClases.Logro5Grupales') }}</li>
+                  <li>{{ t('NuestrasClases.Logro6Grupales') }}</li>
                 </ul>
               </q-card-section>
             </q-card>
@@ -206,7 +206,7 @@
       <div class="col-12 col-md-6 flex justify-center banner-individuales-col">
         <div class="banner-clases-grupales banner-individuales">
           <p class="banner-clases-grupales__titulo titulo-responsivo text-center">
-            {{ $t('NuestrasClases.clasesIndividualesPersonalizadas') }}
+            {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
           </p>
         </div>
       </div>
@@ -227,13 +227,13 @@
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
           <q-card-section class="q-pt-lg">
             <div class="titulo-responsivo text-center">
-              {{ $t('NuestrasClases.nuestrasClasesIndividuales') }}
+              {{ t('NuestrasClases.nuestrasClasesIndividuales') }}
             </div>
             <br />
             <p class="texto-responsivo text-justify q-mb-none">
-              <strong>{{ $t('NuestrasClases.IntroIndividuales1Bold') }}</strong>
+              <strong>{{ t('NuestrasClases.IntroIndividuales1Bold') }}</strong>
               <br /><br />
-              {{ $t('NuestrasClases.IntroIndividuales2') }}
+              {{ t('NuestrasClases.IntroIndividuales2') }}
             </p>
           </q-card-section>
           <q-separator spaced />
@@ -242,7 +242,7 @@
               class="text-center q-mb-md"
               style="color: #851319; font-size: 1.4rem; font-weight: 600"
             >
-              {{ $t('NuestrasClases.Modalidades') }}
+              {{ t('NuestrasClases.Modalidades') }}
             </h2>
             <br />
             <div class="row q-col-gutter-md">
@@ -254,10 +254,10 @@
                     fit="cover"
                   />
                   <div class="subtitulo-responsivo text-center q-my-xl">
-                    {{ $t('NuestrasClases.Modalidad1') }}
+                    {{ t('NuestrasClases.Modalidad1') }}
                   </div>
                   <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
-                    {{ $t('NuestrasClases.TextoModalidad1') }}
+                    {{ t('NuestrasClases.TextoModalidad1') }}
                   </p>
                   <div class="q-mt-md flex flex-center">
                     <q-btn
@@ -265,7 +265,7 @@
                       class="oval-btn oval-btn-md"
                       unelevated
                       size="md"
-                      :label="$t('NuestrasClases.botonClasesA2')"
+                      :label="t('NuestrasClases.botonClasesA2')"
                       no-caps
                       to="/Reservas"
                     />
@@ -280,10 +280,10 @@
                     fit="cover"
                   />
                   <div class="subtitulo-responsivo text-center">
-                    {{ $t('NuestrasClases.Modalidad2') }}
+                    {{ t('NuestrasClases.Modalidad2') }}
                   </div>
                   <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
-                    {{ $t('NuestrasClases.TextoModalidad2') }}
+                    {{ t('NuestrasClases.TextoModalidad2') }}
                   </p>
                   <div class="flex flex-center">
                     <q-btn
@@ -291,7 +291,7 @@
                       class="oval-btn oval-btn-md"
                       unelevated
                       size="md"
-                      :label="$t('NuestrasClases.botonClasesA1')"
+                      :label="t('NuestrasClases.botonClasesA1')"
                       no-caps
                       to="/Reservas"
                     />
@@ -303,28 +303,28 @@
           <q-separator spaced />
           <q-card-section>
             <div class="subtitulo-responsivo text-left q-mb-md">
-              {{ $t('NuestrasClases.TextoComoFuncionanIndividuales') }}
+              {{ t('NuestrasClases.TextoComoFuncionanIndividuales') }}
             </div>
             <br />
             <ul class="texto-responsivo text-justify q-pl-md lista-funcionamiento">
               <li>
-                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd1Bold') }}</strong>
-                {{ $t('NuestrasClases.ListaComoFuncionanInd1') }}
+                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd1Bold') }}</strong>
+                {{ t('NuestrasClases.ListaComoFuncionanInd1') }}
               </li>
               <li>
-                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd2Bold') }}</strong>
-                {{ $t('NuestrasClases.ListaComoFuncionanInd2') }}
+                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd2Bold') }}</strong>
+                {{ t('NuestrasClases.ListaComoFuncionanInd2') }}
               </li>
               <li>
-                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd3Bold') }}</strong>
-                {{ $t('NuestrasClases.ListaComoFuncionanInd3') }}
+                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd3Bold') }}</strong>
+                {{ t('NuestrasClases.ListaComoFuncionanInd3') }}
               </li>
               <li>
-                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd4Bold') }}</strong>
-                {{ $t('NuestrasClases.ListaComoFuncionanInd4') }}
+                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd4Bold') }}</strong>
+                {{ t('NuestrasClases.ListaComoFuncionanInd4') }}
               </li>
               <li>
-                <strong>{{ $t('NuestrasClases.ListaComoFuncionanInd5') }}</strong>
+                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd5') }}</strong>
               </li>
             </ul>
           </q-card-section>

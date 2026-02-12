@@ -27,7 +27,7 @@
         {{ title }}
       </q-card-section>
       <q-card-section v-if="fechaInicio" class="fecha-inicio text-caption text-grey-8">
-        {{ $t('NuestrasClases.inicio') }}: {{ formatFecha(fechaInicio) }}
+        {{ t('NuestrasClases.inicio') }}: {{ formatFecha(fechaInicio) }}
       </q-card-section>
       <q-card-section class="description texto-responsivo" :class="descriptionClass">
         <div v-html="formattedDescription"></div>
@@ -95,7 +95,7 @@ const emit = defineEmits<{
   buttonClick: [];
 }>();
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const handleButtonClick = () => {
   emit('buttonClick');

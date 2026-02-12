@@ -6,10 +6,10 @@ import { defineSsrMiddleware } from '#q-app/wrappers';
 // since it captures everything and tries to
 // render the page with Vue
 
-export default defineSsrMiddleware(({ app, resolve, render, serve }) => {
+export default defineSsrMiddleware(({ app,  render, serve }) => {
   // we capture any other Express route and hand it
   // over to Vue and Vue Router to render our page
-  app.get(resolve.urlPath('*'), (req: Request, res: Response) => {
+  app.get('*', (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/html');
 
     render(/* the ssrContext: */ { req, res })
@@ -18,6 +18,9 @@ export default defineSsrMiddleware(({ app, resolve, render, serve }) => {
         res.send(html);
       })
       .catch((err: RenderError) => {
+        // Log detallado en cualquier entorno
+        const msg = (err && (err as Error).stack) ? (err as Error).stack : String(err);
+        console.error('[SSR] Render error:', msg);
         // oops, we had an error while rendering the page
 
         // we were told to redirect to another URL
@@ -51,9 +54,9 @@ export default defineSsrMiddleware(({ app, resolve, render, serve }) => {
           // create a route (/src/routes) for an error page and redirect to it
           res.status(500).send('500 | Internal Server Error');
 
-          if (process.env.DEBUGGING) {
-            console.error(err.stack);
-          }
+          // Siempre registramos el error en producción también
+          const prodMsg = (err && (err as Error).stack) ? (err as Error).stack : String(err);
+          console.error('[SSR] Render error (prod):', prodMsg);
         }
       });
   });

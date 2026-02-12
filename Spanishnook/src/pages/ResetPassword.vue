@@ -2,15 +2,15 @@
   <q-page class="flex flex-center bg-grey-2">
     <q-card class="q-pa-none shadow-2 my-card" bordered style="width: 100%; max-width: 450px">
       <q-card-section class="q-pt-xl q-pb-md text-center">
-        <div class="text-h5 text-primary text-weight-bold">{{ $t('flecos.restablecer') }}</div>
-        <div class="text-caption text-grey-7">{{ $t('flecos.introducir') }}</div>
+        <div class="text-h5 text-primary text-weight-bold">{{ t('flecos.restablecer') }}</div>
+        <div class="text-caption text-grey-7">{{ t('flecos.introducir') }}</div>
       </q-card-section>
 
       <q-card-section class="q-px-lg">
         <form @submit.prevent="resetPassword" class="q-gutter-md">
           <q-input
             v-model="nuevaPassword"
-            :label="$t('flecos.nueva')"
+            :label="t('flecos.nueva')"
             :type="mostrarPassword ? 'text' : 'password'"
             outlined
             dense
@@ -34,7 +34,7 @@
 
           <q-input
             v-model="confirmarPassword"
-            :label="$t('flecos.confirmarNueva')"
+            :label="t('flecos.confirmarNueva')"
             type="password"
             outlined
             dense
@@ -63,13 +63,13 @@
             class="text-center q-pa-md bg-green-1 text-positive rounded-borders q-mt-md"
           >
             <q-icon name="check_circle" size="sm" />
-            <div class="text-weight-bold q-mt-xs">{{ $t('flecos.contraseña') }}</div>
-            <div class="text-caption">{{ $t('flecos.redirigiendoInicio') }}</div>
+            <div class="text-weight-bold q-mt-xs">{{ t('flecos.contraseña') }}</div>
+            <div class="text-caption">{{ t('flecos.redirigiendoInicio') }}</div>
           </div>
 
           <div class="q-mt-lg q-mb-md">
             <q-btn
-              :label="$t('flecos.guardar')"
+              :label="t('flecos.guardar')"
               color="primary"
               type="submit"
               :loading="loading"
@@ -88,9 +88,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { supabase } from 'src/supabaseClient';
 
 const router = useRouter();
+const { t } = useI18n();
 const nuevaPassword = ref('');
 const confirmarPassword = ref('');
 const mostrarPassword = ref(false);
