@@ -9,10 +9,12 @@
       }
     }
   ],
-  "rewrites": [
+  "config": {
+    "includeFiles": "dist/ssr/**"
+  },
+  "routes": [
     {
-      "source": "/client/(.*)",
-      "destination": "/dist/ssr/client/$1"
+      "handle": "filesystem"
     },
     {
       "source": "/(.*)",
@@ -29,8 +31,5 @@
         }
       ]
     }
-  ],
-  "buildCommand": "npm run build:ssr",
-  "outputDirectory": "dist/ssr",
-  "installCommand": "npm ci"
+  ]
 }
