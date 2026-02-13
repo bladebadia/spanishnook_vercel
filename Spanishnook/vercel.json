@@ -4,9 +4,7 @@
     {
       "src": "api/index.mjs",
       "use": "@vercel/node",
-      "config": {
         "includeFiles": "dist/ssr/**"
-      }
     }
   ],
   "config": {
