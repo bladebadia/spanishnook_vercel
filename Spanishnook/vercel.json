@@ -4,12 +4,9 @@
     {
       "src": "api/index.mjs",
       "use": "@vercel/node",
-        "includeFiles": "dist/ssr/**"
+      "includeFiles": "dist/ssr/**"
     }
   ],
-  "config": {
-    "includeFiles": "dist/ssr/**"
-  },
   "routes": [
     {
       "handle": "filesystem"
