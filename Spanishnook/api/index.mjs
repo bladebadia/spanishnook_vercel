@@ -68,7 +68,7 @@ function serveStaticFile(req, res) {
 /**
  * Crea el contexto SSR
  */
-function createSSRContext(req, res) {
+function createSSRContext(req, res, onRenderedCallbacks) {
   return {
     url: req.url,
     req,
@@ -83,7 +83,9 @@ function createSSRContext(req, res) {
       bodyAttrs: '',
     },
     modules: new Set(),
-    onRendered: [],
+    onRendered: (fn) => {
+      if (typeof fn === 'function') onRenderedCallbacks.push(fn);
+    },
     rendered: () => {},
     $q: {},
     ssrContext: true,
@@ -133,9 +135,19 @@ async function trySSRRendering(req, res) {
     ]);
 
     // Crear contexto y renderizar
-    const ssrContext = createSSRContext(req, res);
+    const onRenderedCallbacks = [];
+    const ssrContext = createSSRContext(req, res, onRenderedCallbacks);
     const app = await serverEntry.default(ssrContext);
     const html = await renderToString(app, ssrContext);
+
+    // Ejecutar callbacks onRendered
+    onRenderedCallbacks.forEach((fn) => {
+      try {
+        fn();
+      } catch (e) {
+        console.warn('Error en onRendered callback:', e);
+      }
+    });
 
     // Configurar contenido y procesar contexto
     ssrContext._meta.runtimePageContent = html;
@@ -262,7 +274,10 @@ function generateFallbackHTML(req) {
  */
 export default async function handler(req, res) {
   const startTime = Date.now();
-  console.log('__dirname:', __dirname); console.log('DIST_SSR_PATH:', DIST_SSR_PATH); console.log('RENDER_TEMPLATE exists:', existsSync(RENDER_TEMPLATE_PATH)); console.log('SERVER_ENTRY exists:', existsSync(SERVER_ENTRY_PATH));
+  console.log('__dirname:', __dirname);
+  console.log('DIST_SSR_PATH:', DIST_SSR_PATH);
+  console.log('RENDER_TEMPLATE exists:', existsSync(RENDER_TEMPLATE_PATH));
+  console.log('SERVER_ENTRY exists:', existsSync(SERVER_ENTRY_PATH));
 
   try {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
