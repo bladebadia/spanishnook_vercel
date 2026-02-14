@@ -1,15 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/index.mjs",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "handle": "filesystem"
-    },
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/api/index.mjs"
