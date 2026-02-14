@@ -14,7 +14,7 @@
     "build": "quasar build",
     "postinstall": "quasar prepare",
     "start": "node dist/ssr/server.js",
-    "build:ssr": "quasar build -m ssr && cd dist/ssr && npm install",
+    "build:ssr": "quasar build -m ssr",
     "vercel-build": "npm run build:ssr"
   },
   "dependencies": {
