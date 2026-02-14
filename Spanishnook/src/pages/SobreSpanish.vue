@@ -97,7 +97,7 @@
           color="primary"
           :label="t('indexContactanos')"
           icon="email"
-          @click="$router.push('/contacto')"
+          @click="router.push('/contacto')"
         />
       </div>
     </div>
@@ -108,7 +108,9 @@
 import '../css/pages/EstilosGenerales.css';
 import { useI18n } from 'vue-i18n';
 import { useMeta } from 'quasar';
+import { useRouter } from 'vue-router';
 const { t } = useI18n();
+const router = useRouter();
 
 useMeta(() => ({
   title: 'Sobre SpanishNook | Conoce quién hay detrás',

@@ -32,7 +32,7 @@
     "jwt-decode": "^4.0.0",
     "ssr": "^7.0.5",
     "vite": "^4.4.9",
-    "vue": "^3.4.18",
+    "vue": "3.4.18",
     "vue-i18n": "^11.0.0"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
     "quasar": "^2.18.6",
     "typescript": "^5.2.2",
     "vite-plugin-checker": "^0.9.0",
-    "vue-router": "^4.0.13",
+    "vue-router": "4.2.5",
     "vue-tsc": "^2.0.29"
   },
   "engines": {
