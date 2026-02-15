@@ -1,107 +1,109 @@
 <template>
-  <q-page>
-    <!-- Sección introductoria -->
-    <div class="row q-my-xl flex flex-center">
-      <div class="col-12 text-center content-width">
-        <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
-          {{ t('SobreSpanish.conoce') }}
-        </p>
-      </div>
-      <!-- Descripción  -->
-      <div class="col-12 items-center text-center" style="width: 70%">
-        <p class="texto-responsivo q-pb-xl q-pb-xl">
-          <strong>{{ t('SobreSpanish.intro') }}</strong>
-        </p>
-      </div>
-      <!-- Video de presentación -->
-      <div class="col-12 items-center text-center q-my-md video-responsive">
-        <video controls style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)">
-          <source src="/video/clases_espanol_video_subt.mp4" type="video/mp4" />
-          Tu navegador no soporta el video.
-        </video>
-      </div>
-      <div class="col-12 text-center q-mt-lg">
-        <p class="subtitulo-responsivo text-primary q-px-xl">
-          {{ t('SobreSpanish.tulug') }}
-        </p>
-      </div>
+  <q-no-ssr>
+    <q-page>
+      <!-- Sección introductoria -->
+      <div class="row q-my-xl flex flex-center">
+        <div class="col-12 text-center content-width">
+          <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
+            {{ t('SobreSpanish.conoce') }}
+          </p>
+        </div>
+        <!-- Descripción  -->
+        <div class="col-12 items-center text-center" style="width: 70%">
+          <p class="texto-responsivo q-pb-xl q-pb-xl">
+            <strong>{{ t('SobreSpanish.intro') }}</strong>
+          </p>
+        </div>
+        <!-- Video de presentación -->
+        <div class="col-12 items-center text-center q-my-md video-responsive">
+          <video controls style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)">
+            <source src="/video/clases_espanol_video_subt.mp4" type="video/mp4" />
+            Tu navegador no soporta el video.
+          </video>
+        </div>
+        <div class="col-12 text-center q-mt-lg">
+          <p class="subtitulo-responsivo text-primary q-px-xl">
+            {{ t('SobreSpanish.tulug') }}
+          </p>
+        </div>
 
-      <div class="col-12 text-justify q-my-md content-width">
-        <p class="texto-responsivo">
-          {{ t('SobreSpanish.aprender') }}
-        </p>
-        <div class="q-mb-md"></div>
-        <p class="texto-responsivo">
-          {{ t('SobreSpanish.enmedio') }}
-        </p>
-      </div>
+        <div class="col-12 text-justify q-my-md content-width">
+          <p class="texto-responsivo">
+            {{ t('SobreSpanish.aprender') }}
+          </p>
+          <div class="q-mb-md"></div>
+          <p class="texto-responsivo">
+            {{ t('SobreSpanish.enmedio') }}
+          </p>
+        </div>
 
-      <div class="col-12 q-my-md content-width">
-        <p class="subtitulo-responsivo text-primary text-center">
-          {{ t('SobreSpanish.quien') }}
-        </p>
+        <div class="col-12 q-my-md content-width">
+          <p class="subtitulo-responsivo text-primary text-center">
+            {{ t('SobreSpanish.quien') }}
+          </p>
+        </div>
+        <div class="col-12 q-my-md content-width">
+          <p class="texto-responsivo">
+            {{ t('SobreSpanish.soy') }}
+          </p>
+          <div class="q-mb-md"></div>
+          <p class="texto-responsivo">
+            {{ t('SobreSpanish.tras1') }}
+            <br /><br />
+            {{ t('SobreSpanish.tras2') }}
+          </p>
+        </div>
+        <div class="q-mb-lg"></div>
+        <!-- Filosofía -->
+        <div class="col-12 items-center text-center">
+          <p class="subtitulo-responsivo" style="color: #851319">
+            {{ t('SobreSpanish.filosofía') }}
+          </p>
+        </div>
+        <div class="col-12 text-center q-my-md content-width">
+          <p class="texto-responsivo text-justify">{{ t('SobreSpanish.mipropuesta') }}</p>
+        </div>
+        <div class="col-12 items-center text-center q-my-md" style="width: 70%">
+          <p class="subtitulo-responsivo" style="color: #851319">
+            {{ t('SobreSpanish.loque') }}
+          </p>
+        </div>
+        <div class="col-12 text-center q-my-md content-width">
+          <ul class="texto-responsivo text-justify">
+            <li>
+              <strong>{{ t('SobreSpanish.cercaniaBold') }}</strong
+              >: {{ t('SobreSpanish.cercania') }}
+            </li>
+            <li>
+              <strong>{{ t('SobreSpanish.flexibilidadBold') }}</strong
+              >: {{ t('SobreSpanish.flexibilidad') }}
+            </li>
+            <li>
+              <strong>{{ t('SobreSpanish.confianzaBold') }}</strong
+              >: {{ t('SobreSpanish.confianza') }}
+            </li>
+          </ul>
+        </div>
+        <div class="q-mb-xl"></div>
+        <div class="col-12 text-center q-mt-xl content-width">
+          <p class="texto-responsivo">{{ t('SobreSpanish.ojalá') }}</p>
+          <div class="q-mb-md"></div>
+          <div class="q-mb-md"></div>
+          <p class="texto-responsivo">
+            <strong>{{ t('SobreSpanish.espero') }}</strong>
+          </p>
+        </div>
+        <div class="col-12 items-center text-center q-my-xl">
+          <q-btn
+            color="primary"
+            :label="t('indexContactanos')"
+            icon="email"
+            @click="router.push('/contacto')"
+          />
+        </div>
       </div>
-      <div class="col-12 q-my-md content-width">
-        <p class="texto-responsivo">
-          {{ t('SobreSpanish.soy') }}
-        </p>
-        <div class="q-mb-md"></div>
-        <p class="texto-responsivo">
-          {{ t('SobreSpanish.tras1') }}
-          <br /><br />
-          {{ t('SobreSpanish.tras2') }}
-        </p>
-      </div>
-      <div class="q-mb-lg"></div>
-      <!-- Filosofía -->
-      <div class="col-12 items-center text-center">
-        <p class="subtitulo-responsivo" style="color: #851319">
-          {{ t('SobreSpanish.filosofía') }}
-        </p>
-      </div>
-      <div class="col-12 text-center q-my-md content-width">
-        <p class="texto-responsivo text-justify">{{ t('SobreSpanish.mipropuesta') }}</p>
-      </div>
-      <div class="col-12 items-center text-center q-my-md" style="width: 70%">
-        <p class="subtitulo-responsivo" style="color: #851319">
-          {{ t('SobreSpanish.loque') }}
-        </p>
-      </div>
-      <div class="col-12 text-center q-my-md content-width">
-        <ul class="texto-responsivo text-justify">
-          <li>
-            <strong>{{ t('SobreSpanish.cercaniaBold') }}</strong
-            >: {{ t('SobreSpanish.cercania') }}
-          </li>
-          <li>
-            <strong>{{ t('SobreSpanish.flexibilidadBold') }}</strong
-            >: {{ t('SobreSpanish.flexibilidad') }}
-          </li>
-          <li>
-            <strong>{{ t('SobreSpanish.confianzaBold') }}</strong
-            >: {{ t('SobreSpanish.confianza') }}
-          </li>
-        </ul>
-      </div>
-      <div class="q-mb-xl"></div>
-      <div class="col-12 text-center q-mt-xl content-width">
-        <p class="texto-responsivo">{{ t('SobreSpanish.ojalá') }}</p>
-        <div class="q-mb-md"></div>
-        <div class="q-mb-md"></div>
-        <p class="texto-responsivo">
-          <strong>{{ t('SobreSpanish.espero') }}</strong>
-        </p>
-      </div>
-      <div class="col-12 items-center text-center q-my-xl">
-        <q-btn
-          color="primary"
-          :label="t('indexContactanos')"
-          icon="email"
-          @click="router.push('/contacto')"
-        />
-      </div>
-    </div>
-  </q-page>
+    </q-page>
+  </q-no-ssr>
 </template>
 
 <script setup lang="ts">

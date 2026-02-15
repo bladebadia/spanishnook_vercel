@@ -2,12 +2,17 @@
   <q-page>
     <!-- Banner principal OK-->
     <div>
-      <q-img fit="cover" position="center" src="/img/Home/banner_1920.webp"> </q-img>
+      <q-img
+        fit="cover"
+        position="center"
+        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/banner_1920.webp"
+      >
+      </q-img>
     </div>
     <!-- Sección introductoria OK-->
     <div class="items-center text-center q-my-xl">
       <p class="titulo-responsivo font-weight: 700" style="color: #851319">
-        {{ t('indexeUnLugarDonde') }}
+        {{ t('inexeUnLugarDonde') }}
       </p>
 
       <p class="texto-responsivo text-justify" style="margin-left: 13%; margin-right: 13%">
@@ -18,10 +23,9 @@
       </q-btn>
     </div>
     <!--Tarjeta descubre nuestras clases y lista OK-->
-    <q-no-ssr>
-      <div v-intersect="onPromoIntersect" class="row justify-center q-my-xl">
-        <transition enter-active-class="animated fadeInUpBig slower ">
-          <div v-if="showPromoCard" class="row align-center">
+    <div v-intersect="onPromoIntersect" class="row justify-center q-my-xl">
+      <transition enter-active-class="animated fadeInUpBig slower ">
+        <div v-if="showPromoCard" class="row align-center">
           <div class="col-12 col-md-6 items-center flex flex-center column">
             <q-card
               class=""
@@ -68,15 +72,13 @@
               <li class="q-py-xs">{{ t('indexAmbienteRelajado') }}</li>
             </ul>
           </div>
-          </div>
-        </transition>
-      </div>
-    </q-no-ssr>
+        </div>
+      </transition>
+    </div>
     <!-- Tarjetas de promoción de clases OK -->
-    <q-no-ssr>
-      <div v-intersect="onPromoIntersect1" class="q-my-xs row justify-center bg-grey-2">
-        <transition enter-active-class="animated fadeInUpBig slower ">
-          <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
+    <div v-intersect="onPromoIntersect1" class="q-my-xs row justify-center bg-grey-2">
+      <transition enter-active-class="animated fadeInUpBig slower ">
+        <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
           <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
             <p class="titulo-responsivo2 text-center q-mb-md" text-color="#851319">
               {{ t('indexDiferentesCaminos') }}
@@ -98,13 +100,13 @@
               :to="{ path: '/Clases', hash: '#clases-individuales' }"
             />
             <!-- Componente 2: Clases Grupales 
-            <PromoCard
-              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-grupo.png'"
-              :title="t('indexClasesGrupales')"
-              :description="t('indexAprendeEspañol')"
-              :button-text="t('indexAprenderEnGrupo')"
-              :to="{ path: '/Clases', hash: '#clases-conversacion' }"
-            />   -->
+              <PromoCard
+                :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-grupo.png'"
+                :title="t('indexClasesGrupales')"
+                :description="t('indexAprendeEspañol')"
+                :button-text="t('indexAprenderEnGrupo')"
+                :to="{ path: '/Clases', hash: '#clases-conversacion' }"
+              />   -->
             <!-- Componente 3: Clases de Conversación -->
             <PromoCard
               :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-conversacion.png'"
@@ -113,25 +115,23 @@
               :button-text="t('indexUneteALaLista')"
               :to="{ path: '/Clases', hash: '#clases-conversacion' }"
             />
-            </div>
           </div>
-        </transition>
-      </div>
-    </q-no-ssr>
+        </div>
+      </transition>
+    </div>
     <!-- Banner promocional test nivel que aparece al hacer scroll OK-->
-    <q-no-ssr>
-      <div
-        v-intersect="onPromoIntersect2"
-        class="q-mt-xl q-mb-xl row degradado-fondo"
-        style="min-height: 300px; width: 100%"
-      >
-        <transition enter-active-class="animated fadeInUpBig slower ">
-          <div
-            v-if="showPromoCard2"
-            class="row"
-            style="width: 100%; position: relative"
-            enter-active-class="animated fadeInUpBig slower "
-          >
+    <div
+      v-intersect="onPromoIntersect2"
+      class="q-mt-xl q-mb-xl row degradado-fondo"
+      style="min-height: 300px; width: 100%"
+    >
+      <transition enter-active-class="animated fadeInUpBig slower ">
+        <div
+          v-if="showPromoCard2"
+          class="row"
+          style="width: 100%; position: relative"
+          enter-active-class="animated fadeInUpBig slower "
+        >
           <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 15%">
             <p class="titulo-responsivo1" style="color: #fff">
               <strong>{{ t('indexDescubreTuPunto') }}</strong>
@@ -143,19 +143,17 @@
               t('indexHacerTest')
             }}</q-btn>
           </div>
-          </div>
-        </transition>
-      </div>
-    </q-no-ssr>
+        </div>
+      </transition>
+    </div>
     <!-- Tarjeta sobre quién hay detrás de Spanishnook OK-->
-    <q-no-ssr>
-      <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
-        <transition enter-active-class="animated fadeInUpBig slower ">
-          <div
-            v-if="showPromoCard4"
-            class="row justify-center"
-            enter-active-class="animated fadeInUpBig slower "
-          >
+    <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
+      <transition enter-active-class="animated fadeInUpBig slower ">
+        <div
+          v-if="showPromoCard4"
+          class="row justify-center"
+          enter-active-class="animated fadeInUpBig slower "
+        >
           <q-card class="items-center tarjeta-quien">
             <q-item>
               <q-item-section avatar>
@@ -192,27 +190,25 @@
               </q-btn>
             </q-card-actions>
           </q-card>
-          </div>
-        </transition>
-      </div>
-    </q-no-ssr>
+        </div>
+      </transition>
+    </div>
     <!-- Sección de Opiniones Verificadas - CARRUSEL -->
-    <q-no-ssr>
-      <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
-        <transition enter-active-class="animated fadeInUpBig slower">
-          <div v-if="showOpiniones" class="q-py-xl q-px-md">
-            <div class="text-center q-mb-xl">
+    <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
+      <transition enter-active-class="animated fadeInUpBig slower">
+        <div v-if="showOpiniones" class="q-py-xl q-px-md">
+          <div class="text-center q-mb-xl">
             <p class="subtitulo-responsivo" style="color: #851319">
               {{ t('indexOpinionesVerificadas') }}
             </p>
             <p class="texto-responsivo">
               {{ t('indexConoceExperiencias') }}
             </p>
-            </div>
+          </div>
 
-            <!-- Carrusel de Opiniones -->
-            <div class="carousel-container">
-            <template v-if="todasLasOpiniones.length === 0">
+          <!-- Carrusel de Opiniones -->
+          <div class="carousel-container">
+            <template v-if="todasLasOpiniones.value.length === 0">
               <div class="row justify-center full-height items-center">
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 text-center q-pa-xl">
                   <div class="texto-responsivo text-grey-7">
@@ -236,7 +232,7 @@
             >
               <!-- Slides del carrusel - mostrar 1 -->
               <q-carousel-slide
-                v-for="(opinion, index) in todasLasOpiniones"
+                v-for="(opinion, index) in todasLasOpiniones.value"
                 :key="index"
                 :name="index"
                 class="q-pa-none"
@@ -261,27 +257,15 @@
                   style="background: rgba(0, 0, 0, 0.3); padding: 4px 8px"
                 >
                   <q-icon name="star" size="sm" class="q-mr-xs" />
-                  {{ currentSlide + 1 }} / {{ todasLasOpiniones.length }}
+                  {{ currentSlide + 1 }} / {{ todasLasOpiniones.value.length }}
                 </q-carousel-control>
               </template>
 
               <!-- Flechas personalizadas -->
+              <!-- Eliminado cierre/apertura incorrecto de <q-no-ssr> -->
               <template v-slot:navigation-icon="{ active, btnProps, onClick }">
                 <q-btn
                   v-if="btnProps.icon === 'chevron_left'"
-                  :class="{ 'text-primary': active }"
-                  color="white"
-                  text-color="primary"
-                  :icon="btnProps.icon"
-                  size="lg"
-                  round
-                  dense
-                  :disable="btnProps.disable"
-                  @click="onClick"
-                  class="carousel-arrow carousel-arrow-left"
-                />
-                <q-btn
-                  v-else-if="btnProps.icon === 'chevron_right'"
                   :class="{ 'text-primary': active }"
                   color="white"
                   text-color="primary"
@@ -299,7 +283,7 @@
             <!-- Indicadores de slide personalizados -->
             <div class="carousel-indicators q-mt-md">
               <q-btn
-                v-for="(opinion, index) in todasLasOpiniones"
+                v-for="(opinion, index) in todasLasOpiniones.value"
                 :key="index"
                 :class="{ active: currentSlide === index }"
                 @click="currentSlide = index"
@@ -321,12 +305,10 @@
                 {{ t('indexDanosTuOpinion') }}
               </q-btn>
             </div>
-            </div>
           </div>
-        </transition>
-      </div>
-    </q-no-ssr>
-
+        </div>
+      </transition>
+    </div>
     <!-- Sección de FAQs -->
     <div class="faqs-section">
       <p class="subtitulo-responsivo" style="margin-bottom: 40px">
@@ -451,7 +433,7 @@
               v-model="nuevaOpinion.name"
               :label="t('indexNombre')"
               outlined
-              :rules="[(val) => !!val || t('indexCampoRequerido')]"
+              :rules="[(val: string) => !!val || t('indexCampoRequerido')]"
             />
 
             <!-- País -->
@@ -459,7 +441,7 @@
               v-model="nuevaOpinion.country"
               :label="t('indexPais')"
               outlined
-              :rules="[(val) => !!val || t('indexCampoRequerido')]"
+              :rules="[(val: string) => !!val || t('indexCampoRequerido')]"
             />
 
             <!-- Comentario -->
@@ -472,8 +454,8 @@
               counter
               maxlength="500"
               :rules="[
-                (val) => !!val || t('indexCampoRequerido'),
-                (val) => val.length >= 20 || t('indexComentarioMinimo'),
+                (val: string) => !!val || t('indexCampoRequerido'),
+                (val: string) => val.length >= 20 || t('indexComentarioMinimo'),
               ]"
             />
           </q-form>
@@ -497,6 +479,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- cierre eliminado: </q-no-ssr> -->
   </q-page>
 </template>
 
@@ -705,7 +688,8 @@ const enviarOpinion = async () => {
   }
 };
 
-const todasLasOpiniones = ref<Opinion[]>([]);
+import { onServerPrefetch } from 'vue';
+const todasLasOpiniones = ref([]) as unknown as { value: Opinion[] };
 
 const fetchOpiniones = async () => {
   try {
@@ -721,9 +705,9 @@ const fetchOpiniones = async () => {
       return;
     }
 
-    todasLasOpiniones.value = data
+    todasLasOpiniones.value = (data as SupabaseOpinion[])
       .filter((row): row is SupabaseOpinion => Boolean(row))
-      .map((row) => ({
+      .map((row: SupabaseOpinion) => ({
         name: row.nombre ?? 'Anónimo',
         country: row.pais ?? '—',
         avatar: defaultAvatar,
@@ -745,13 +729,15 @@ const fetchOpiniones = async () => {
   }
 };
 
-onMounted(() => {
-  try {
+if (process.env.CLIENT) {
+  onMounted(() => {
     void fetchOpiniones();
-  } catch (err) {
-    console.error('[SSR][IndexPage] Error en onMounted:', err);
-  }
-});
+  });
+} else {
+  onServerPrefetch(async () => {
+    await fetchOpiniones();
+  });
+}
 
 function onPromoIntersect(entry: IntersectionObserverEntry): boolean {
   if (entry.isIntersecting) {

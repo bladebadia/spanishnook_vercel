@@ -79,7 +79,9 @@
 
                   <q-item v-else>
                     <q-item-section avatar><q-icon name="schedule" color="grey" /></q-item-section>
-                    <q-item-section class="text-grey">{{ t('reservasCursos.porDefinir') }}</q-item-section>
+                    <q-item-section class="text-grey">{{
+                      t('reservasCursos.porDefinir')
+                    }}</q-item-section>
                   </q-item>
                 </q-list>
               </div>
@@ -92,9 +94,7 @@
         <q-card class="q-pa-md">
           <q-card-section>
             <div class="text-h6 text-weight-bold" style="color: #851319">
-              {{
-                esCursoActivo ? t('reservasCursos.inscripcion') : t('reservasCursos.reservaTu')
-              }}
+              {{ esCursoActivo ? t('reservasCursos.inscripcion') : t('reservasCursos.reservaTu') }}
             </div>
           </q-card-section>
 
@@ -274,23 +274,19 @@ const { locale, t } = useI18n();
 
 const zonaHorariaUsuario = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-// Interfaces
-interface CursoGrupal {
-  id?: number;
+interface Curso {
+  id: number;
   nombre_curso: string;
   estado_curso: string;
-  descripcion?: string;
-  usuarios?: string[];
-  lista_espera?: string[];
-  nivel?: string;
-  precio_curso?: string;
-  dias_semana?: string[];
-  horarios_curso?: string[];
-  stripe_price_id?: string;
   max_estudiantes?: number;
+  dias_semana: string[];
+  horarios_curso: string[];
+  lista_espera: (string | number)[];
+  stripe_price_id?: string;
+  precio_curso?: string | number;
 }
 
-const curso = ref<CursoGrupal | null>(null);
+const curso = ref<Curso | null>(null);
 const cargando = ref(true);
 const reservando = ref(false);
 const user = ref<User | null>(null);
@@ -331,7 +327,7 @@ const formGuestValido = computed(
 
 const yaEnListaEspera = computed(() => {
   if (!curso.value) return false;
-  const valor = user.value?.id || formGuest.value.email || '';
+  const valor = user.value ? user.value.id : formGuest.value.email || '';
   return (curso.value.lista_espera || []).includes(valor);
 });
 
@@ -444,7 +440,7 @@ const iniciarSuscripcion = async () => {
   if (ocupacionActual.value >= (curso.value.max_estudiantes || 100)) {
     return $q.notify({ type: 'negative', message: '¡Plazas agotadas!' });
   }
-  await handleSubscribe(curso.value.stripe_price_id, curso.value.id!.toString());
+  await handleSubscribe(curso.value.stripe_price_id, curso.value.id.toString());
 };
 
 const comprobarSuscripcion = async () => {

@@ -1,297 +1,321 @@
 <template>
   <q-layout view="lHh Lpr fff">
     <!-- Inicio  -->
-    <q-header elevated>
-      <!-- Inicio barra superior -->
-      <q-bar>
-        <q-space></q-space>
-        <!-- Boton Area Personal -->
-        <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior"
-          >{{ t('areaPersonal') }}
-        </q-btn>
-        <!-- Boton Acceder / Carrito -->
-        <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior"
-          >{{ t('acceder') }}
-        </q-btn>
-        <!-- NUEVO: Botón Cerrar sesión -->
-        <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
-          {{ t('cerrarSesion') }}
-        </q-btn>
-        <!-- Botón Carrito de Compra -->
-        <q-btn
-          to="/CarritoCompra"
-          v-if="user"
-          class="text-white carro-btn"
-          icon="shopping_cart"
-          flat
-        >
-          <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
-            {{ carritoCount }}
-          </q-badge>
-        </q-btn>
-
-        <!-- Selector de idioma con banderas -->
-        <div class="row items-center q-gutter-xs flag-switcher">
-          <q-btn
-            :class="locale === 'es-ES' ? 'flag-selected' : 'flag-unselected'"
-            @click="changeLang('es-ES')"
-            class="flag-btn flag-es"
-          >
-            <q-img
-              src="https://flagcdn.com/w40/es.png"
-              alt="Español"
-              style="width: 24px; height: 16px"
-            />
+      <q-header elevated>
+        <!-- Inicio barra superior -->
+        <q-bar>
+          <q-space></q-space>
+          <!-- Boton Area Personal -->
+          <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior"
+            >{{ t('areaPersonal') }}
           </q-btn>
-          <q-btn
-            :class="locale === 'en-US' ? 'flag-selected' : 'flag-unselected'"
-            @click="changeLang('en-US')"
-            class="flag-btn flag-en"
-          >
-            <q-img
-              src="https://flagcdn.com/w40/gb.png"
-              alt="English"
-              style="width: 24px; height: 16px; border-radius: 2px"
-            />
+          <!-- Boton Acceder / Carrito -->
+          <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior"
+            >{{ t('acceder') }}
           </q-btn>
-        </div>
-      </q-bar>
-
-      <q-toolbar>
-        <q-btn
-          v-if="$q && $q.screen.lt.md"
-          flat
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          style="font-size: 1rem"
-        />
-        <div class="q-ma-none q-pa-none">
-          <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
-        </div>
-        <div>
-          <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
-        </div>
-        <!-- Navegación con botones -->
-        <div class="nav-container" v-if="$q && $q.screen.gt.sm">
+          <!-- NUEVO: Botón Cerrar sesión -->
+          <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
+            {{ t('cerrarSesion') }}
+          </q-btn>
+          <!-- Botón Carrito de Compra -->
           <q-btn
+            to="/CarritoCompra"
+            v-if="user"
+            class="text-white carro-btn"
+            icon="shopping_cart"
             flat
-            :to="'/'"
-            exact
-            class="nave-btn"
-            :class="{ 'nave-btn-active': activeButton === 'inicio' }"
           >
-            {{ t('inicio') }}
+            <q-badge
+              v-if="carritoCount > 0"
+              color="red"
+              floating
+              rounded
+              class="badge-notification"
+            >
+              {{ carritoCount }}
+            </q-badge>
           </q-btn>
 
-          <q-btn
-            flat
-            :to="'/Clases'"
-            class="nave-btn"
-            :class="{ 'nave-btn-active': activeButton === 'clases' }"
-            :label="t('clases')"
-          >
-          </q-btn>
-
-          <q-btn
-            flat
-            :to="'/TestNivel'"
-            exact
-            class="nave-btn"
-            :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
-          >
-            {{ t('testNivel') }}
-          </q-btn>
-
-          <q-btn
-            flat
-            :to="'/sobreSpanish'"
-            exact
-            class="nave-btn"
-            :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
-          >
-            {{ t('sobre') }}
-          </q-btn>
-
-          <q-btn
-            flat
-            :to="'/Contacto'"
-            exact
-            class="nave-btn"
-            :class="{ 'nave-btn-active': activeButton === 'contacto' }"
-          >
-            {{ t('contacto') }}
-          </q-btn>
-        </div>
-      </q-toolbar>
-    </q-header>
-    <q-drawer v-model="leftDrawerOpen" bordered>
-      <q-list>
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
-
-    <q-page-container>
-      <q-banner
-        v-if="showCookiesBanner"
-        class="bg-primary text-white shadow-2 cookies-banner"
-        style="
-          position: fixed;
-          left: 50%;
-          bottom: 96px;
-          transform: translateX(-50%);
-          width: 70vw;
-          max-width: 900px;
-          z-index: 9999;
-          font-size: 1.25rem;
-          border-radius: 18px;
-          padding: 24px 32px;
-        "
-        icon="cookie"
-      >
-        <div class="row items-center justify-between">
-          <div style="line-height: 1.5">
-            Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
-            usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su uso.
+          <!-- Selector de idioma con banderas -->
+          <div class="row items-center q-gutter-xs flag-switcher">
             <q-btn
-              flat
-              dense
-              color="white"
-              label="Política de Cookies"
-              to="/Cookies"
-              class="q-ml-sm"
-            />
-          </div>
-          <q-btn
-            color="white"
-            text-color="primary"
-            label="Aceptar"
-            @click="aceptarCookies"
-            class="q-ml-md text-weight-bold"
-            style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
-          />
-        </div>
-      </q-banner>
-      <router-view />
-    </q-page-container>
-
-    <q-page-sticky position="bottom-right" :offset="[10, 10]">
-      <q-btn
-        class="whatsapp-sticky-btn enlarged-touch"
-        round
-        color="green-6"
-        icon="mdi-whatsapp"
-        size="xl"
-        href="https://wa.me/34694280178"
-        target="_blank"
-        rel="noopener"
-        aria-label="WhatsApp"
-      />
-    </q-page-sticky>
-    <q-footer class="bg-black text-white">
-      <div class="row flex q-pa-md">
-        <div class="col-12 col-md-3 flex column items-center align-center q-pt-lg">
-          <q-img src="/img/Logotexto_500.png" class="img-responsiv" />
-          <p class="text-bold items-center footer-titulo q-pa-none q-ma-none">SpanishNook</p>
-        </div>
-
-        <div
-          v-if="$q && $q.screen.gt.sm"
-          class="col-12 col-md-3 flex column items-center q-pa-none q-ma-none"
-        >
-          <p class="text-bold footer-titulo q-py-none q-mt-none q-mb-md">SpanishNook</p>
-          <p class="q-mx-md text-body2">{{ t('footerSpanishnookEs') }}</p>
-          <div class="">
-            <p class="text-bold footer-titulo items-center q-pa-none q-my-none">
-              {{ t('footerRedes') }}
-            </p>
+              :class="locale === 'es-ES' ? 'flag-selected' : 'flag-unselected'"
+              @click="changeLang('es-ES')"
+              class="flag-btn flag-es"
+            >
+              <q-img
+                src="https://flagcdn.com/w40/es.png"
+                alt="Español"
+                style="width: 24px; height: 16px"
+              />
+            </q-btn>
             <q-btn
-              icon="mdi-youtube"
-              size="lg"
-              flat
-              class="text-red underline-btn q-sm-ml-xl"
-              href="https://www.youtube.com/@SpanishNook"
-            />
+              :class="locale === 'en-US' ? 'flag-selected' : 'flag-unselected'"
+              @click="changeLang('en-US')"
+              class="flag-btn flag-en"
+            >
+              <q-img
+                src="https://flagcdn.com/w40/gb.png"
+                alt="English"
+                style="width: 24px; height: 16px; border-radius: 2px"
+              />
+            </q-btn>
+          </div>
+        </q-bar>
+        <q-toolbar>
+          <q-no-ssr>
             <q-btn
-              icon="mdi-instagram"
-              size="lg"
+              v-if="$q && $q.screen.lt.md"
               flat
-              class="text-red underline-btn q-sm-mr-lg q-pr-lg"
-              href="https://www.instagram.com/spanishnook?igsh=MWo2OTJhd2MzM3dmeQ%3D%3D&utm_source=qr"
+              round
+              icon="menu"
+              aria-label="Menu"
+              @click="toggleLeftDrawer"
+              style="font-size: 1rem"
             />
-            <q-btn
-              icon="mdi-music-note"
-              size="lg"
-              flat
-              class="text-red underline-btn q-sm-mr-lg q-pr-lg"
-              href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
+          </q-no-ssr>
+          <div class="q-ma-none q-pa-none">
+            <img
+              round
+              src="/img/Logotexto_500.png"
+              alt="Logo Spanish nook"
+              class="logo-responsivo"
             />
           </div>
-        </div>
-        <!-- Columna Mapa del sitio -->
-        <div class="col-12 col-md-3 flex column items-center">
-          <div class="text-bold q-mx-xs">
-            <p class="text-bold footer-titulo items-center">{{ t('footerMapa') }}</p>
+          <div>
+            <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
           </div>
-          <div class="text-center">
-            <div class="text-center">
-              <router-link to="/" class="foot-link">{{ t('inicio') }}</router-link>
-            </div>
-            <div class="text-center">
-              <router-link to="/Clases" class="foot-link">{{ t('clases') }}</router-link>
-            </div>
-            <div class="text-center">
-              <router-link to="/TestNivel" class="foot-link">{{ t('testNivel') }}</router-link>
-            </div>
-            <div class="text-center">
-              <router-link to="/sobreSpanish" class="foot-link">{{ t('sobre') }}</router-link>
-            </div>
-            <div class="text-center">
-              <router-link to="/Contacto" class="foot-link">{{ t('contacto') }}</router-link>
-            </div>
-          </div>
-        </div>
-        <!-- Columna Enlaces de interés -->
-        <div v-if="$q && $q.screen.gt.sm" class="col-12 col-md-3 flex column items-center">
-          <div class="text-bold q-mx-xs">
-            <p class="text-bold items-center footer-titulo">
-              {{ t('footerEnlacesInteres') }}
-            </p>
-          </div>
-          <div class="text-center">
-            <div class="text-center">
-              <a
-                href="https://www.cervantes.es/"
-                target="_blank"
-                rel="noopener"
-                class="foot-link q-mt-md"
-                >{{ t('footerInstitutoCervantes') }}
-              </a>
-            </div>
-            <div class="text-center">
-              <a href="https://www.rae.es/" target="_blank" rel="noopener" class="foot-link">RAE</a>
-            </div>
-            <div class="text-center">
-              <a href="https://www.dele.org/" target="_blank" rel="noopener" class="foot-link"
-                >DELE</a
+          <q-no-ssr>
+            <div class="nav-container" v-if="$q && $q.screen.gt.sm">
+              <q-btn
+                flat
+                :to="'/'"
+                exact
+                class="nave-btn"
+                :class="{ 'nave-btn-active': activeButton === 'inicio' }"
               >
+                {{ t('inicio') }}
+              </q-btn>
+
+              <q-btn
+                flat
+                :to="'/Clases'"
+                class="nave-btn"
+                :class="{ 'nave-btn-active': activeButton === 'clases' }"
+                :label="t('clases')"
+              >
+              </q-btn>
+
+              <q-btn
+                flat
+                :to="'/TestNivel'"
+                exact
+                class="nave-btn"
+                :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
+              >
+                {{ t('testNivel') }}
+              </q-btn>
+
+              <q-btn
+                flat
+                :to="'/sobreSpanish'"
+                exact
+                class="nave-btn"
+                :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
+              >
+                {{ t('sobre') }}
+              </q-btn>
+
+              <q-btn
+                flat
+                :to="'/Contacto'"
+                exact
+                class="nave-btn"
+                :class="{ 'nave-btn-active': activeButton === 'contacto' }"
+              >
+                {{ t('contacto') }}
+              </q-btn>
+            </div>
+          </q-no-ssr>
+        </q-toolbar>
+      </q-header>
+      <q-drawer v-model="leftDrawerOpen" bordered>
+        <q-list>
+          <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+        </q-list>
+      </q-drawer>
+      <q-page-container>
+        <q-banner
+          v-if="showCookiesBanner"
+          class="bg-primary text-white shadow-2 cookies-banner"
+          style="
+            position: fixed;
+            left: 50%;
+            bottom: 96px;
+            transform: translateX(-50%);
+            width: 70vw;
+            max-width: 900px;
+            z-index: 9999;
+            font-size: 1.25rem;
+            border-radius: 18px;
+            padding: 24px 32px;
+          "
+          icon="cookie"
+        >
+          <div class="row items-center justify-between">
+            <div style="line-height: 1.5">
+              Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
+              usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su
+              uso.
+              <q-btn
+                flat
+                dense
+                color="white"
+                label="Política de Cookies"
+                to="/Cookies"
+                class="q-ml-sm"
+              />
+            </div>
+            <q-btn
+              color="white"
+              text-color="primary"
+              label="Aceptar"
+              @click="aceptarCookies"
+              class="q-ml-md text-weight-bold"
+              style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
+            />
+          </div>
+        </q-banner>
+        <q-no-ssr>
+          <router-view />
+        </q-no-ssr>
+      </q-page-container>
+
+      <q-page-sticky position="bottom-right" :offset="[10, 10]">
+        <q-btn
+          class="whatsapp-sticky-btn enlarged-touch"
+          round
+          color="green-6"
+          icon="mdi-whatsapp"
+          size="xl"
+          href="https://wa.me/34694280178"
+          target="_blank"
+          rel="noopener"
+          aria-label="WhatsApp"
+        />
+      </q-page-sticky>
+      <q-no-ssr>
+      <q-footer class="bg-black text-white">
+        <div class="row flex q-pa-md">
+          <div class="col-12 col-md-3 flex column items-center align-center q-pt-lg">
+            <q-img src="/img/Logotexto_500.png" class="img-responsiv" />
+            <p class="text-bold items-center footer-titulo q-pa-none q-ma-none">SpanishNook</p>
+          </div>
+          <q-no-ssr>
+            <div
+              v-if="$q && $q.screen.gt.sm"
+              class="col-12 col-md-3 flex column items-center q-pa-none q-ma-none"
+            >
+              <p class="text-bold footer-titulo q-py-none q-mt-none q-mb-md">SpanishNook</p>
+              <p class="q-mx-md text-body2">{{ t('footerSpanishnookEs') }}</p>
+              <div class="">
+                <p class="text-bold footer-titulo items-center q-pa-none q-my-none">
+                  {{ t('footerRedes') }}
+                </p>
+                <q-btn
+                  icon="mdi-youtube"
+                  size="lg"
+                  flat
+                  class="text-red underline-btn q-sm-ml-xl"
+                  href="https://www.youtube.com/@SpanishNook"
+                />
+                <q-btn
+                  icon="mdi-instagram"
+                  size="lg"
+                  flat
+                  class="text-red underline-btn q-sm-mr-lg q-pr-lg"
+                  href="https://www.instagram.com/spanishnook?igsh=MWo2OTJhd2MzM3dmeQ%3D%3D&utm_source=qr"
+                />
+                <q-btn
+                  icon="mdi-music-note"
+                  size="lg"
+                  flat
+                  class="text-red underline-btn q-sm-mr-lg q-pr-lg"
+                  href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
+                />
+              </div>
+            </div>
+          </q-no-ssr>
+          <!-- Columna Mapa del sitio -->
+          <div class="col-12 col-md-3 flex column items-center">
+            <div class="text-bold q-mx-xs">
+              <p class="text-bold footer-titulo items-center">{{ t('footerMapa') }}</p>
+            </div>
+            <div class="text-center">
+              <div class="text-center">
+                <router-link to="/" class="foot-link">{{ t('inicio') }}</router-link>
+              </div>
+              <div class="text-center">
+                <router-link to="/Clases" class="foot-link">{{ t('clases') }}</router-link>
+              </div>
+              <div class="text-center">
+                <router-link to="/TestNivel" class="foot-link">{{ t('testNivel') }}</router-link>
+              </div>
+              <div class="text-center">
+                <router-link to="/sobreSpanish" class="foot-link">{{ t('sobre') }}</router-link>
+              </div>
+              <div class="text-center">
+                <router-link to="/Contacto" class="foot-link">{{ t('contacto') }}</router-link>
+              </div>
             </div>
           </div>
+          <!-- Columna Enlaces de interés -->
+          <q-no-ssr>
+            <div v-if="$q && $q.screen.gt.sm" class="col-12 col-md-3 flex column items-center">
+              <div class="text-bold q-mx-xs">
+                <p class="text-bold items-center footer-titulo">
+                  {{ t('footerEnlacesInteres') }}
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="text-center">
+                  <a
+                    href="https://www.cervantes.es/"
+                    target="_blank"
+                    rel="noopener"
+                    class="foot-link q-mt-md"
+                    >{{ t('footerInstitutoCervantes') }}
+                  </a>
+                </div>
+                <div class="text-center">
+                  <a href="https://www.rae.es/" target="_blank" rel="noopener" class="foot-link"
+                    >RAE</a
+                  >
+                </div>
+                <div class="text-center">
+                  <a href="https://www.dele.org/" target="_blank" rel="noopener" class="foot-link"
+                    >DELE</a
+                  >
+                </div>
+              </div>
+            </div>
+          </q-no-ssr>
         </div>
-      </div>
-      <div class="footer-legal-bar">
-        <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
-        <div class="footer-legal-links">
-          <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
-          <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
-          <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
-          <router-link to="/Condiciones" class="foot-link">{{
-            t('footerCondiciones')
-          }}</router-link>
+        <div class="footer-legal-bar">
+          <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
+          <div class="footer-legal-links">
+            <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
+            <router-link to="/Privacidad" class="foot-link">{{
+              t('footerPrivacidad')
+            }}</router-link>
+            <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
+            <router-link to="/Condiciones" class="foot-link">{{
+              t('footerCondiciones')
+            }}</router-link>
+          </div>
         </div>
-      </div>
-    </q-footer>
+      </q-footer>
+      </q-no-ssr>
   </q-layout>
 </template>
 

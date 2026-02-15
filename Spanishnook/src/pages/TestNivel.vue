@@ -1,194 +1,198 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
-  <q-page class="row items-center justify-evenly">
-    <!-- Pagina de instrucciones -->
-    <div v-if="!testCompleted && currentQuestion === 0 && !showResults" class="col-12">
-      <q-card flat bordered class="instruction-card">
-        <q-card-section class="text-center q-pb-none q-mb-none">
-          <div style="font-size: 3.5rem; margin-bottom: 0px">📝</div>
-        </q-card-section>
-        <q-card-section class="text-center q-pt-none">
-          <h2 class="text-primary text-weight-bold q-mb-md" style="font-size: 3rem">
-            {{ t('test.deNivel') }}
-          </h2>
-          <p class="text-h6 text-grey-7 q-mb-lg">{{ t('test.evaluaTuNivel') }}</p>
+  <q-no-ssr>
+    <q-page class="row items-center justify-evenly">
+      <!-- Pagina de instrucciones -->
+      <div v-if="!testCompleted && currentQuestion === 0 && !showResults" class="col-12">
+        <q-card flat bordered class="instruction-card">
+          <q-card-section class="text-center q-pb-none q-mb-none">
+            <div style="font-size: 3.5rem; margin-bottom: 0px">📝</div>
+          </q-card-section>
+          <q-card-section class="text-center q-pt-none">
+            <h2 class="text-primary text-weight-bold q-mb-md" style="font-size: 3rem">
+              {{ t('test.deNivel') }}
+            </h2>
+            <p class="text-h6 text-grey-7 q-mb-lg">{{ t('test.evaluaTuNivel') }}</p>
 
-          <div class="text-left q-mb-lg">
-            <p class="text-h5 text-weight-bold q-mb-md q-ml-lg">{{ t('test.instrucciones') }}</p>
-            <ul class="text-body1 text-black">
-              <li class="q-mb-sm">{{ t('test.elTestConsta') }}</li>
-              <li class="q-mb-sm">
-                {{ t('test.cadaPreguntaTiene') }}
-              </li>
-              <li class="q-mb-sm">
-                {{ t('test.alCompletar') }} <strong>{{ t('test.esteTest') }}</strong>
-              </li>
-              <li class="q-mb-sm">{{ t('test.elTestToma') }}</li>
-            </ul>
-          </div>
+            <div class="text-left q-mb-lg">
+              <p class="text-h5 text-weight-bold q-mb-md q-ml-lg">{{ t('test.instrucciones') }}</p>
+              <ul class="text-body1 text-black">
+                <li class="q-mb-sm">{{ t('test.elTestConsta') }}</li>
+                <li class="q-mb-sm">
+                  {{ t('test.cadaPreguntaTiene') }}
+                </li>
+                <li class="q-mb-sm">
+                  {{ t('test.alCompletar') }} <strong>{{ t('test.esteTest') }}</strong>
+                </li>
+                <li class="q-mb-sm">{{ t('test.elTestToma') }}</li>
+              </ul>
+            </div>
 
-          <q-btn
-            size="lg"
-            color="primary"
-            :label="t('test.comenzarTest')"
-            class="q-px-xl btn-comenzar-test"
-            @click="currentQuestion = 1"
-          />
-        </q-card-section>
-      </q-card>
-    </div>
+            <q-btn
+              size="lg"
+              color="primary"
+              :label="t('test.comenzarTest')"
+              class="q-px-xl btn-comenzar-test"
+              @click="currentQuestion = 1"
+            />
+          </q-card-section>
+        </q-card>
+      </div>
 
-    <!-- Questions Page -->
-    <div v-if="!testCompleted && currentQuestion > 0 && !showResults">
-      <div class="row justify-center">
-        <div class="col-12 col-md-10">
-          <q-card flat bordered class="question-card test-card-size fixed-test-card">
-            <q-card-section class="test-card-content">
-              <div class="test-card-progress">
-                <div class="row items-center q-mb-sm">
-                  <div class="col">
-                    <span class="text-body2 text-grey-6">
-                      {{ t('test.pregunta') }} {{ currentQuestion }} {{ t('test.de') }}
-                      {{ testQuestions.length }}
-                    </span>
+      <!-- Questions Page -->
+      <div v-if="!testCompleted && currentQuestion > 0 && !showResults">
+        <div class="row justify-center">
+          <div class="col-12 col-md-10">
+            <q-card flat bordered class="question-card test-card-size fixed-test-card">
+              <q-card-section class="test-card-content">
+                <div class="test-card-progress">
+                  <div class="row items-center q-mb-sm">
+                    <div class="col">
+                      <span class="text-body2 text-grey-6">
+                        {{ t('test.pregunta') }} {{ currentQuestion }} {{ t('test.de') }}
+                        {{ testQuestions.length }}
+                      </span>
+                    </div>
+                    <div class="col-auto">
+                      <q-chip
+                        :label="testQuestions[currentQuestion - 1]?.level"
+                        color="secondary"
+                        text-color="white"
+                        size="sm"
+                      />
+                    </div>
                   </div>
-                  <div class="col-auto">
-                    <q-chip
-                      :label="testQuestions[currentQuestion - 1]?.level"
-                      color="secondary"
-                      text-color="white"
-                      size="sm"
-                    />
+                  <q-linear-progress
+                    :value="currentQuestion / testQuestions.length"
+                    color="primary"
+                    size="8px"
+                    rounded
+                  />
+                </div>
+                <div class="test-card-question">
+                  <h3 class="text-h6 text-weight-bold pregunta-test">
+                    {{ testQuestions[currentQuestion - 1]?.question }}
+                  </h3>
+                </div>
+                <div class="test-card-options q-gutter-sm">
+                  <q-btn
+                    v-for="(option, index) in testQuestions[currentQuestion - 1]?.options"
+                    :key="index"
+                    :label="`${String.fromCharCode(65 + index)}. ${option}`"
+                    :color="selectedAnswers[currentQuestion - 1] === index ? 'primary' : 'grey-3'"
+                    :text-color="
+                      selectedAnswers[currentQuestion - 1] === index ? 'white' : 'grey-8'
+                    "
+                    class="full-width text-left q-pa-md opcion-test"
+                    no-caps
+                    @click="selectAnswer(index)"
+                  />
+                </div>
+                <div class="test-card-actions row justify-between">
+                  <q-btn
+                    v-if="currentQuestion > 1"
+                    :label="t('test.anterior')"
+                    icon="chevron_left"
+                    color="grey-6"
+                    flat
+                    @click="previousQuestion"
+                  />
+                  <q-space />
+                  <q-btn
+                    v-if="currentQuestion < testQuestions.length"
+                    :label="t('test.siguiente')"
+                    icon-right="chevron_right"
+                    color="primary"
+                    class="btn-siguiente"
+                    @click="nextQuestion"
+                  />
+                  <q-btn
+                    v-if="currentQuestion === testQuestions.length"
+                    :label="t('test.finalizarTest')"
+                    icon-right="check"
+                    color="positive"
+                    class="btn-finalizar"
+                    @click="finishTest"
+                  />
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Page -->
+      <div class="row items-center full-width" v-if="showResults">
+        <div class="column full-width items-center">
+          <q-card flat bordered class="results-card test-card-size fixed-test-card">
+            <q-card-section class="text-center">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem">✅</div>
+              <p class="text-h3 text-primary text-weight-bold q-mb-xl">
+                {{ t('test.testCompletado') }}
+              </p>
+
+              <div class="row justify-center items-center q-mb-lg">
+                <div class="col-12 col-sm-6 text-center">
+                  <q-circular-progress
+                    :value="percentage"
+                    size="120px"
+                    :thickness="0.1"
+                    color="primary"
+                    track-color="grey-3"
+                    class="q-ma-md"
+                  >
+                    <div class="text-h4 text-weight-bold">{{ levelCorrect }}/{{ levelTotal }}</div>
+                  </q-circular-progress>
+                  <div class="text-body1 text-grey-7">
+                    {{ Math.round(percentage) }}{{ t('test.correcto') }}
                   </div>
                 </div>
-                <q-linear-progress
-                  :value="currentQuestion / testQuestions.length"
-                  color="primary"
-                  size="8px"
-                  rounded
-                />
+
+                <div class="col-12 col-sm-6 text-center">
+                  <div class="text-h5 text-weight-bold text-primary q-mb-sm">
+                    {{ t('test.tuNivel') }}
+                  </div>
+                  <q-chip
+                    :label="testLevel"
+                    color="yellow-2"
+                    text-color="black"
+                    size="xl"
+                    class="q-pa-md chip-nivel"
+                  />
+                  <div class="text-body2 text-black q-mt-sm descripcion-nivel">
+                    <span v-if="testLevel.includes('A1')">
+                      {{ t('test.accesoConocesLo') }}
+                    </span>
+                    <span v-else-if="testLevel.includes('A2')">
+                      {{ t('test.plataformaPuedes') }}
+                    </span>
+                    <span v-else-if="testLevel.includes('B1')">
+                      {{ t('test.umbralTienes') }}
+                    </span>
+                    <span v-else-if="testLevel.includes('B2')">
+                      {{ t('test.avanzadoPuedes') }}
+                    </span>
+                    <span v-else-if="testLevel.includes('C1')">
+                      {{ t('test.dominioTeExpresas') }}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div class="test-card-question">
-                <h3 class="text-h6 text-weight-bold pregunta-test">
-                  {{ testQuestions[currentQuestion - 1]?.question }}
-                </h3>
-              </div>
-              <div class="test-card-options q-gutter-sm">
+
+              <div class="q-gutter-md">
                 <q-btn
-                  v-for="(option, index) in testQuestions[currentQuestion - 1]?.options"
-                  :key="index"
-                  :label="`${String.fromCharCode(65 + index)}. ${option}`"
-                  :color="selectedAnswers[currentQuestion - 1] === index ? 'primary' : 'grey-3'"
-                  :text-color="selectedAnswers[currentQuestion - 1] === index ? 'white' : 'grey-8'"
-                  class="full-width text-left q-pa-md opcion-test"
-                  no-caps
-                  @click="selectAnswer(index)"
-                />
-              </div>
-              <div class="test-card-actions row justify-between">
-                <q-btn
-                  v-if="currentQuestion > 1"
-                  :label="t('test.anterior')"
-                  icon="chevron_left"
-                  color="grey-6"
-                  flat
-                  @click="previousQuestion"
-                />
-                <q-space />
-                <q-btn
-                  v-if="currentQuestion < testQuestions.length"
-                  :label="t('test.siguiente')"
-                  icon-right="chevron_right"
-                  color="primary"
-                  class="btn-siguiente"
-                  @click="nextQuestion"
-                />
-                <q-btn
-                  v-if="currentQuestion === testQuestions.length"
-                  :label="t('test.finalizarTest')"
-                  icon-right="check"
-                  color="positive"
-                  class="btn-finalizar"
-                  @click="finishTest"
+                  :label="t('test.repetirTest')"
+                  icon="refresh"
+                  color="secondary"
+                  @click="restartTest"
                 />
               </div>
             </q-card-section>
           </q-card>
         </div>
       </div>
-    </div>
-
-    <!-- Results Page -->
-    <div class="row items-center full-width" v-if="showResults">
-      <div class="column full-width items-center">
-        <q-card flat bordered class="results-card test-card-size fixed-test-card">
-          <q-card-section class="text-center">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem">✅</div>
-            <p class="text-h3 text-primary text-weight-bold q-mb-xl">
-              {{ t('test.testCompletado') }}
-            </p>
-
-            <div class="row justify-center items-center q-mb-lg">
-              <div class="col-12 col-sm-6 text-center">
-                <q-circular-progress
-                  :value="percentage"
-                  size="120px"
-                  :thickness="0.1"
-                  color="primary"
-                  track-color="grey-3"
-                  class="q-ma-md"
-                >
-                  <div class="text-h4 text-weight-bold">{{ levelCorrect }}/{{ levelTotal }}</div>
-                </q-circular-progress>
-                <div class="text-body1 text-grey-7">
-                  {{ Math.round(percentage) }}{{ t('test.correcto') }}
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 text-center">
-                <div class="text-h5 text-weight-bold text-primary q-mb-sm">
-                  {{ t('test.tuNivel') }}
-                </div>
-                <q-chip
-                  :label="testLevel"
-                  color="yellow-2"
-                  text-color="black"
-                  size="xl"
-                  class="q-pa-md chip-nivel"
-                />
-                <div class="text-body2 text-black q-mt-sm descripcion-nivel">
-                  <span v-if="testLevel.includes('A1')">
-                    {{ t('test.accesoConocesLo') }}
-                  </span>
-                  <span v-else-if="testLevel.includes('A2')">
-                    {{ t('test.plataformaPuedes') }}
-                  </span>
-                  <span v-else-if="testLevel.includes('B1')">
-                    {{ t('test.umbralTienes') }}
-                  </span>
-                  <span v-else-if="testLevel.includes('B2')">
-                    {{ t('test.avanzadoPuedes') }}
-                  </span>
-                  <span v-else-if="testLevel.includes('C1')">
-                    {{ t('test.dominioTeExpresas') }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="q-gutter-md">
-              <q-btn
-                :label="t('test.repetirTest')"
-                icon="refresh"
-                color="secondary"
-                @click="restartTest"
-              />
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
-  </q-page>
+    </q-page>
+  </q-no-ssr>
 </template>
 
 <script setup lang="ts">
@@ -225,7 +229,8 @@ useMeta(() => ({
     },
     ogImage: {
       property: 'og:image',
-      content: 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png',
+      content:
+        'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png',
     },
     ogUrl: {
       property: 'og:url',
