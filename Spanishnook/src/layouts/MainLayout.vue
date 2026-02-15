@@ -1,6 +1,7 @@
 <template>
   <q-layout view="lHh Lpr fff">
     <!-- Inicio  -->
+     <q-no-ssr>
       <q-header elevated>
         <!-- Inicio barra superior -->
         <q-bar>
@@ -139,6 +140,7 @@
           </q-no-ssr>
         </q-toolbar>
       </q-header>
+      </q-no-ssr>
       <q-drawer v-model="leftDrawerOpen" bordered>
         <q-list>
           <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />

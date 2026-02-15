@@ -1,6 +1,7 @@
 <template>
   <q-layout view="lHh Lpr fff">
     <!-- Inicio  -->
+  <q-no-ssr>
     <q-header elevated>
       <!-- Inicio barra superior -->
       <q-bar>
@@ -215,6 +216,7 @@
         </div>
       </div>
     </q-footer>
+  </q-no-ssr>
   </q-layout>
 </template>
 
